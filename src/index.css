@@ -1,0 +1,504 @@
+/****************************************************************
+** 1. RESET BÁSICO E CONFIGURAÇÕES GLOBAIS
+****************************************************************/
+
+:root {
+    --embraer-blue: #0033a0;
+    --dark-blue: #021029;
+    --text-light: #ffffff;
+    --text-dark: #333;
+    --background-light: #ffffff;
+    --background-grey: #f0f2f5;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background-color: var(--background-light);
+    color: var(--text-dark);
+    overflow-x: hidden;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+
+/****************************************************************
+** 2. CLASSES GLOBAIS (HELPERS)
+****************************************************************/
+
+.container {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.section-title {
+    text-align: center;
+    font-size: 2.5rem;
+    margin-bottom: 60px;
+    color: var(--dark-blue);
+}
+
+
+/****************************************************************
+** 3. CABEÇALHO (HEADER)
+****************************************************************/
+
+.main-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    z-index: 1000;
+    background: linear-gradient(to bottom, rgba(0,0,0,0.5), transparent);
+    transition: background-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+}
+
+.main-header.scrolled {
+    background-color: var(--dark-blue);
+    box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+}
+
+.logo-link {
+    display: flex;
+    align-items: center;
+}
+
+.logo-image {
+    height: 40px;
+    width: auto;
+}
+
+/* --- Lógica de menus Mobile-First --- */
+
+.main-nav {
+    display: none;
+}
+
+.hamburger-btn {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    width: 30px;
+    height: 25px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    z-index: 1001;
+    transition: opacity 0.3s, visibility 0.3s;
+}
+
+.hamburger-btn.is-hidden {
+    opacity: 0;
+    visibility: hidden;
+}
+
+.hamburger-line {
+    width: 30px;
+    height: 3px;
+    background-color: var(--text-light);
+    border-radius: 5px;
+}
+
+.mobile-nav {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 80%;
+    max-width: 320px;
+    height: 100vh;
+    background-color: var(--dark-blue);
+    box-shadow: -5px 0 15px rgba(0,0,0,0.2);
+    transform: translateX(100%);
+    transition: transform 0.3s ease-in-out;
+    z-index: 1000;
+}
+
+.mobile-nav.is-open {
+    transform: translateX(0);
+}
+
+.mobile-nav-links {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 40px;
+    height: 100%;
+}
+
+.mobile-nav-links a {
+    color: var(--text-light);
+    font-size: 1.5rem;
+    font-weight: 500;
+}
+
+.close-btn {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    background: transparent;
+    border: none;
+    color: var(--text-light);
+    font-size: 3rem;
+    line-height: 1;
+    cursor: pointer;
+    padding: 5px;
+}
+
+/* Media Query para telas maiores (Desktop) */
+@media (min-width: 769px) {
+    .main-header {
+        padding: 20px 50px;
+    }
+
+    .logo-image {
+        height: 50px;
+    }
+
+    .main-nav {
+        display: flex;
+        align-items: center;
+    }
+
+    .main-nav a {
+        color: var(--text-light);
+        margin-left: 30px;
+        font-weight: 500;
+        padding-bottom: 5px;
+        border-bottom: 2px solid transparent;
+        opacity: 0.9;
+        transition: border-color 0.3s, opacity 0.3s, visibility 0.3s;
+    }
+
+    .main-nav a:hover {
+        border-bottom-color: var(--text-light);
+        opacity: 1;
+    }
+
+    .nav-back-to-top {
+        opacity: 0;
+        visibility: hidden;
+    }
+
+    .nav-back-to-top.show {
+        opacity: 0.9;
+        visibility: visible;
+    }
+
+    .hamburger-btn,
+    .mobile-nav {
+        display: none;
+    }
+}
+
+
+/****************************************************************
+** 4. SEÇÃO HERO (BANNER PRINCIPAL)
+****************************************************************/
+
+.hero-section {
+    height: 100vh;
+    color: var(--text-light);
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    background-color: #000;
+}
+
+.hero-section::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 2;
+}
+
+.hero-content {
+    z-index: 3;
+    max-width: 800px;
+    padding: 20px;
+}
+
+.hero-content h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 20px;
+}
+
+.hero-content p {
+    font-size: 1rem;
+    font-weight: 300;
+    margin-bottom: 40px;
+}
+
+@media (min-width: 769px) {
+    .hero-content h1 {
+        font-size: 4rem;
+    }
+    .hero-content p {
+        font-size: 1.2rem;
+    }
+}
+
+.cta-button {
+    display: inline-block;
+    background-color: var(--embraer-blue);
+    color: #fff;
+    padding: 15px 30px;
+    border-radius: 5px;
+    font-weight: 700;
+    transition: background-color 0.3s, transform 0.3s;
+    border: none;
+    cursor: pointer;
+}
+
+.cta-button:hover {
+    background-color: #002269;
+    transform: translateY(-3px);
+}
+
+
+/****************************************************************
+** 5. SEÇÕES DE CONTEÚDO E CARDS
+****************************************************************/
+
+.problem-section,
+.business-areas,
+.about-us-section,
+.projects-section,
+.contact-section {
+    padding: 100px 0;
+    background-color: var(--background-light);
+}
+
+.business-areas,
+.projects-section {
+    background-color: var(--background-grey);
+}
+
+.about-us-intro {
+    text-align: center;
+    max-width: 900px;
+    margin: 0 auto 60px auto;
+    font-size: 1.2rem;
+    line-height: 1.7;
+    color: #555;
+}
+
+.cards-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 30px;
+}
+
+@media (min-width: 769px) {
+    .cards-grid {
+        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    }
+}
+
+.card {
+    background-color: var(--background-light);
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+}
+
+.card-image {
+    height: 200px;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+.card-content {
+    padding: 25px;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.card-content h3 {
+    font-size: 1.5rem;
+    color: var(--dark-blue);
+    margin-bottom: 15px;
+}
+
+.card-content p {
+    font-size: 1rem;
+    line-height: 1.6;
+    margin-bottom: 20px;
+    flex-grow: 1;
+}
+
+.card-link {
+    color: var(--embraer-blue);
+    font-weight: 700;
+    align-self: flex-start;
+}
+
+
+/****************************************************************
+** 8. SEÇÃO DE CONTATO (FORMULÁRIO)
+****************************************************************/
+
+.contact-form {
+    max-width: 700px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.contact-form input,
+.contact-form textarea {
+    width: 100%;
+    padding: 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-family: inherit;
+    font-size: 1rem;
+}
+
+.contact-form input:focus,
+.contact-form textarea:focus {
+    outline: 2px solid var(--embraer-blue);
+    border-color: transparent;
+}
+
+.contact-form .form-terms {
+    font-size: 0.8rem;
+    color: #888;
+    text-align: center;
+}
+
+.contact-form .cta-button {
+    width: 100%;
+}
+
+
+/****************************************************************
+** 9. RODAPÉ (FOOTER)
+****************************************************************/
+
+.main-footer {
+    background-color: var(--dark-blue);
+    color: var(--text-light);
+    padding: 80px 0 30px 0;
+}
+
+.footer-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 40px;
+    margin-bottom: 60px;
+    text-align: center;
+}
+
+@media (min-width: 769px) {
+    .footer-grid {
+        text-align: left;
+    }
+}
+
+.footer-column h4 {
+    font-size: 1.1rem;
+    margin-bottom: 20px;
+    font-weight: 500;
+}
+
+.footer-column ul {
+    list-style: none;
+}
+
+.footer-column ul li {
+    margin-bottom: 12px;
+}
+
+.footer-column ul a {
+    color: #ccc;
+    transition: color 0.3s;
+}
+
+.footer-column ul a:hover {
+    color: #fff;
+}
+
+.footer-column p {
+    color: #ccc;
+}
+
+.footer-bottom {
+    border-top: 1px solid #33425a;
+    padding-top: 30px;
+    text-align: center;
+    font-size: 0.9rem;
+    color: #aaa;
+}
+
+
+/****************************************************************
+** 10. BOTÃO VOLTAR AO TOPO
+****************************************************************/
+
+.back-to-top {
+    position: fixed;
+    bottom: 25px;
+    right: 25px;
+    background-color: rgba(10, 10, 10, 0.7);
+    color: white;
+    width: 45px;
+    height: 45px;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    z-index: 999;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s, visibility 0.3s, background-color 0.3s;
+}
+
+.back-to-top:hover {
+    background-color: rgba(10, 10, 10, 0.9);
+}
+
+.back-to-top.show {
+    opacity: 1;
+    visibility: visible;
+}
