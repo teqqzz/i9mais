@@ -1,27 +1,40 @@
 import React from 'react';
-
-// Importando todos os nossos componentes
+import { Outlet, useLocation } from 'react-router-dom';
 import { Header } from './components/Header';
-import { Hero } from './components/Hero';
-import { ProblemsSection } from './components/ProblemsSection';
-import { SolutionsSection } from './components/SolutionsSection';
-import { AboutSection } from './components/AboutSection';
-import { ProjectsSection } from './components/ProjectsSection';
-import { ContactSection } from './components/ContactSection';
 import { Footer } from './components/Footer';
 import { BackToTopButton } from './components/BackToTopButton';
+import { useEffect } from 'react';
+
+function ScrollToTop() {
+  const { pathname } = useLocation();
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
+  return null;
+}
 
 function App() {
+  const location = useLocation();
+  const isHomePage = location.pathname === '/';
+
+  useEffect(() => {
+    if (!isHomePage) {
+      document.body.classList.add('internal-page');
+    } else {
+      document.body.classList.remove('internal-page');
+    }
+    return () => {
+      document.body.classList.remove('internal-page');
+    };
+  }, [isHomePage]);
+
+
   return (
     <>
-      <Header />
+      <ScrollToTop />
+      <Header isHomePage={isHomePage} />
       <main>
-        <Hero />
-        <ProblemsSection />
-        <SolutionsSection />
-        <AboutSection />
-        <ProjectsSection />
-        <ContactSection />
+        <Outlet />
       </main>
       <Footer />
       <BackToTopButton />

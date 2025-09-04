@@ -2,15 +2,14 @@ import React from 'react';
 
 export function Hero() {
   const heroStyle = {
-    backgroundImage: "url('https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExcTdlODg5d3lzbDMycmlmZGl4OHNjYmk1Y3NhZGxrMnBpbmF5ZWg5dSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/7vAQFq0mAEjk55KfeB/giphy.gif')"
+    backgroundImage: "url('https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExODNtcjdjcHEyd2Fyd3NnZXA2d2JpOGNkb3hycTl1bzBva2xna3BzOCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/4CpdsmxdDpcmQ/giphy.gif')"
   };
 
   return (
     <section className="hero-section" style={heroStyle}>
       <div className="hero-content">
-        <h1>Energia Inteligente, Futuro Consciente.</h1>
-        <p>Soluções duradouras, alinhadas com práticas de economia circular para inovar mais a indústria da energia sustentável.</p>
-        <a href="#contato" className="cta-button">Faça seu cadastro</a>
+        <h1>Inovação Circular para a Energia do Futuro.</h1>
+        <p>Tecnologia de ponta em diagnóstico e requalificação de baterias, fortalecendo a indústria e o futuro sustentável do Brasil.</p>
       </div>
     </section>
   );
