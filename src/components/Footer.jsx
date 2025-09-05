@@ -6,7 +6,7 @@ export function Footer() {
       <div className="container">
         <div className="footer-top">
           <div className="footer-about">
-            <img src="https://images.builderservices.io/s/cdn/v1.0/i/m?url=https%3A%2F%2Fstorage.googleapis.com%2Fproduction-hostgator-brasil-v1-0-5%2F725%2F1528725%2F01Y0yIm7%2Fb5cd7f0df5144dc182e3e9ed8c148ee3&methods=resize%2C500%2C5000" alt="Logo i9+ Baterias" className="footer-logo" />
+            <img src="/src/images/logo-i9+.png" alt="Logo i9+ Baterias" className="footer-logo" />
             <p>Desenvolvendo a tecnologia que impulsiona a economia circular de baterias no Brasil.</p>
           </div>
           <div className="footer-links">

@@ -29,6 +29,10 @@ body {
     overflow-x: hidden;
 }
 
+body.internal-page {
+    padding-top: 90px;
+}
+
 a {
     text-decoration: none;
     color: inherit;
@@ -54,7 +58,7 @@ a {
 
 
 /****************************************************************
-** 3. CABEÇALHO (HEADER) - AJUSTADO PARA PÁGINAS INTERNAS
+** 3. CABEÇALHO (HEADER)
 ****************************************************************/
 
 .main-header {
@@ -67,23 +71,18 @@ a {
     align-items: center;
     padding: 15px 20px;
     z-index: 1000;
-    /* Padrão transparente para a homepage, escuro para outras páginas */
-    background-color: transparent;
+    background: linear-gradient(to bottom, rgba(0,0,0,0.5), transparent);
     transition: background-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
 }
 
-/* Estado quando o scroll está na homepage */
 .main-header.scrolled {
     background-color: var(--dark-blue);
     box-shadow: 0 2px 10px rgba(0,0,0,0.15);
 }
 
-/* Estado do header para páginas internas */
 .main-header.solid-background {
     background-color: var(--dark-blue);
-    box-shadow: 0 2px 10px rgba(0,0,0,0.15);
 }
-
 
 .logo-link {
     display: flex;
@@ -289,7 +288,7 @@ a {
 }
 
 .cta-button:hover {
-    background-color: #003e75; /* Tom mais escuro do primary-blue */
+    background-color: #003e75;
     transform: translateY(-3px);
 }
 
@@ -306,7 +305,6 @@ a {
     padding: 100px 0;
 }
 
-/* Cores de fundo alternadas */
 .unique-approach-section,
 .projects-section,
 .contact-about-section {
@@ -361,7 +359,7 @@ a {
 ** 7. ESTRUTURA DE CARDS (Soluções, Blog, etc.)
 ****************************************************************/
 
-.cards-grid { /* Mantido para caso queira um grid fora do carrossel, mas não será usado para soluções */
+.cards-grid {
     display: grid;
     grid-template-columns: 1fr;
     gap: 30px;
@@ -393,7 +391,7 @@ a {
     height: 200px;
     background-position: center;
     background-repeat: no-repeat;
-    background-size: cover;
+    background-size: cover; /* Padrão para fotos */
 }
 
 .card-content {
@@ -424,52 +422,63 @@ a {
 
 
 /****************************************************************
-** 8. CARROSSEL (Swiper para Projetos e Blog) - AJUSTADO PARA SETAS
+** 8. CARROSSEL (Swiper para Projetos e Blog)
 ****************************************************************/
 
 .swiper {
+    position: relative;
     width: 100%;
-    /* Adiciona padding horizontal para as setas ficarem fora do container */
-    padding: 0 50px; /* Ajuste conforme a necessidade de espaçamento das setas */
-    position: relative; /* Para posicionar as setas */
+    padding: 0 20px;
+}
+
+@media (min-width: 769px) {
+    .swiper {
+        padding: 0 40px;
+    }
 }
 
 .swiper-slide {
     height: auto;
     display: flex;
     justify-content: center;
-    align-items: center;
-    padding-bottom: 0; /* Remover padding-bottom se as setas não estiverem mais lá */
 }
 
-/* Estilo para as setas de navegação */
-.swiper-button-next, .swiper-button-prev {
-    color: var(--dark-blue) !important; /* Cor das setas */
-    top: 50% !important; /* Centraliza verticalmente */
-    transform: translateY(-50%) !important; /* Ajuste fino para centralização */
-    font-size: 2.5rem !important; /* Tamanho do ícone de seta */
-    width: 50px !important; /* Largura da área clicável */
-    height: 50px !important; /* Altura da área clicável */
-    margin: 0 !important; /* Remove margens extras */
+.swiper-button-next,
+.swiper-button-prev {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 44px;
+    height: 44px;
+    background-color: #fff;
+    border-radius: 50%;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+    color: var(--primary-blue) !important;
+    z-index: 10;
+    margin-top: -30px;
+}
+
+.swiper-button-next::after,
+.swiper-button-prev::after {
+    font-size: 20px !important;
+    font-weight: 900;
 }
 
 .swiper-button-prev {
-    left: 0px !important; /* Posiciona na borda esquerda do Swiper */
-    right: auto !important;
+    left: -10px;
 }
 
 .swiper-button-next {
-    right: 0px !important; /* Posiciona na borda direita do Swiper */
-    left: auto !important;
+    right: -10px;
 }
 
-/* Esconde as setas em mobile (telas menores que 768px) */
 @media (max-width: 768px) {
-    .swiper-button-next, .swiper-button-prev {
+    .swiper-button-next,
+    .swiper-button-prev {
         display: none !important;
     }
     .swiper {
-        padding: 0 20px; /* Reduz o padding para mobile se as setas sumirem */
+        padding: 0;
     }
 }
 
@@ -697,18 +706,16 @@ a {
 
 
 /****************************************************************
-** 12. ESTILOS PARA PÁGINAS INTERNAS (Blog, Soluções) - AJUSTADO
+** 12. ESTILOS PARA PÁGINAS INTERNAS (Blog, Soluções)
 ****************************************************************/
 
-/* Adicionamos uma classe no body para páginas internas */
 body.internal-page {
-    padding-top: 90px; /* Compensa o header fixo, que agora é sólido */
+    padding-top: 90px;
 }
 
-/* Removemos o padding-top do page-container se o body já tiver */
 .page-container {
     min-height: calc(100vh - 150px);
-    padding-top: 0; /* Removido para evitar duplo padding */
+    background-color: var(--background-light);
 }
 
 .page-header {
