@@ -23,28 +23,28 @@ export function SolutionsSection() {
     const solutions = [
         {
           slug: 'second-life',
-          image: '/src/images/second-life.jpg',
+          image: '/public/images/second-life.jpg',
           title: 'Second Life (Economia Circular)',
           text: 'Damos uma segunda vida a baterias usadas de VEs, transformando-as em soluções de armazenamento de energia para novas aplicações.',
           linkText: 'Conheça o Processo',
         },
         {
           slug: 'tecnologia-diagnostico',
-          image: '/src/images/tecnologia-diagnostico.jpg',
+          image: '/public/images/tecnologia-diagnostico.jpg',
           title: 'Tecnologia de Diagnóstico',
           text: 'Desenvolvemos hardware e software avançados para medição precisa do Estado de Saúde (SoH) e vida útil de baterias.',
           linkText: 'Nossas Soluções B2B',
         },
         {
           slug: 'armazenamento-fotovoltaico',
-          image: '/src/images/armazenamento-fotovoltaico.jpg',
+          image: '/public/images/armazenamento-fotovoltaico.jpg',
           title: 'Armazenamento Fotovoltaico',
           text: 'Integramos baterias de second life em sistemas fotovoltaicos, oferecendo soluções de armazenamento de energia limpa e acessível.',
           linkText: 'Projetos Sustentáveis',
         },
         {
           slug: 'eletromobilidade',
-          image: '/src/images/eletromobilidade.jpg',
+          image: '/public/images/eletromobilidade.jpg',
           title: 'Eletromobilidade',
           text: 'Focamos em soluções de hardware e software que impulsionam o futuro da mobilidade elétrica, otimizando a performance e vida útil das baterias.',
           linkText: 'Futuro da Mobilidade',

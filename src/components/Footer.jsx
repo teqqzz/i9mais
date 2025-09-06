@@ -6,7 +6,7 @@ export function Footer() {
       <div className="container">
         <div className="footer-top">
           <div className="footer-about">
-            <img src="/src/images/logo-i9+.png" alt="Logo i9+ Baterias" className="footer-logo" />
+            <img src="/public/images/logo-i9+.png" alt="Logo i9+ Baterias" className="footer-logo" />
             <p>Desenvolvendo a tecnologia que impulsiona a economia circular de baterias no Brasil.</p>
           </div>
           <div className="footer-links">

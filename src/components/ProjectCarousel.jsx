@@ -26,7 +26,7 @@ export function ProjectCarousel() {
         {
           slug: 'tecpar-tracador-curva-solar',
           date: '2023-04-14',
-          image: '/src/images/tecpar-tracador-curva-solar.jpg',
+          image: '/public/images/tecpar-tracador-curva-solar.jpg',
           title: 'Tecpar - Traçador de Curva Solar',
           text: 'Desenvolvimento de equipamento de baixo custo para avaliar a eficiência e degradação de painéis solares.',
           imageStyle: { backgroundSize: 'contain', backgroundColor: '#fff' }
@@ -34,14 +34,14 @@ export function ProjectCarousel() {
         {
           slug: 'rota-2030-pd-baterias',
           date: '2024-02-20',
-          image: '/src/images/rota-2030-pd-baterias.jpg',
+          image: '/public/images/rota-2030-pd-baterias.jpg',
           title: 'Rota 2030 - P&D em Baterias',
           text: 'Investimento em pesquisa e desenvolvimento de tecnologia nacional para baterias, visando autonomia e inovação.',
         },
         {
           slug: 'ageuni-mini-usinas',
           date: '2023-08-10',
-          image: '/src/images/ageuni-mini-usinas.jpg',
+          image: '/public/images/ageuni-mini-usinas.jpg',
           title: 'Ageuni - Mini Usinas Solares',
           text: 'Instalação de duas mini usinas solares de 3.5 kW em locais remotos, promovendo acesso à energia sustentável.',
           imageStyle: { backgroundSize: 'contain', backgroundColor: '#fff' }
@@ -49,7 +49,7 @@ export function ProjectCarousel() {
         {
           slug: 'embrapii-tracador-curva',
           date: '2023-11-05',
-          image: '/src/images/embrapii-tracador-curva.jpg',
+          image: '/public/images/embrapii-tracador-curva.jpg',
           title: 'EMBRAPII - Traçador de Curva I-V',
           text: 'Desenvolvimento de hardware e software para diagnóstico preciso da saúde de baterias, essencial para o reuso seguro.',
           imageStyle: { backgroundSize: 'contain', backgroundColor: '#fff' }
@@ -57,7 +57,7 @@ export function ProjectCarousel() {
         {
           slug: 'cnpq-utfpr-plataforma-dados',
           date: '2024-01-15',
-          image: '/src/images/cnpq-utfpr-plataforma-dados.jpg',
+          image: '/public/images/cnpq-utfpr-plataforma-dados.jpg',
           title: 'CNPq & UTFPR - Plataforma de Dados',
           text: 'Iniciativa para centralizar e analisar informações de fabricantes de baterias, otimizando o mercado de VEs.',
           imageStyle: { backgroundSize: 'contain', backgroundColor: '#fff' }
@@ -65,7 +65,7 @@ export function ProjectCarousel() {
         {
           slug: 'cemig-gestao-ativos',
           date: '2023-09-22',
-          image: '/src/images/cemig-gestao-ativos.jpg',
+          image: '/public/images/cemig-gestao-ativos.jpg',
           title: 'CEMIG - Gestão de Ativos Energéticos',
           text: 'Otimização da gestão de baterias chumbo-ácido em grandes frotas, prolongando sua vida útil e reduzindo custos.',
           imageStyle: { backgroundSize: 'contain', backgroundColor: '#fff' }
@@ -73,7 +73,7 @@ export function ProjectCarousel() {
         {
           slug: 'senai-maturidade-tecnologica',
           date: '2024-03-01',
-          image: '/src/images/senai-maturidade-tecnologica.jpg',
+          image: '/public/images/senai-maturidade-tecnologica.jpg',
           title: 'Senai - Maturidade Tecnológica',
           text: 'Esforço colaborativo para elevar o nível de maturidade tecnológica (TRL) para um estágio próximo à escala industrial.',
           imageStyle: { backgroundSize: 'contain', backgroundColor: '#fff' }
@@ -81,7 +81,7 @@ export function ProjectCarousel() {
         {
           slug: 'sesi-ods-isg-economia-circular',
           date: '2023-10-18',
-          image: '/src/images/sesi-ods-isg-economia-circular.jpg',
+          image: '/public/images/sesi-ods-isg-economia-circular.jpg',
           title: 'Sesi ODS ISG - Economia Circular',
           text: 'Desenvolvimento de um sistema integrado para separação de componentes de painéis fotovoltaicos.',
           imageStyle: { backgroundSize: 'contain', backgroundColor: '#fff' }
@@ -89,7 +89,7 @@ export function ProjectCarousel() {
         {
           slug: 'instituto-jaime-lerner-smart-mobility',
           date: '2024-04-05',
-          image: '/src/images/instituto-jaime-lerner-smart-mobility.jpg',
+          image: '/public/images/instituto-jaime-lerner-smart-mobility.jpg',
           title: 'Inst. Jaime Lerner - Smart Mobility',
           text: 'Parceria para o desenvolvimento de soluções de mobilidade urbana inteligente, aplicando baterias de silício-enxofre.',
           imageStyle: { backgroundSize: 'contain', backgroundColor: '#fff' }
