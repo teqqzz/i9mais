@@ -1,5 +1,28 @@
 import pg from 'pg';
 
+// --- PASSO DE DEPURAÇÃO CRÍTICO ---
+// Esta parte do código vai nos dizer se o processo Node está vendo a variável de ambiente.
+console.log('--- Verificando Variáveis de Ambiente ---');
+console.log('DATABASE_URL detectada:', process.env.DATABASE_URL ? 'Sim, encontrada!' : 'Não, está UNDEFINED!');
+console.log('------------------------------------');
+
+// Verificamos se a URL existe. Se não, o programa irá parar com uma mensagem clara.
+if (!process.env.DATABASE_URL) {
+    throw new Error('ERRO CRÍTICO: A variável de ambiente DATABASE_URL não foi encontrada. Verifique as configurações do serviço no Render.');
+}
+
+// Configuração explícita para a conexão, forçando o uso da variável de ambiente
+// e adicionando o SSL necessário para o Render.
+const connectionConfig = {
+    connectionString: process.env.DATABASE_URL,
+    ssl: {
+        rejectUnauthorized: false
+    }
+};
+
+
+// --- O RESTANTE DO CÓDIGO PERMANECE O MESMO, APENAS USANDO A NOVA CONFIGURAÇÃO ---
+
 // Função Slugify (sem alterações)
 function slugify(text) {
     if (!text) return '';
@@ -9,9 +32,10 @@ function slugify(text) {
         .replace(/--+/g, '-');
 }
 
-// --- DADOS INICIAIS (sem alterações) ---
+// --- DADOS INICIAIS COMPLETOS ---
 
 const projectsData = [
+    // (Datas de publicação estimadas com base em notícias e artigos públicos)
     {
         title: 'Tecpar - Traçador de Curva para Painéis Solares',
         publish_date: '2023-04-14',
@@ -84,13 +108,13 @@ const projectsData = [
         content: `<h3>Pensando o Futuro das Cidades e da Mobilidade</h3><p>A parceria com o renomado <strong>Instituto Jaime Lerner</strong>, um dos maiores nomes do urbanismo mundial, posiciona a i9+ na discussão sobre o futuro das cidades inteligentes (Smart Cities). O foco desta colaboração é o desenvolvimento de soluções de mobilidade urbana que sejam não apenas eficientes, mas também sustentáveis e integradas ao tecido urbano.</p><p>Um dos pontos centrais da pesquisa é a aplicação de novas tecnologias de baterias, como as de <strong>silício-enxofre</strong>, em veículos elétricos leves. Essas baterias prometem maior densidade energética a um custo menor, sendo ideais para:<ul><li>Sistemas de compartilhamento de bicicletas e patinetes elétricos.</li><li>Veículos utilitários para entregas de "última milha" (last-mile delivery).</li><li>Transporte público de baixa capacidade.</li></ul><p>Esta parceria une a expertise em urbanismo do Instituto Jaime Lerner com a inovação em tecnologia de baterias da i9+, buscando criar soluções que melhorem a vida nas cidades de forma inteligente e sustentável.</p>`,
         image_style: 'contain'
     },
-    { 
+    {
         title: 'Reciclagem Hidrometalúrgica (Black Mass)',
         publish_date: '2024-05-15',
         summary: 'Parceria com o SENAI para desenvolver uma rota hidrometalúrgica nacional para reciclagem de "black mass" e recuperação de minerais críticos.',
-        image_url: '/uploads/reciclagem-black-mass.jpg', 
+        image_url: '/uploads/reciclagem-black-mass.jpg',
         content: `<h3>Reciclagem de Nível 3: Rota Hidrometalúrgica</h3><p>Levando a economia circular ao próximo nível, a i9+ Baterias, em colaboração com o Instituto Senai de Inovação em Eletroquímica, está desenvolvendo uma rota hidrometalúrgica proprietária para o processamento da <strong>"Massa Negra" (Black Mass)</strong>.</p><p>Enquanto a "Segunda Vida" (Second Life) reutiliza a bateria, a reciclagem hidrometalúrgica recupera os materiais valiosos quando a bateria chega ao fim absoluto de sua vida. Este processo permite:</p><ul><li><strong>Recuperação de Minerais Críticos:</strong> Extrair Lítio, Níquel, Cobalto e Manganês com alto grau de pureza a partir das baterias descartadas.</li><li><strong>Soberania Nacional:</strong> Reduzir a dependência do Brasil na importação desses materiais caros e estrategicamente importantes.</li><li><strong>Fechamento do Ciclo:</strong> Criar uma economia circular completa, onde os materiais de baterias velhas são usados para fabricar baterias novas, reduzindo drasticamente o impacto ambiental da mineração.</li></ul><p>Este projeto de P&D posiciona a i9+ como uma das poucas empresas no hemisfério sul com tecnologia completa para todo o ciclo de vida da bateria de lítio.</p>`,
-        image_style: 'cover' 
+        image_style: 'cover'
     }
 ];
 const articlesData = [
@@ -182,16 +206,14 @@ async function seedTable(client, tableName, dataArray) {
             item.image_url,
             item.content,
             item.image_style || 'cover',
-            item.publish_date 
+            item.publish_date
         ]);
     }
     console.log(`Dados de ${tableName} sincronizados.`);
 }
 
-
 async function initializeDatabase() {
-
-    const client = new pg.Client();
+    const client = new pg.Client(connectionConfig);
     try {
         await client.connect();
         console.log('Conectado ao PostgreSQL com sucesso.');
@@ -237,7 +259,7 @@ async function initializeDatabase() {
             CREATE TABLE IF NOT EXISTS solucoes (
                 id SERIAL PRIMARY KEY,
                 title VARCHAR(255) NOT NULL,
-                publish_date DATE DEFAULT NULL, 
+                publish_date DATE DEFAULT NULL,
                 slug VARCHAR(255) NOT NULL UNIQUE,
                 summary TEXT,
                 image_url VARCHAR(500),
@@ -246,7 +268,7 @@ async function initializeDatabase() {
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             );
         `);
-        
+
         await client.query(`
             CREATE TABLE IF NOT EXISTS messages (
                 id SERIAL PRIMARY KEY,
@@ -258,13 +280,15 @@ async function initializeDatabase() {
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             );
         `);
-        
+
         console.log('Todas as tabelas foram criadas ou já existem.');
+
         await seedTable(client, 'projetos', projectsData);
         await seedTable(client, 'artigos', articlesData);
-        await seedTable(client, 'solucoes', solutionsData)
+        await seedTable(client, 'solucoes', solutionsData);
+
         console.log('Sincronização de dados iniciais completa.');
-        
+
     } catch (error) {
         console.error('Falha ao inicializar o banco de dados:', error);
         process.exit(1);
@@ -274,10 +298,10 @@ async function initializeDatabase() {
 }
 
 // --- Criação do POOL de Conexões ---
-// O Pool é a maneira correta de gerenciar múltiplas conexões para sua API.
-// Ele usará a variável de ambiente DATABASE_URL automaticamente.
-const pool = new pg.Pool();
+// Passamos a configuração de conexão explícita para o Pool.
+const pool = new pg.Pool(connectionConfig);
 
 // Exportações
 export { pool, initializeDatabase };
 export default pool;
+
