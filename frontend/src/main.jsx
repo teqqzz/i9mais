@@ -7,7 +7,7 @@ import './index.css';
 import './admin.css';
 
 // Contexto
-import { AuthProvider } from './context/AuthContext.jsx'; 
+import { AuthProvider } from './context/AuthProvider.jsx';
 
 // Layouts e Protetor
 import App from './App.jsx';

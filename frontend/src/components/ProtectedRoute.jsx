@@ -1,17 +1,23 @@
 import React from 'react';
 import { Navigate, Outlet } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '../hooks/useAuth'; 
 
 
-// Componente de Rota Protegida
-export function ProtectedRoute() {
-    const { isAuthenticated } = useAuth();
+// Se o usuário não estiver autenticado, ele será redirecionado para a página de login.
+export const ProtectedRoute = () => {
+    const { isAuthenticated, isLoading } = useAuth();
 
+    // Enquanto a autenticação está sendo verificada, mostramos uma mensagem de carregamento.
+    if (isLoading) {
+        return <div>Verificando autenticação...</div>;
+    }
+
+    // Se não estiver autenticado, redireciona para a página de login.
+    // O 'replace' evita que o usuário possa voltar para a página anterior no histórico.
     if (!isAuthenticated) {
-        // Se não estiver logado, redireciona para a página de login
         return <Navigate to="/login" replace />;
     }
 
-    // Se estiver logado, renderiza o conteúdo da rota (ex: o Dashboard)
+    // Se estiver autenticado
     return <Outlet />;
-}
+};

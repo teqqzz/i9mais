@@ -1,7 +1,12 @@
 import express from 'express';
+import session from 'express-session'; // <-- RE-ADICIONADO
 import cors from 'cors';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import dotenv from 'dotenv';
+
+// Carrega variáveis de ambiente do .env (essencial para SESSION_SECRET local)
+dotenv.config();
 
 import { initializeDatabase } from './db/db.js';
 
@@ -19,10 +24,9 @@ const __dirname = path.dirname(__filename);
 const app = express();
 const PORT = process.env.PORT || 10000;
 
-// --- CONFIGURAÇÃO DE CORS ESPECÍFICA E FINAL ---
 const whitelist = [
-    'http://localhost:5173',      // Para seu desenvolvimento local
-    'https://i9mais.vercel.app'  // A URL do seu projeto no Vercel
+    'http://localhost:5173',
+    'https://i9mais.vercel.app'
 ];
 
 const corsOptions = {
@@ -37,13 +41,21 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
-
-// Middlewares
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// --- CORREÇÃO: Servir arquivos estáticos (uploads) de forma segura ---
 app.use('/uploads', express.static(path.join(__dirname, 'public/uploads')));
+
+app.use(session({
+    secret: process.env.SESSION_SECRET || 'admin',
+    resave: false,
+    saveUninitialized: true,
+    cookie: {
+        secure: process.env.NODE_ENV === 'production',
+        httpOnly: true,
+        maxAge: 1000 * 60 * 60 * 24 // 24 horas
+    }
+}));
 
 // Rotas da API
 app.use('/api/artigos', artigosRoutes);
