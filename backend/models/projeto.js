@@ -1,49 +1,43 @@
 import db from '../db/db.js';
 
-// Funções CRUD para a entidade "Projeto"
-export const create = async ({ title, slug, summary, image_url, content }) => {
-  const [result] = await db.execute(
-    'INSERT INTO projetos (title, slug, summary, image_url, content) VALUES (?, ?, ?, ?, ?)',
-    [title, slug, summary, image_url, content]
-  );
-  return result.insertId;
-}
+// Funções CRUD para a entidade "Projeto" (convertidas para PostgreSQL)
 
-// Paginação: page (número da página), limit (itens por página)
-export const getAll = async (page, limit) => {
-    const offset = (page - 1) * limit;
-    const [rows] = await db.execute(
-        'SELECT * FROM projetos ORDER BY created_at DESC LIMIT ? OFFSET ?', // ou 'projetos' ou 'solucoes'
-        [limit, offset]
+export const create = async ({ title, slug, summary, image_url, content, image_style, publish_date }) => {
+    const { rows } = await db.query(
+        'INSERT INTO projetos (title, slug, summary, image_url, content, image_style, publish_date) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id',
+        [title, slug, summary, image_url, content, image_style || 'cover', publish_date]
     );
-  const [[{ count }]] = await db.execute('SELECT COUNT(*) as count FROM projetos');
-  return { posts: rows, total: count };
+    return rows[0].id;
 };
 
-// Get projeto by ID (para edição/admin)
-export const getById = async (id) => {
-    const [rows] = await db.execute(
-      'SELECT * FROM projetos WHERE id = ?',
-      [id]
+export const getAll = async (page, limit) => {
+    const offset = (page - 1) * limit;
+    const { rows } = await db.query(
+        'SELECT * FROM projetos ORDER BY publish_date DESC, created_at DESC LIMIT $1 OFFSET $2',
+        [limit, offset]
     );
-    return rows[0];
-}
+    const { rows: countRows } = await db.query('SELECT COUNT(*) as count FROM projetos');
+    const count = parseInt(countRows[0].count, 10);
+    return { posts: rows, total: count };
+};
 
-// Get projeto by slug (para exibição pública)
 export const getBySlug = async (slug) => {
-  const [rows] = await db.execute('SELECT * FROM projetos WHERE slug = ?', [slug]);
-  return rows[0];
-}
+    const { rows } = await db.query('SELECT * FROM projetos WHERE slug = $1', [slug]);
+    return rows[0];
+};
 
-// Atualiza um projeto existente
-export const update = async (id, { title, slug, summary, image_url, content }) => {
-  await db.execute(
-    'UPDATE projetos SET title = ?, slug = ?, summary = ?, image_url = ?, content = ? WHERE id = ?',
-    [title, slug, summary, image_url, content, id]
-  );
-}
+export const getById = async (id) => {
+    const { rows } = await db.query('SELECT * FROM projetos WHERE id = $1', [id]);
+    return rows[0];
+};
 
-// Deleta um projeto pelo ID
+export const update = async (id, { title, slug, summary, image_url, content, image_style, publish_date }) => {
+    await db.query(
+        'UPDATE projetos SET title = $1, slug = $2, summary = $3, image_url = $4, content = $5, image_style = $6, publish_date = $7 WHERE id = $8',
+        [title, slug, summary, image_url, content, image_style || 'cover', publish_date, id]
+    );
+};
+
 export const deleteById = async (id) => {
-  await db.execute('DELETE FROM projetos WHERE id = ?', [id]);
-}
+    await db.query('DELETE FROM projetos WHERE id = $1', [id]);
+};

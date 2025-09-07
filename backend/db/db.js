@@ -1,12 +1,6 @@
-import mysql from 'mysql2/promise';
+import pg from 'pg';
 
-// Configurações do Banco
-const DB_HOST = process.env.DB_HOST || 'localhost';
-const DB_USER = process.env.DB_USER || 'root';
-const DB_PASSWORD = process.env.DB_PASSWORD || '';
-const DB_NAME = process.env.DB_DATABASE || 'inovemais';
-
-// Função Slugify
+// Função Slugify (sem alterações)
 function slugify(text) {
     if (!text) return '';
     return text.toString().toLowerCase().normalize('NFD').trim()
@@ -15,10 +9,9 @@ function slugify(text) {
         .replace(/--+/g, '-');
 }
 
-// --- DADOS INICIAIS COMPLETOS (COM DATAS E PROJETO NOVO) ---
+// --- DADOS INICIAIS (sem alterações) ---
 
 const projectsData = [
-    // (Datas de publicação estimadas com base em notícias e artigos públicos)
     {
         title: 'Tecpar - Traçador de Curva para Painéis Solares',
         publish_date: '2023-04-14',
@@ -100,7 +93,6 @@ const projectsData = [
         image_style: 'cover' 
     }
 ];
-
 const articlesData = [
     {
         title: 'O Futuro é Elétrico: Como a Economia Circular Impacta o Mercado de EVs',
@@ -135,7 +127,6 @@ const articlesData = [
         image_style: 'cover'
     }
 ];
-
 const solutionsData = [
     {
         title: 'Second Life (Economia Circular)',
@@ -173,19 +164,18 @@ const solutionsData = [
 
 // --- FIM DOS DADOS ---
 
-
-// Função helper para inserir dados (ignora duplicatas pelo SLUG)
-async function seedTable(connection, tableName, dataArray) {
+async function seedTable(client, tableName, dataArray) {
     console.log(`Verificando e inserindo dados para: ${tableName}...`);
     const query = `
-        INSERT IGNORE INTO ${tableName} 
+        INSERT INTO ${tableName} 
         (title, slug, summary, image_url, content, image_style, publish_date) 
-        VALUES (?, ?, ?, ?, ?, ?, ?);
+        VALUES ($1, $2, $3, $4, $5, $6, $7)
+        ON CONFLICT (slug) DO NOTHING;
     `.trim();
 
     for (const item of dataArray) {
         const slug = slugify(item.title);
-        await connection.execute(query, [
+        await client.query(query, [
             item.title,
             slug,
             item.summary,
@@ -199,65 +189,27 @@ async function seedTable(connection, tableName, dataArray) {
 }
 
 
-// Função principal de inicialização
 async function initializeDatabase() {
-    let connection;
+
+    const client = new pg.Client();
     try {
-        // 1. Conecta ao MySQL
-        connection = await mysql.createConnection({
-            host: DB_HOST,
-            user: DB_USER,
-            password: DB_PASSWORD
-        });
+        await client.connect();
+        console.log('Conectado ao PostgreSQL com sucesso.');
 
-        // 2. Cria o banco de dados
-        await connection.query(`CREATE DATABASE IF NOT EXISTS \`${DB_NAME}\` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;`);
-        await connection.query(`USE \`${DB_NAME}\`;`);
-        console.log(`Banco de dados '${DB_NAME}' está pronto.`);
-
-        // 3. Cria as tabelas (SEMPRE ADICIONANDO A NOVA COLUNA 'publish_date')
-        await connection.execute(`
+        await client.query(`
             CREATE TABLE IF NOT EXISTS users (
-                id INT AUTO_INCREMENT PRIMARY KEY,
+                id SERIAL PRIMARY KEY,
                 username VARCHAR(100) UNIQUE NOT NULL,
                 password_hash VARCHAR(255) NOT NULL,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             );
-        `.trim());
+        `);
 
-        await connection.execute(`
+        await client.query(`
             CREATE TABLE IF NOT EXISTS artigos (
-                id INT AUTO_INCREMENT PRIMARY KEY,
+                id SERIAL PRIMARY KEY,
                 title VARCHAR(255) NOT NULL,
-                publish_date DATE NULL DEFAULT NULL, -- <-- DATA ADICIONADA
-                slug VARCHAR(255) NOT NULL UNIQUE,
-                summary TEXT,
-                image_url VARCHAR(500),
-                content TEXT NOT NULL,
-                image_style VARCHAR(20) DEFAULT 'cover',
-                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-            );
-        `.trim());
-
-        await connection.execute(`
-            CREATE TABLE IF NOT EXISTS projetos (
-                id INT AUTO_INCREMENT PRIMARY KEY,
-                title VARCHAR(255) NOT NULL,
-                publish_date DATE NULL DEFAULT NULL, -- <-- DATA ADICIONADA
-                slug VARCHAR(255) NOT NULL UNIQUE,
-                summary TEXT,
-                image_url VARCHAR(500),
-                content TEXT NOT NULL,
-                image_style VARCHAR(20) DEFAULT 'cover',
-                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-            );
-        `.trim());
-
-        await connection.execute(`
-            CREATE TABLE IF NOT EXISTS solucoes (
-                id INT AUTO_INCREMENT PRIMARY KEY,
-                title VARCHAR(255) NOT NULL,
-                publish_date DATE NULL DEFAULT NULL, 
+                publish_date DATE DEFAULT NULL,
                 slug VARCHAR(255) NOT NULL UNIQUE,
                 summary TEXT,
                 image_url VARCHAR(500),
@@ -266,12 +218,38 @@ async function initializeDatabase() {
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             );
         `);
-        console.log('Todas as tabelas estão prontas (com campo de data).');
 
+        await client.query(`
+            CREATE TABLE IF NOT EXISTS projetos (
+                id SERIAL PRIMARY KEY,
+                title VARCHAR(255) NOT NULL,
+                publish_date DATE DEFAULT NULL,
+                slug VARCHAR(255) NOT NULL UNIQUE,
+                summary TEXT,
+                image_url VARCHAR(500),
+                content TEXT NOT NULL,
+                image_style VARCHAR(20) DEFAULT 'cover',
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            );
+        `);
 
-        await connection.execute(`
+        await client.query(`
+            CREATE TABLE IF NOT EXISTS solucoes (
+                id SERIAL PRIMARY KEY,
+                title VARCHAR(255) NOT NULL,
+                publish_date DATE DEFAULT NULL, 
+                slug VARCHAR(255) NOT NULL UNIQUE,
+                summary TEXT,
+                image_url VARCHAR(500),
+                content TEXT NOT NULL,
+                image_style VARCHAR(20) DEFAULT 'cover',
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            );
+        `);
+        
+        await client.query(`
             CREATE TABLE IF NOT EXISTS messages (
-                id INT AUTO_INCREMENT PRIMARY KEY,
+                id SERIAL PRIMARY KEY,
                 name VARCHAR(255) NOT NULL,
                 email VARCHAR(255) NOT NULL,
                 phone VARCHAR(50),
@@ -279,37 +257,26 @@ async function initializeDatabase() {
                 is_read BOOLEAN DEFAULT false,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             );
-        `.trim());
+        `);
         
-        console.log('Tabela de Mensagens está pronta.');
-        
-        // 4. Popula as tabelas
-        await seedTable(connection, 'projetos', projectsData);
-        await seedTable(connection, 'artigos', articlesData);
-        await seedTable(connection, 'solucoes', solutionsData);
-        
+        console.log('Todas as tabelas foram criadas ou já existem.');
+        await seedTable(client, 'projetos', projectsData);
+        await seedTable(client, 'artigos', articlesData);
+        await seedTable(client, 'solucoes', solutionsData)
         console.log('Sincronização de dados iniciais completa.');
         
     } catch (error) {
         console.error('Falha ao inicializar o banco de dados:', error);
         process.exit(1);
     } finally {
-        if (connection) {
-            await connection.end();
-        }
+        await client.end();
     }
 }
 
 // --- Criação do POOL de Conexões ---
-const pool = mysql.createPool({
-    host: DB_HOST,
-    user: DB_USER,
-    password: DB_PASSWORD,
-    database: DB_NAME,
-    waitForConnections: true,
-    connectionLimit: 10,
-    queueLimit: 0
-});
+// O Pool é a maneira correta de gerenciar múltiplas conexões para sua API.
+// Ele usará a variável de ambiente DATABASE_URL automaticamente.
+const pool = new pg.Pool();
 
 // Exportações
 export { pool, initializeDatabase };

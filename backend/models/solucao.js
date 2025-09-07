@@ -1,49 +1,43 @@
 import db from '../db/db.js';
 
-// Funções CRUD para a entidade "Solução"
-export const create = async ({ title, slug, summary, image_url, content, image_style }) => {
-    const [result] = await db.execute(
-        'INSERT INTO solucoes (title, slug, summary, image_url, content, image_style) VALUES (?, ?, ?, ?, ?, ?)',
-        [title, slug, summary, image_url, content, image_style || 'cover']
+// Funções CRUD para a entidade "Solução" (convertidas para PostgreSQL)
+
+export const create = async ({ title, slug, summary, image_url, content, image_style, publish_date }) => {
+    const { rows } = await db.query(
+        'INSERT INTO solucoes (title, slug, summary, image_url, content, image_style, publish_date) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id',
+        [title, slug, summary, image_url, content, image_style || 'cover', publish_date]
     );
-    return result.insertId;
+    return rows[0].id;
 };
 
-// Paginação: page (número da página), limit (itens por página)
 export const getAll = async (page, limit) => {
     const offset = (page - 1) * limit;
-    const [rows] = await db.execute(
-        'SELECT * FROM solucoes ORDER BY created_at DESC LIMIT ? OFFSET ?', 
+    const { rows } = await db.query(
+        'SELECT * FROM solucoes ORDER BY publish_date DESC, created_at DESC LIMIT $1 OFFSET $2',
         [limit, offset]
     );
-    const [[{ count }]] = await db.execute('SELECT COUNT(*) as count FROM solucoes');
+    const { rows: countRows } = await db.query('SELECT COUNT(*) as count FROM solucoes');
+    const count = parseInt(countRows[0].count, 10);
     return { posts: rows, total: count };
 };
 
-// Get solução by slug (para exibição pública)
 export const getBySlug = async (slug) => {
-    const [rows] = await db.execute('SELECT * FROM solucoes WHERE slug = ?', [slug]);
+    const { rows } = await db.query('SELECT * FROM solucoes WHERE slug = $1', [slug]);
     return rows[0];
 };
 
-// Get solução by ID (para edição/admin)
 export const getById = async (id) => {
-    const [rows] = await db.execute(
-      'SELECT * FROM solucoes WHERE id = ?',
-      [id]
-    );
+    const { rows } = await db.query('SELECT * FROM solucoes WHERE id = $1', [id]);
     return rows[0];
 };
 
-// Atualiza uma solução existente
-export const update = async (id, { title, slug, summary, image_url, content, image_style }) => {
-    await db.execute(
-        'UPDATE solucoes SET title = ?, slug = ?, summary = ?, image_url = ?, content = ?, image_style = ? WHERE id = ?',
-        [title, slug, summary, image_url, content, image_style || 'cover', id]
+export const update = async (id, { title, slug, summary, image_url, content, image_style, publish_date }) => {
+    await db.query(
+        'UPDATE solucoes SET title = $1, slug = $2, summary = $3, image_url = $4, content = $5, image_style = $6, publish_date = $7 WHERE id = $8',
+        [title, slug, summary, image_url, content, image_style || 'cover', publish_date, id]
     );
 };
 
-// Deleta uma solução pelo ID
 export const deleteById = async (id) => {
-    await db.execute('DELETE FROM solucoes WHERE id = ?', [id]);
+    await db.query('DELETE FROM solucoes WHERE id = $1', [id]);
 };
