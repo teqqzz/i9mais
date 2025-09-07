@@ -8,7 +8,7 @@ Content-Type: application/json
 
 {
   "username": "admin",
-  "password": "newSecret123"
+  "password": "admin"
 }
 
 ### Logout
