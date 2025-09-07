@@ -1,0 +1,324 @@
+
+body.admin-body {
+    background-color: var(--background-grey); /* Fundo cinza do seu site */
+    color: var(--text-dark);
+}
+
+.admin-layout {
+    display: flex;
+    min-height: 100vh;
+}
+
+/* === BARRA LATERAL (SIDEBAR) === */
+.admin-sidebar {
+    width: 250px;
+    background-color: var(--dark-blue); /* Cor escura principal da sua marca */
+    color: var(--text-light);
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+}
+
+.admin-sidebar-header {
+    text-align: center;
+    padding-bottom: 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.admin-sidebar-header h2 {
+    color: var(--text-light);
+    margin: 0;
+}
+
+.admin-sidebar-nav {
+    margin-top: 30px;
+    flex-grow: 1;
+}
+
+.admin-sidebar-nav ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.admin-sidebar-nav a {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 10px;
+    border-radius: 6px;
+    color: var(--text-light);
+    opacity: 0.8;
+    text-decoration: none;
+    font-size: 1rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.admin-sidebar-nav a:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    opacity: 1;
+}
+
+.admin-sidebar-nav a.active {
+    background-color: var(--primary-blue); /* Cor azul primária da marca */
+    color: var(--text-light);
+    opacity: 1;
+}
+
+.admin-sidebar-footer {
+    padding-top: 20px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.admin-logout-btn {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: none;
+    border: none;
+    color: var(--text-light);
+    opacity: 0.8;
+    padding: 14px 10px;
+    width: 100%;
+    text-align: left;
+    font-size: 1rem;
+    font-weight: 500;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+.admin-logout-btn:hover {
+    background-color: #e74c3c; /* Vermelho para perigo/sair */
+    color: var(--text-light);
+    opacity: 1;
+}
+
+/* === CONTEÚDO PRINCIPAL === */
+.admin-main-content {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    background-color: var(--background-grey); /* Fundo cinza */
+}
+
+.admin-header {
+    background: var(--background-light); /* Fundo branco */
+    padding: 20px 30px;
+    border-bottom: 1px solid var(--border-color); /* Borda padrão */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.03);
+}
+
+.admin-header h1 {
+    margin: 0;
+    color: var(--text-dark);
+    font-size: 1.75rem;
+}
+
+.admin-page-content {
+    padding: 30px;
+    flex-grow: 1;
+}
+
+.admin-card {
+    background: var(--background-light); /* Fundo branco */
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    overflow: hidden;
+    border: 1px solid var(--border-color);
+}
+
+.admin-card-header {
+    padding: 20px 25px;
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.admin-card-header h2 {
+    margin: 0;
+    font-size: 1.25rem;
+    color: var(--dark-blue); /* Cor escura da marca */
+}
+
+.admin-card-body {
+    padding: 25px;
+}
+
+/* === BOTÕES === */
+.admin-btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 6px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.2s ease;
+}
+.admin-btn.primary {
+    background-color: var(--primary-blue); /* Azul da marca */
+    color: var(--text-light);
+}
+.admin-btn.primary:hover {
+    background-color: #00417a; /* Um azul um pouco mais escuro */
+}
+.admin-btn.danger {
+    background-color: #e74c3c;
+    color: var(--text-light);
+}
+.admin-btn.success {
+    background-color: #2ecc71;
+    color: var(--text-light);
+}
+.admin-btn.secondary {
+    background-color: var(--background-grey);
+    color: var(--text-dark);
+    border: 1px solid var(--border-color);
+}
+.admin-btn.secondary:hover {
+    background-color: #e0e0e0; /* Um cinza um pouco mais escuro */
+}
+
+/* === TABELA (LISTAGEM) === */
+.admin-table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+}
+.admin-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+.admin-table th,
+.admin-table td {
+    padding: 15px;
+    text-align: left;
+    border-bottom: 1px solid var(--border-color);
+    color: var(--text-dark);
+    vertical-align: middle;
+}
+.admin-table th {
+    background-color: var(--background-grey);
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-weight: 600;
+    color: #555;
+}
+.admin-table img.table-preview {
+    width: 80px;
+    height: 50px;
+    object-fit: cover;
+    border-radius: 4px;
+    background: var(--background-grey);
+}
+.table-actions {
+    display: flex;
+    gap: 10px;
+}
+
+/* === FORMULÁRIO === */
+.admin-form .form-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 20px;
+}
+
+@media(min-width: 768px) {
+    .admin-form .form-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    .form-group.full-width {
+        grid-column: 1 / -1;
+    }
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+.form-group label {
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: var(--dark-blue);
+}
+.form-group input[type="text"],
+.form-group input[type="file"],
+.form-group textarea,
+.form-group select {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    font-size: 1rem;
+    font-family: inherit;
+    background: #fff;
+}
+.form-group textarea {
+    min-height: 120px;
+    resize: vertical;
+}
+
+/* Estilos do Editor TinyMCE */
+.form-group .tox-tinymce {
+    border-radius: 6px;
+    border: 1px solid var(--border-color);
+}
+
+.form-group .image-preview {
+    width: 200px;
+    height: auto;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    margin-top: 10px;
+    background: #fff;
+}
+
+.form-actions {
+    margin-top: 30px;
+    display: flex;
+    gap: 15px;
+    border-top: 1px solid var(--border-color);
+    padding-top: 30px;
+}
+
+/* Login Page (usa classes do admin agora) */
+.login-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    min-height: 100vh;
+    background-color: var(--background-grey);
+}
+
+.login-card {
+    background: var(--background-light);
+    padding: 40px;
+    border-radius: 8px;
+    box-shadow: var(--admin-shadow);
+    width: 100%;
+    max-width: 450px;
+}
+
+.login-card h2 {
+    text-align: center;
+    color: var(--dark-blue);
+    margin-top: 0;
+    margin-bottom: 30px;
+}
+
+.login-card .form-group {
+    margin-bottom: 20px;
+}
+
+.login-card .admin-btn {
+    width: 100%;
+    padding: 14px;
+    font-size: 1rem;
+}

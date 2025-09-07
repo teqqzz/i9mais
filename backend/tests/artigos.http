@@ -1,0 +1,49 @@
+### Criar artigo (protected, requires login cookie)
+POST http://localhost:3000/api/artigos
+Content-Type: multipart/form-data
+Cookie: connect.sid=s%3A91L96jcjMZ0h0LCXVeoy1B3vsSOfPsoU.B4xBv20MRi1R7UO5QbngTFV3D6cOQabaMDX9v7qhxYk
+
+--boundary
+Content-Disposition: form-data; name="title"
+
+Meu primeiro artigo
+--boundary
+Content-Disposition: form-data; name="content"
+
+Este é o conteúdo do artigo.
+--boundary
+Content-Disposition: form-data; name="image"; filename="example.jpg"
+Content-Type: image/jpeg
+
+< ./example.jpg
+--boundary--
+
+### Atualizar artigo (protegida)
+PUT http://localhost:3000/api/artigos/1
+Content-Type: multipart/form-data
+Cookie: {{cookie}}
+
+--boundary
+Content-Disposition: form-data; name="title"
+
+Título atualizado
+--boundary
+Content-Disposition: form-data; name="content"
+
+Conteúdo atualizado
+--boundary
+Content-Disposition: form-data; name="image"; filename="example2.jpg"
+Content-Type: image/jpeg
+
+< ./example2.jpg
+--boundary--
+
+### Deletar artigo (protected)
+DELETE http://localhost:3000/api/artigos/1
+Cookie: {{cookie}}
+
+### Listar artigos (public)
+GET http://localhost:3000/api/artigos
+
+### Obter artigo por ID (public)
+GET http://localhost:3000/artigos/1
