@@ -1,6 +1,8 @@
 import express from 'express';
 import session from 'express-session';
 import cors from 'cors';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
 import { initializeDatabase } from './db/db.js';
 
@@ -11,19 +13,33 @@ import projetoRoutes from './routes/projetos.routes.js';
 import solucaoRoutes from './routes/solucoes.routes.js';
 import contactRoutes from './routes/contact.routes.js';
 
+// Configuração para usar __dirname com ES Modules
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const app = express();
 const PORT = process.env.PORT || 10000;
 
-// === Configuração de Middlewares Globais ===
+const whitelist = [
+    'http://localhost:5173', 
+    'https://i9mais.vercel.app' 
+];
 
-// Configura o CORS (Cross-Origin Resource Sharing)
-app.use(
-    cors({
-        origin: 'http://localhost:5173', 
-        credentials: true, 
-    })
-);
+const corsOptions = {
+    origin: function (origin, callback) {
+        // Permite requisições sem 'origin' (como Postman ou apps mobile) E requisições da whitelist
+        if (!origin || whitelist.indexOf(origin) !== -1) {
+            callback(null, true);
+        } else {
+            callback(new Error('Not allowed by CORS'));
+        }
+    },
+    credentials: true, 
+};
+
+app.use(cors(corsOptions));
+
+// Middlewares
 
 // Middleware nativo do Express para parsear request bodies em formato JSON
 app.use(express.json());
