@@ -55,7 +55,7 @@ export function Header({ isHomePage }) {
   return (
     <header className={headerClass}>
       <Link to="/" className="logo-link" onClick={closeMenu}>
-        <img src="/public/images/logo-i9+.png" alt="i9+ Baterias" className="logo-image" />
+        <img src="/images/logo-i9+.png" alt="i9+ Baterias" className="logo-image" />
       </Link>
 
       <nav className="main-nav">
