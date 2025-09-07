@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
+import { API_URL } from '../config';
 
-const API_URL = 'http://localhost:3000';
 
 // Componente da Página de Post do Blog
 export function BlogPostPage() {

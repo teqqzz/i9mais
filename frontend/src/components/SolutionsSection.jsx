@@ -2,10 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation } from 'swiper/modules';
+import { API_URL } from '../config';
 import 'swiper/css';
 import 'swiper/css/navigation';
 
-const API_URL = 'http://localhost:3000';
+
 
 // Componente para cada cartão de solução
 function SolutionCard({ slug, image, title, text, linkText, imageStyleClass }) {

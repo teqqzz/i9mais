@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-
-const API_URL = 'http://localhost:3000'; 
+import { API_URL } from '../config';
 
 
 // Componente de Seção de Contato e Sobre Nós

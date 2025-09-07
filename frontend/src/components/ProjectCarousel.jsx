@@ -2,10 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation } from 'swiper/modules';
 import { Link } from 'react-router-dom';
+import { API_URL } from '../config';
 import 'swiper/css';
 import 'swiper/css/navigation';
 
-const API_URL = 'http://localhost:3000'; 
+
 
 // Componente para cada item do carrossel
 function CarouselItem({ slug, image, title, text, imageStyle = {} }) {
