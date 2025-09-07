@@ -1,29 +1,33 @@
 import pg from 'pg';
+import dotenv from 'dotenv';
 
-// --- PASSO DE DEPURAÇÃO CRÍTICO ---
-// Esta parte do código vai nos dizer se o processo Node está vendo a variável de ambiente.
+
+dotenv.config();
+const connectionString = process.env.DATABASE_URL || process.env.LOCAL_DATABASE_URL;
+
 console.log('--- Verificando Variáveis de Ambiente ---');
-console.log('DATABASE_URL detectada:', process.env.DATABASE_URL ? 'Sim, encontrada!' : 'Não, está UNDEFINED!');
+if (process.env.DATABASE_URL) {
+    console.log('DATABASE_URL (Render) detectada!');
+} else if (process.env.LOCAL_DATABASE_URL) {
+    console.log('LOCAL_DATABASE_URL (Local) detectada!');
+} else {
+    console.log('AVISO: Nenhuma variável de ambiente de banco de dados foi encontrada.');
+}
 console.log('------------------------------------');
 
-// Verificamos se a URL existe. Se não, o programa irá parar com uma mensagem clara.
-if (!process.env.DATABASE_URL) {
-    throw new Error('ERRO CRÍTICO: A variável de ambiente DATABASE_URL não foi encontrada. Verifique as configurações do serviço no Render.');
+if (!connectionString) {
+    throw new Error('ERRO CRÍTICO: Nenhuma variável de ambiente de conexão com o banco (DATABASE_URL ou LOCAL_DATABASE_URL) foi encontrada. Crie um arquivo .env para desenvolvimento local.');
 }
 
-// Configuração explícita para a conexão, forçando o uso da variável de ambiente
-// e adicionando o SSL necessário para o Render.
 const connectionConfig = {
-    connectionString: process.env.DATABASE_URL,
-    ssl: {
-        rejectUnauthorized: false
-    }
+    connectionString: connectionString,
+    ssl: process.env.DATABASE_URL ? { rejectUnauthorized: false } : false
 };
 
 
-// --- O RESTANTE DO CÓDIGO PERMANECE O MESMO, APENAS USANDO A NOVA CONFIGURAÇÃO ---
+// --- O RESTANTE DO CÓDIGO PERMANECE O MESMO ---
 
-// Função Slugify (sem alterações)
+// Função Slugify
 function slugify(text) {
     if (!text) return '';
     return text.toString().toLowerCase().normalize('NFD').trim()
@@ -33,7 +37,6 @@ function slugify(text) {
 }
 
 // --- DADOS INICIAIS COMPLETOS ---
-
 const projectsData = [
     // (Datas de publicação estimadas com base em notícias e artigos públicos)
     {
@@ -123,7 +126,7 @@ const articlesData = [
         publish_date: '2024-01-10',
         summary: 'Analisamos como a requalificação de baterias está diminuindo custos e impulsionando a adoção de veículos elétricos no Brasil.',
         image_url: '/uploads/pexels-photo-1181298.jpeg',
-        content: `<p>A ascensão dos veículos elétricos (EVs) ... (HTML completo aqui) ... chance de gerar valor.</p>`,
+        content: `<p>A ascensão dos veículos elétricos (EVs) é uma das transformações mais significativas do século. No entanto, o alto custo das baterias novas e o impacto ambiental do seu descarte são barreiras consideráveis. É aqui que a economia circular, especificamente o conceito de "Second Life" para baterias, entra como uma força disruptiva e sustentável.</p><p>Na i9+, pegamos baterias de veículos elétricos que já não atendem aos rigorosos padrões de performance para tração (geralmente quando atingem 70-80% da sua capacidade original) e as requalificamos para aplicações estacionárias. Isso inclui sistemas de armazenamento de energia para residências, comércios e até mini usinas solares, como em nosso projeto com a Ageuni.</p><p>O impacto é duplo:<ul><li><strong>Redução de Custos:</strong> Uma bateria de "Second Life" pode custar até 50% menos do que uma nova, tornando o armazenamento de energia acessível e acelerando o retorno sobre o investimento em sistemas fotovoltaicos.</li><li><strong>Sustentabilidade:</strong> Prolongamos drasticamente a vida útil de um ativo valioso, evitando o descarte prematuro e a necessidade de extrair novos minerais, um processo com alto custo energético e ambiental.</li></ul><p>Ao criar um mercado secundário para essas baterias, a i9+ Baterias não apenas contribui para um planeta mais limpo, mas também fortalece a viabilidade econômica da eletrificação, dando a todos a chance de gerar valor a partir do que seria considerado resíduo.</p>`,
         image_style: 'cover'
     },
     {
@@ -131,7 +134,7 @@ const articlesData = [
         publish_date: '2024-01-11',
         summary: 'Uma visão sobre a importância estratégica de desenvolver tecnologia nacional, como nossa parceria no programa Rota 2030.',
         image_url: '/uploads/pexels-photo-3861969.jpeg',
-        content: `<p>O conceito de "Deep Tech" ... (HTML completo aqui) ... futuro da energia global.</p>`,
+        content: `<p>O conceito de "Deep Tech" refere-se a inovações que se baseiam em avanços científicos e de engenharia significativos, e não em modelos de negócio. No setor de energia, isso significa dominar a ciência por trás das baterias, desde a química dos materiais até o hardware de controle.</p><p>Historicamente, o Brasil tem sido um importador de tecnologia de baterias. Isso cria uma dependência estratégica e nos deixa vulneráveis a flutuações de preços e cadeias de suprimento globais. O programa Rota 2030, em parceria com a i9+, busca mudar esse cenário.</p><p>Investir em Pesquisa e Desenvolvimento (P&D) localmente nos permite:<ul><li><strong>Soberania Tecnológica:</strong> Criar propriedade intelectual brasileira e reduzir a dependência de tecnologias estrangeiras.</li><li><strong>Customização para a Realidade Local:</strong> Desenvolver baterias otimizadas para o clima tropical e as condições de uso no Brasil.</li><li><strong>Criação de Empregos de Alta Qualidade:</strong> Formar engenheiros, químicos e técnicos especializados, construindo um ecossistema de inovação robusto.</li></ul><p>Nosso trabalho com a EMBRAPII para criar traçadores de curva e com o Senai para desenvolver células de bateria são exemplos práticos desse esforço. Não estamos apenas montando packs; estamos construindo a fundação para que o Brasil se torne um líder, e não um seguidor, no futuro da energia global.</p>`,
         image_style: 'cover'
     },
     {
@@ -139,7 +142,7 @@ const articlesData = [
         publish_date: '2024-01-09',
         summary: 'Entenda como nosso hardware e software proprietários estão ajudando a otimizar a gestão de ativos energéticos de grandes frotas.',
         image_url: '/uploads/pexels-photo-6803274.jpeg',
-        content: `<p>A gestão eficiente de frotas ... (HTML completo aqui) ... valor econômico e operacional substancial.</p>`,
+        content: `<p>A gestão eficiente de frotas e ativos é um desafio constante para grandes corporações como a CEMIG. Tradicionalmente, a substituição de baterias chumbo-ácido, essenciais para veículos e sistemas de backup, é feita com base em um cronograma fixo (a cada 2 ou 3 anos), o que leva a um enorme desperdício.</p><p>A solução da i9+ Baterias abordou este problema com tecnologia. Desenvolvemos um sistema de diagnóstico que mede com precisão a saúde real de cada bateria, independentemente da sua idade. Nosso equipamento avalia a resistência interna e outros parâmetros vitais, gerando um "score" de saúde.</p><p>Os dados são enviados para um dashboard centralizado, onde os gestores da CEMIG podem:<ul><li><strong>Visualizar a Saúde da Frota:</strong> Um mapa de calor mostra quais baterias estão em estado crítico, bom ou excelente.</li><li><strong>Otimizar a Substituição:</strong> Em vez de trocar todas as baterias de um lote, a CEMIG agora troca apenas aquelas que realmente precisam, com base em dados.</li><li><strong>Prever Falhas:</strong> O sistema identifica baterias com degradação acelerada, permitindo uma substituição proativa antes que uma falha crítica ocorra e paralise um veículo ou sistema.</li></ul><p>O resultado foi uma redução imediata nos custos de reposição e um aumento significativo na confiabilidade da frota. Este projeto demonstra como a aplicação de dados e hardware inteligente pode gerar um valor econômico e operacional substancial.</p>`,
         image_style: 'cover'
     },
     {
@@ -147,7 +150,7 @@ const articlesData = [
         publish_date: '2024-01-08',
         summary: 'Nossa plataforma de dados está revolucionando como o mercado entende e utiliza baterias. Conheça o projeto com CNPq e UTFPR.',
         image_url: '/uploads/pexels-photo-3861958.jpeg',
-        content: `<p>No mundo da energia, dados são ouro... (HTML completo aqui) ... otimizando todo o ciclo de vida.</p>`,
+        content: `<p>No mundo da energia, dados são ouro. Cada ciclo de carga e descarga de uma bateria gera uma vasta quantidade de informações sobre sua performance, degradação e comportamento sob diferentes condições. No entanto, esses dados são frequentemente fragmentados e inacessíveis, trancados nos sistemas de cada fabricante.</p><p>O projeto da i9+ com o CNPq e a UTFPR busca quebrar esses silos. Estamos construindo uma plataforma de Big Data para centralizar e anonimizar informações de toda a cadeia de valor das baterias no Brasil. Usando algoritmos de Inteligência Artificial e Machine Learning, a plataforma será capaz de:</p><ul><li><strong>Identificar Padrões de Degradação:</strong> Entender como diferentes marcas e modelos de bateria se comportam em diferentes regiões e climas do Brasil.</li><li><strong>Otimizar a Logística Reversa:</strong> Prever quando grandes lotes de baterias de frotas de veículos elétricos chegarão ao fim de sua vida útil, permitindo um planejamento mais eficiente para a coleta e requalificação.</li><li><strong>Criar um "Matchmaking" Inteligente:</strong> Conectar fornecedores de baterias de "Second Life" com demandantes que precisam de sistemas de armazenamento com especificações exatas.</li><li><strong>Informar Políticas Públicas:</strong> Fornecer dados consolidados para que o governo possa criar regulamentações e incentivos mais eficazes para a eletromobilidade e a economia circular.</li></ul><p>Esta plataforma não é apenas um banco de dados; é um cérebro para o ecossistema de baterias, transformando dados brutos em inteligência acionável e otimizando todo o ciclo de vida.</p>`,
         image_style: 'cover'
     }
 ];
@@ -155,39 +158,40 @@ const solutionsData = [
     {
         title: 'Second Life (Economia Circular)',
         publish_date: '2024-01-15',
-        summary: 'Damos uma segunda vida a baterias usadas de VEs...',
+        summary: 'Damos uma segunda vida a baterias usadas de VEs, reduzindo custos e impacto ambiental para sistemas de armazenamento de energia.',
         image_url: '/uploads/second-life.jpg',
-        content: `<p>A economia circular é o coração da i9+ Baterias... (HTML completo aqui) ... inovação no setor de energia.</p>`,
+        content: `<p>A economia circular é o coração da i9+ Baterias. Em vez de descartar baterias de veículos elétricos (VEs) que atingiram 70-80% de sua capacidade original, nós as resgatamos, diagnosticamos e requalificamos para uma "segunda vida".</p><p>Essas baterias, embora não sejam mais ideais para a alta exigência de um carro, são perfeitas para aplicações estacionárias, como armazenamento de energia solar em residências, comércios e indústrias. Nosso processo rigoroso envolve:</p><ul><li><strong>Diagnóstico Avançado:</strong> Cada módulo de bateria passa por um teste completo com nosso hardware proprietário para determinar seu estado de saúde (SoH) real.</li><li><strong>Requalificação e Balanceamento:</strong> Módulos com performance similar são agrupados e rebalanceados para garantir segurança e eficiência.</li><li><strong>Integração com BMS Inteligente:</strong> Integramos um novo Sistema de Gerenciamento de Bateria (BMS) para otimizar os ciclos de carga e descarga na nova aplicação.</li></ul><p>O resultado é um sistema de armazenamento de energia que pode custar até 50% menos que um sistema com baterias novas, tornando a energia solar mais acessível e acelerando a transição para uma matriz energética mais limpa. É a prova de que sustentabilidade e viabilidade econômica podem e devem andar juntas, transformando o que seria resíduo em um ativo valioso para a sociedade. É inovação no setor de energia.</p>`,
         image_style: 'cover'
     },
     {
         title: 'Tecnologia de Diagnóstico',
         publish_date: '2024-01-14',
-        summary: 'Desenvolvemos hardware e software avançados para medição precisa...',
+        summary: 'Desenvolvemos hardware e software avançados para medição precisa do estado de saúde (SoH) de baterias de lítio e chumbo-ácido.',
         image_url: '/uploads/tecnologia-diagnostico.jpg',
-        content: `<p>Na i9+ Baterias, a precisão é fundamental... (HTML completo aqui) ... ativos de bateria.</p>`,
+        content: `<p>Na i9+ Baterias, a precisão é fundamental. Não se pode gerenciar o que não se pode medir. Por isso, investimos pesadamente no desenvolvimento de nossa própria tecnologia de diagnóstico, uma capacidade que nos diferencia no mercado.</p><p>Nossas soluções de hardware e software, como o Traçador de Curva I-V, funcionam como um "eletrocardiograma" para baterias. Elas nos permitem entender profundamente a saúde interna de cada célula e pack, medindo parâmetros críticos como:</p><ul><li><strong>Resistência Interna:</strong> Um indicador chave da degradação e da capacidade de fornecer energia.</li><li><strong>Capacidade Real (Ah):</strong> A quantidade de energia que a bateria consegue de fato armazenar e entregar.</li><li><strong>Curvas de Carga e Descarga:</strong> Análise do comportamento da tensão ao longo do tempo, revelando anomalias e falhas iminentes.</li></ul><p>Essa tecnologia é a base de tudo o que fazemos. Ela garante a segurança e a confiabilidade de nossas baterias de "Second Life", permite que ofereçamos serviços de manutenção preditiva para grandes frotas (como no projeto com a CEMIG) e nos posiciona como um parceiro tecnológico para fabricantes que precisam de um controle de qualidade rigoroso. É a ciência de dados aplicada para maximizar a vida e a segurança dos ativos de bateria.</p>`,
         image_style: 'cover'
     },
     {
         title: 'Armazenamento Fotovoltaico',
         publish_date: '2024-01-13',
-        summary: 'Integramos baterias de second life em sistemas fotovoltaicos...',
+        summary: 'Integramos baterias de second life em sistemas fotovoltaicos, oferecendo uma solução de armazenamento de energia acessível e sustentável.',
         image_url: '/uploads/armazenamento-fotovoltaico.jpg',
-        content: `<p>A energia solar é uma fonte abundante... (HTML completo aqui) ... economicamente viável.</p>`,
+        content: `<p>A energia solar é uma fonte abundante e limpa, mas sua geração é intermitente – ela só funciona quando o sol está brilhando. O verdadeiro potencial da energia solar só é desbloqueado quando ela é combinada com um sistema de armazenamento de energia eficiente, permitindo que a energia gerada durante o dia seja usada à noite ou em dias nublados.</p><p>O principal obstáculo para a adoção em massa do armazenamento de energia tem sido o alto custo das baterias novas. A i9+ Baterias quebra essa barreira ao integrar nossas baterias de "Second Life" em sistemas fotovoltaicos.</p><p>Nossas soluções oferecem:<ul><li><strong>Independência Energética:</strong> Reduza sua dependência da rede elétrica, proteja-se contra apagões e flutuações de preço.</li><li><strong>Maximização do Autoconsumo:</strong> Armazene o excesso de energia solar gerado durante o dia em vez de injetá-lo na rede a preços baixos.</li><li><strong>Sustentabilidade Ponta a Ponta:</strong> Combine a geração de energia limpa com o armazenamento de energia circular, criando um sistema verdadeiramente verde.</li></ul><p>Desde pequenas instalações residenciais até mini usinas em áreas remotas, nossas soluções de armazenamento fotovoltaico tornam a autonomia energética uma realidade mais próxima e economicamente viável.</p>`,
         image_style: 'cover'
     },
     {
         title: 'Eletromobilidade',
         publish_date: '2024-01-12',
-        summary: 'Focamos em soluções de hardware e software que impulsionam o futuro...',
+        summary: 'Focamos em soluções de hardware e software que impulsionam o futuro da mobilidade elétrica, desde o diagnóstico até a logística reversa.',
         image_url: '/uploads/eletromobilidade.jpg',
-        content: `<p>O futuro da mobilidade é elétrico... (HTML completo aqui) ... menos emissões.</p>`,
+        content: `<p>O futuro da mobilidade é elétrico, e a bateria é o coração do veículo elétrico. A i9+ Baterias atua em toda a cadeia de valor da eletromobilidade, oferecendo tecnologia e inteligência para tornar a transição mais eficiente, segura e sustentável.</p><p>Nossas contribuições para o setor incluem:<ul><li><strong>P&D de Novas Tecnologias:</strong> Através de programas como o Rota 2030, investimos no desenvolvimento de novas químicas e designs de células para criar baterias mais eficientes e baratas, com tecnologia nacional.</li><li><strong>Diagnóstico e Manutenção:</strong> Nossas ferramentas permitem que frotistas e concessionárias monitorem a saúde de suas baterias, otimizando a vida útil e planejando a manutenção de forma preditiva.</li><li><strong>Plataforma de Dados (Big Data e IA):</strong> Em parceria com CNPq e UTFPR, estamos criando um ecossistema de dados para conectar fabricantes, frotistas e recicladores, otimizando a logística reversa e o mercado de baterias usadas.</li><li><strong>Economia Circular:</strong> Ao garantir um destino valioso para as baterias no fim de sua vida veicular (o "Second Life"), estamos ajudando a reduzir o custo total de propriedade de um veículo elétrico e resolvendo um dos maiores desafios ambientais do setor.</li></ul><p>A i9+ não fabrica carros, mas fornecemos a tecnologia crítica que garante que a energia que os move seja mais inteligente, duradoura e sustentável, resultando em menos emissões.</p>`,
         image_style: 'cover'
     }
 ];
 
 // --- FIM DOS DADOS ---
 
+// Função helper para inserir dados
 async function seedTable(client, tableName, dataArray) {
     console.log(`Verificando e inserindo dados para: ${tableName}...`);
     const query = `
@@ -200,24 +204,21 @@ async function seedTable(client, tableName, dataArray) {
     for (const item of dataArray) {
         const slug = slugify(item.title);
         await client.query(query, [
-            item.title,
-            slug,
-            item.summary,
-            item.image_url,
-            item.content,
-            item.image_style || 'cover',
-            item.publish_date
+            item.title, slug, item.summary, item.image_url, item.content,
+            item.image_style || 'cover', item.publish_date
         ]);
     }
     console.log(`Dados de ${tableName} sincronizados.`);
 }
 
+// Função principal de inicialização
 async function initializeDatabase() {
     const client = new pg.Client(connectionConfig);
     try {
         await client.connect();
         console.log('Conectado ao PostgreSQL com sucesso.');
 
+        // Cria as tabelas se elas não existirem
         await client.query(`
             CREATE TABLE IF NOT EXISTS users (
                 id SERIAL PRIMARY KEY,
@@ -283,22 +284,23 @@ async function initializeDatabase() {
 
         console.log('Todas as tabelas foram criadas ou já existem.');
 
+        // Popula as tabelas com os dados iniciais
         await seedTable(client, 'projetos', projectsData);
         await seedTable(client, 'artigos', articlesData);
         await seedTable(client, 'solucoes', solutionsData);
 
         console.log('Sincronização de dados iniciais completa.');
-
     } catch (error) {
         console.error('Falha ao inicializar o banco de dados:', error);
-        process.exit(1);
+        process.exit(1); 
     } finally {
-        await client.end();
+        if (client) {
+            await client.end(); 
+        }
     }
 }
 
 // --- Criação do POOL de Conexões ---
-// Passamos a configuração de conexão explícita para o Pool.
 const pool = new pg.Pool(connectionConfig);
 
 // Exportações

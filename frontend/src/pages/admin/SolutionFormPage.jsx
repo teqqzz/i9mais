@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import { API_URL } from '../config';
+import { API_URL } from '../../config';
 import SunEditor from 'suneditor-react';
 import 'suneditor/dist/css/suneditor.min.css'; 
 
@@ -135,7 +135,7 @@ export function SolutionFormPage() {
                                             ['removeFormat'],
                                             ['outdent', 'indent'],
                                             ['align', 'horizontalRule', 'list', 'lineHeight'],
-                                            ['table', 'link', 'image', 'video'], // 'image' também precisa de configuração (veja aviso)
+                                            ['table', 'link', 'image', 'video'], 
                                             ['fullScreen', 'showBlocks', 'codeView'],
                                             ['preview', 'print'],
                                         ]

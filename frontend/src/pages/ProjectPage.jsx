@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { API_URL } from '../config';
+import { API_URL } from '../../config';
 
 
 // Componente da Página de Projeto
