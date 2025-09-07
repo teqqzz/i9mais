@@ -13,7 +13,7 @@ import contactRoutes from './routes/contact.routes.js';
 
 
 const app = express();
-const PORT = process.env.PORT ?? 3000;
+const PORT = process.env.PORT || 10000;
 
 // === Configuração de Middlewares Globais ===
 

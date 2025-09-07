@@ -1,7 +1,5 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
-
-// URL da sua API de autenticação
-const API_URL = 'http://localhost:3000/api/auth';
+import { API_URL } from '../config';
 
 // 1. Criar o Contexto
 const AuthContext = createContext(null);

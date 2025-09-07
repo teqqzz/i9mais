@@ -1,9 +1,9 @@
 ### Criar conta de admin
-POST http://localhost:3000/api/auth/setup-admin
+POST http://localhost:10000/api/auth/setup-admin
 Content-Type: application/json
 
 ### Login 
-POST http://localhost:3000/api/auth/login
+POST http://localhost:10000/api/auth/login
 Content-Type: application/json
 
 {
@@ -12,11 +12,11 @@ Content-Type: application/json
 }
 
 ### Logout
-POST http://localhost:3000/api/auth/logout
+POST http://localhost:10000/api/auth/logout
 Content-Type: application/json
 
 ### Alterar senha (change password)
-POST http://localhost:3000/api/auth/alterar-senha
+POST http://localhost:10000/api/auth/alterar-senha
 Content-Type: application/json
 Cookie: connect.sid=s%3AQCr7WHwjAJXjTK2Yuv8qIlpvhhZWJqHy.QQxWMku7WZpDBnvf0rTOjBjmBLdoEDy8NTm1AMNKK0k
 

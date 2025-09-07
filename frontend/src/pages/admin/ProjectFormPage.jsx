@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
+import { API_URL } from '../config';
 import SunEditor from 'suneditor-react';
 import 'suneditor/dist/css/suneditor.min.css'; 
 
-const API_URL = 'http://localhost:3000';
+
 
 // Formata uma data para o input type="date" (YYYY-MM-DD)
 const formatDateForInput = (dateString) => {
