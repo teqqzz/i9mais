@@ -1,27 +1,31 @@
-import React, { useState, useEffect } from 'react';
-import { Swiper, SwiperSlide } from 'swiper/react';
-import { Navigation } from 'swiper/modules';
-import { Link } from 'react-router-dom';
-import { API_URL } from '@/config';
-import 'swiper/css';
-import 'swiper/css/navigation';
+import React, { useState, useEffect } from "react";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Navigation } from "swiper/modules";
+import { Link } from "react-router-dom";
+import { API_URL } from "@/config";
+import "swiper/css";
+import "swiper/css/navigation";
+import { formatImageUrl } from "../utils/formatImageUrl"; // <-- IMPORTA O HELPER
 
-
-
-// Componente para cada item do carrossel
+// Componente para cada item do carrossel (AJUSTADO)
 function CarouselItem({ slug, image, title, text, imageStyle = {} }) {
-  const itemImageStyle = { 
-    backgroundImage: `url('${image ? `${API_URL}${image}` : '/public/images/default-placeholder.jpg'}')`, 
-    ...imageStyle 
+  // Usa o helper para obter a URL correta
+  const finalImageUrl = formatImageUrl(image);
+
+  const itemImageStyle = {
+    backgroundImage: `url('${finalImageUrl}')`, // <-- Usa a URL formatada
+    ...imageStyle,
   };
-  
+
   return (
     <div className="card">
       <div className="card-image" style={itemImageStyle}></div>
       <div className="card-content">
         <h3>{title}</h3>
         <p>{text}</p>
-        <Link to={`/projetos/${slug}`} className="card-link">Leia Mais &rarr;</Link>
+        <Link to={`/projetos/${slug}`} className="card-link">
+          Leia Mais &rarr;
+        </Link>
       </div>
     </div>
   );
@@ -32,17 +36,16 @@ export function ProjectCarousel() {
   const [projects, setProjects] = useState([]);
 
   useEffect(() => {
-    // Busca na API de projetos (os 9 mais recentes)
     fetch(`${API_URL}/api/projetos?page=1&limit=100`)
-      .then(res => res.json())
-      .then(data => {
-        setProjects(data.posts); 
+      .then((res) => res.json())
+      .then((data) => {
+        setProjects(data.posts);
       })
-      .catch(err => console.error("Erro ao buscar projetos:", err));
+      .catch((err) => console.error("Erro ao buscar projetos:", err));
   }, []);
 
   if (!projects.length) {
-    return null; 
+    return null;
   }
 
   return (
@@ -59,10 +62,9 @@ export function ProjectCarousel() {
             1024: { slidesPerView: 3 },
           }}
         >
-          {/* Faz o map sobre os projetos da API */}
-          {projects.map(project => (
+          {projects.map((project) => (
             <SwiperSlide key={project.slug}>
-              <CarouselItem 
+              <CarouselItem
                 slug={project.slug}
                 image={project.image_url}
                 title={project.title}

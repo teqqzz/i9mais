@@ -1,34 +1,38 @@
-import React, { useState, useEffect } from 'react';
-import { Swiper, SwiperSlide } from 'swiper/react';
-import { Navigation } from 'swiper/modules';
-import { Link } from 'react-router-dom';
-import { API_URL } from '@/config';
-import 'swiper/css';
-import 'swiper/css/navigation';
+import React, { useState, useEffect } from "react";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Navigation } from "swiper/modules";
+import { Link } from "react-router-dom";
+import { API_URL } from "@/config";
+import "swiper/css";
+import "swiper/css/navigation";
+import { formatImageUrl } from "../utils/formatImageUrl"; // <-- IMPORTA O HELPER
 
-
-
-// Componente para cada item do carrossel
+// Componente para cada item do carrossel (AJUSTADO)
 function CarouselItem({ slug, image, title, text, imageStyleClass }) {
-  const itemImageStyle = { 
-    backgroundImage: `url('${image ? `${API_URL}${image}` : '/public/images/default-placeholder.jpg'}')` 
-  };
-  
+  // Usa o helper para obter a URL correta (seja ela do Supabase ou local)
+  const finalImageUrl = formatImageUrl(image);
 
-  const cardImageClassName = `card-image ${imageStyleClass === 'contain' ? 'style-contain' : ''}`;
+  const itemImageStyle = {
+    backgroundImage: `url('${finalImageUrl}')`, // <-- Usa a URL formatada
+  };
+
+  const cardImageClassName = `card-image ${
+    imageStyleClass === "contain" ? "style-contain" : ""
+  }`;
 
   return (
     <div className="card">
-      <div className={cardImageClassName} style={itemImageStyle}></div> 
+      <div className={cardImageClassName} style={itemImageStyle}></div>
       <div className="card-content">
         <h3>{title}</h3>
-        <p>{text}</p> 
-        <Link to={`/blog/${slug}`} className="card-link">Leia Mais &rarr;</Link>
+        <p>{text}</p>
+        <Link to={`/blog/${slug}`} className="card-link">
+          Leia Mais &rarr;
+        </Link>
       </div>
     </div>
   );
 }
-
 
 // Componente do Carrossel de Blog
 export function BlogCarousel() {
@@ -36,10 +40,10 @@ export function BlogCarousel() {
 
   useEffect(() => {
     fetch(`${API_URL}/api/artigos?page=1&limit=100`)
-      .then(res => res.json())
-      .then(data => setPosts(data.posts))
-      .catch(err => console.error("Erro ao buscar artigos:", err));
-  }, []); 
+      .then((res) => res.json())
+      .then((data) => setPosts(data.posts))
+      .catch((err) => console.error("Erro ao buscar artigos:", err));
+  }, []);
 
   if (!posts.length) {
     return null;
@@ -59,14 +63,14 @@ export function BlogCarousel() {
             1024: { slidesPerView: 3 },
           }}
         >
-          {posts.map(post => (
+          {posts.map((post) => (
             <SwiperSlide key={post.slug}>
-              <CarouselItem 
+              <CarouselItem
                 slug={post.slug}
                 image={post.image_url}
                 title={post.title}
-                text={post.summary} 
-                imageStyleClass={post.image_style} 
+                text={post.summary}
+                imageStyleClass={post.image_style}
               />
             </SwiperSlide>
           ))}
