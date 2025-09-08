@@ -1,7 +1,7 @@
 import express from 'express';
 // Importa TODAS as funções necessárias, incluindo getById
 import { create, getAll, getBySlug, update, deleteById, getById } from '../models/solucao.js';
-import upload from '../middleware/uploads.js';
+import upload from '../middleware/supuploads.js';
 import requireAuth from '../middleware/auth.js';
 import { slugify } from '../utils/slugify.js';
 

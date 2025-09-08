@@ -1,6 +1,6 @@
 import express from 'express';
 import { create, getAll, getBySlug, update, deleteById, getById } from '../models/projeto.js'
-import upload from '../middleware/uploads.js';
+import upload from '../middleware/supuploads.js';
 import requireAuth from '../middleware/auth.js';
 import { slugify } from '../utils/slugify.js';
 

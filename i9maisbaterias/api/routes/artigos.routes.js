@@ -1,6 +1,6 @@
 import express from 'express';
 import { create, getAll, getBySlug, update, deleteById, getById } from '../models/artigo.js';
-import upload from '../middleware/uploads.js'; // Agora usa memoryStorage
+import upload from '../middleware/supuploads.js'; // Agora usa memoryStorage
 import requireAuth from '../middleware/auth.js';
 import { slugify } from '../utils/slugify.js';
 import { supabaseAdmin } from '../db/supabaseClient.js'; // Importamos o cliente Supabase
