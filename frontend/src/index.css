@@ -331,24 +331,30 @@ a {
 }
 
 /* AJUSTE: CORREÇÃO DOS FUNDOS ALTERNADOS
-  Reorganizei os seletores para bater com a ordem dos componentes em HomePage.js
-  e garantir o padrão CINZA, BRANCO, CINZA, BRANCO...
+  Seletores ajustados para a NOVA ORDEM da HomePage:
+  1. Solutions (CINZA)
+  2. UniqueApproach (BRANCO)
+  3. Impacto (CINZA)
+  4. Projetos (BRANCO)
+  5. Calculadora (CINZA)
+  6. Blog (BRANCO)
+  7. Contato (CINZA)
 */
 
-/* SEÇÕES CINZA (Conteúdo 1, 3, 5, 7) */
-.unique-approach-section,  /* 1 */
-.solutions-section,        /* 3 */
-#calculadora,              /* 5 */
-.contact-about-section,    /* 7 */
-#estudos-de-caso           /* (Extra, mantido como cinza) */ {
+/* SEÇÕES CINZA (Ímpares: 1, 3, 5, 7) */
+.solutions-section,       /* 1 */
+#impacto,                 /* 3 */
+#calculadora,             /* 5 */
+.contact-about-section,   /* 7 */
+#estudos-de-caso          /* (Extra, mantido como cinza) */ {
   background-color: var(--background-grey);
 }
 
-/* SEÇÕES BRANCAS (Conteúdo 2, 4, 6) */
-.projects-section,         /* 2 (Estava cinza antes) */
-#impacto,                  /* 4 */
-.blog-section,             /* 6 (Estava cinza antes) */
-#roadmap                   /* (Extra, mantido como branco) */ {
+/* SEÇÕES BRANCAS (Pares: 2, 4, 6) */
+.unique-approach-section, /* 2 (Era cinza) */
+.projects-section,        /* 4 (Era cinza, depois branco, agora branco) */
+.blog-section,            /* 6 (Era cinza) */
+#roadmap                  /* (Extra, mantido como branco) */ {
   background-color: var(--background-light);
 }
 
@@ -414,6 +420,19 @@ a {
   flex-direction: column;
   transition: transform 0.3s, box-shadow 0.3s;
   height: 100%;
+}
+
+/* Ajuste: Em seções cinzas (.solutions-section), os cards devem ser brancos (o que esta regra já faz) */
+.solutions-section .card {
+  background-color: var(--background-light);
+}
+
+/* Ajuste: Em seções brancas (agora .projects-section e .blog-section), os cards também são brancos (mas com borda) */
+.projects-section .card,
+.blog-section .card {
+  background-color: var(--background-light);
+  border: 1px solid var(--border-color); /* Adiciona uma borda leve para destacar no fundo branco */
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
 }
 
 .card:hover {
@@ -577,8 +596,7 @@ a {
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
 }
 
-/* Ajuste: Se a seção de contato for cinza, o formulário deve ser branco. */
-/* A regra abaixo garante isso, pois .contact-about-section agora é cinza */
+/* A seção .contact-about-section agora é cinza, então esta regra funciona */
 .contact-about-section .contact-form {
   background-color: var(--background-light);
 }
@@ -860,8 +878,9 @@ body.internal-page {
 ** 13. SEÇÃO DASHBOARD DE IMPACTO (ImpactDashboard)
 ****************************************************************/
 
+/* Ajuste: A seção #impacto agora deve ser CINZA */
 #impacto .impact-card {
-  background-color: var(--background-light); 
+  background-color: var(--background-light); /* Cards brancos no fundo cinza */
   padding: 30px;
   border-radius: 8px;
   text-align: center;
@@ -905,6 +924,7 @@ body.internal-page {
 }
 @media (min-width: 1024px) {
   .calculators-grid {
+    /* Esta é a regra que coloca suas calculadoras lado a lado */
     grid-template-columns: 1fr 1fr;
     gap: 60px;
   }
@@ -961,7 +981,7 @@ body.internal-page {
 .calculator-results.active {
   opacity: 1;
   transform: translateY(0);
-  max-height: 1000px; 
+  max-height: 1000px; /* Valor alto para permitir expansão */
   margin-top: 30px;
   padding-top: 30px;
 }
@@ -1039,7 +1059,7 @@ body.internal-page {
   border-radius: 50%;
   background-color: var(
     --background-light
-  ); 
+  ); /* Fundo branco para seção branca (correto) */
   border: 3px solid var(--primary-blue);
   display: flex;
   align-items: center;
@@ -1048,7 +1068,7 @@ body.internal-page {
   color: var(--primary-blue);
 }
 .roadmap-content {
-  background-color: #fff; 
+  background-color: #fff; /* O card do roadmap deve ser sempre branco */
   padding: 25px;
   border-radius: 8px;
   border: 1px solid var(--border-color);

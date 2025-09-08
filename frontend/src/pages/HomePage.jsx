@@ -13,10 +13,10 @@ export function HomePage() {
   return (
     <>
       <Hero />
-      <UniqueApproachSection />
-      <ProjectCarousel />
       <SolutionsSection />
+      <UniqueApproachSection />
       <ImpactDashboard />
+      <ProjectCarousel />
       <section id="calculadora" className="calculators-section">
         <div className="container">
           <div className="section-title text-center mb-12">
@@ -26,6 +26,7 @@ export function HomePage() {
               optar pela tecnologia "Second Life" da i9+.
             </p>
           </div>
+
           <div className="calculators-grid">
             <RoiCalculator />
             <SavingsCalculator />
