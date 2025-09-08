@@ -85,7 +85,7 @@ export function ArticleListPage() {
                                             <td>/{post.slug}</td>
                                             <td>
                                                 <div className="table-actions">
-                                                    <Link to={`/admin/artigos/editar/${post.id}`} className="admin-btn secondary"> {/* Link de Artigos */}
+                                                    <Link to={`/admin/artigos/editar/${post.id}`} className="admin-btn secondary">
                                                         <FaEdit />
                                                     </Link>
                                                     <button onClick={() => handleDelete(post.id)} className="admin-btn danger">

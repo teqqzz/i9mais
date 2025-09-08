@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect} from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { API_URL } from '@/config';
 import SunEditor from 'suneditor-react';
@@ -9,7 +9,6 @@ export function SolutionFormPage() {
     const { id } = useParams(); 
     const navigate = useNavigate();
     const isEditing = Boolean(id);
-    const editorRef = useRef(null); 
     const [title, setTitle] = useState('');
     const [summary, setSummary] = useState('');
     const [imageStyle, setImageStyle] = useState('cover');
@@ -44,7 +43,6 @@ export function SolutionFormPage() {
         e.preventDefault();
         setError('');
         setLoading(true);
-        const content = editorRef.current ? editorRef.current.getContent() : '';
         const formData = new FormData();
         formData.append('title', title);
         formData.append('summary', summary);

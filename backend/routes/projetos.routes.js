@@ -21,15 +21,15 @@ router.post('/', requireAuth, upload.single('image'), async (req, res) => {
 
 // Atualizar Projeto
 router.put('/:id', requireAuth, upload.single('image'), async (req, res) => {
-  try {
-    const { title, content, summary } = req.body; // Pegar summary
-    const slug = slugify(title);
-    const image_url = req.file ? `/uploads/${req.file.filename}` : req.body.image_url;
-    await update(req.params.id, { title, slug, summary, image_url, content }); // Passar summary
-    res.json({ success: true });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
+    try {
+        const { title, content, summary, image_style, publish_date } = req.body;
+        const slug = slugify(title);
+        const image_url = req.file ? `/uploads/${req.file.filename}` : req.body.image_url;
+        await update(req.params.id, { title, slug, summary, image_url, content, image_style, publish_date });
+        res.json({ success: true });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
 });
 
 // Deletar Projeto

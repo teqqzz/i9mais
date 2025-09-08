@@ -19,7 +19,7 @@ function SolutionCard({ slug, image, title, text, linkText, imageStyleClass }) {
 
   return (
     <div className="card">
-      <div className={cardImageClassName} style={itemImageStyle}></div> {/* <-- MUDANÇA AQUI */}
+      <div className={cardImageClassName} style={itemImageStyle}></div> 
       <div className="card-content">
         <h3>{title}</h3>
         <p>{text}</p>

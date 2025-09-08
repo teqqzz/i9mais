@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect} from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { API_URL } from '@/config';
 import SunEditor from 'suneditor-react';
@@ -18,7 +18,6 @@ export function ProjectFormPage() {
     const { id } = useParams(); 
     const navigate = useNavigate();
     const isEditing = Boolean(id);
-    const editorRef = useRef(null); 
     const [title, setTitle] = useState('');
     const [summary, setSummary] = useState('');
     const [imageStyle, setImageStyle] = useState('cover');
@@ -54,9 +53,6 @@ export function ProjectFormPage() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
-        const content = editorRef.current ? editorRef.current.getContent() : '';
-
-        // Novo campo publish_date adicionado ao formData
         const formData = new FormData();
         formData.append('title', title);
         formData.append('summary', summary);
@@ -116,7 +112,6 @@ export function ProjectFormPage() {
                                         required 
                                     />
                                 </div>
-                                {/* --- FIM DO NOVO CAMPO --- */}
 
                                 <div className="form-group">
                                     <label htmlFor="image_style">Estilo da Imagem (Card/Header)</label>
@@ -158,7 +153,7 @@ export function ProjectFormPage() {
                                             ['removeFormat'],
                                             ['outdent', 'indent'],
                                             ['align', 'horizontalRule', 'list', 'lineHeight'],
-                                            ['table', 'link', 'image', 'video'], // 'image' também precisa de configuração (veja aviso)
+                                            ['table', 'link', 'image', 'video'],  
                                             ['fullScreen', 'showBlocks', 'codeView'],
                                             ['preview', 'print'],
                                         ]

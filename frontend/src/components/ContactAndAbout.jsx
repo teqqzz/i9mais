@@ -74,6 +74,11 @@ export function ContactAndAbout() {
                                 <p>Inovação, sustentabilidade, integridade e inspiração para criar um futuro melhor.</p>
                             </div>
                         </div>
+                        <div className="value-item">
+                            <h3>Nossa Liderança</h3>
+                            <p>A i9+ Baterias é liderada por seu fundador, <strong>Sandro Moreira</strong>. Com uma visão focada na interseção entre tecnologia e sustentabilidade, Sandro posicionou a empresa como uma 'deep tech' de referência no setor energético.</p>
+                            <p>Através da incubação no <strong>Tecpar (Instituto de Tecnologia do Paraná)</strong> e em parceria com instituições como EMBRAPII e SENAI, a i9+ desenvolve soluções proprietárias—como o Traçador de Curva IxV—para revolucionar a economia circular, transformando o que seria descarte em ativos energéticos eficientes e econômicos.</p>
+                        </div>
                     </div>
 
                     <div className="contact-content">

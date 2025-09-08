@@ -57,12 +57,14 @@ export function Header({ isHomePage }) {
       <Link to="/" className="logo-link" onClick={closeMenu}>
         <img src="/images/logo-i9+.png" alt="i9+ Baterias" className="logo-image" />
       </Link>
-
+      
+      {/* --- MENU DESKTOP ATUALIZADO --- */}
       <nav className="main-nav">
         <a href="#solucoes">Soluções</a>
-        <a href="#projetos">Projetos</a>
+        <a href="#impacto">Impacto</a>
+        <a href="#calculadora">Calculadora</a>
         <a href="#blog">Blog</a>
-        <a href="#contato">Sobre & Contato</a>
+        <a href="#contato">Contato</a>
         <a href="#" onClick={scrollToTop} className={`nav-back-to-top ${showBackToTopLink ? 'show' : ''}`}>Voltar ao Topo</a>
       </nav>
 
@@ -76,11 +78,15 @@ export function Header({ isHomePage }) {
         <button className="close-btn" onClick={toggleMenu} aria-label="Fechar menu">
           <FaTimes />
         </button>
+        {/* --- MENU MOBILE ATUALIZADO --- */}
         <nav className="mobile-nav-links">
           <a href="#solucoes" onClick={toggleMenu}>Soluções</a>
-          <a href="#projetos" onClick={toggleMenu}>Projetos</a>
+          <a href="#estudos-de-caso" onClick={toggleMenu}>Estudos de Caso</a>
+          <a href="#impacto" onClick={toggleMenu}>Impacto</a>
+          <a href="#calculadora" onClick={toggleMenu}>Calculadora</a>
+          <a href="#roadmap" onClick={toggleMenu}>Roadmap</a>
           <a href="#blog" onClick={toggleMenu}>Blog</a>
-          <a href="#contato" onClick={toggleMenu}>Sobre & Contato</a>
+          <a href="#contato" onClick={toggleMenu}>Contato</a>
         </nav>
       </div>
     </header>
