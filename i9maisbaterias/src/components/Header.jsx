@@ -81,10 +81,8 @@ export function Header({ isHomePage }) {
         {/* --- MENU MOBILE ATUALIZADO --- */}
         <nav className="mobile-nav-links">
           <a href="#solucoes" onClick={toggleMenu}>Soluções</a>
-          <a href="#estudos-de-caso" onClick={toggleMenu}>Estudos de Caso</a>
           <a href="#impacto" onClick={toggleMenu}>Impacto</a>
           <a href="#calculadora" onClick={toggleMenu}>Calculadora</a>
-          <a href="#roadmap" onClick={toggleMenu}>Roadmap</a>
           <a href="#blog" onClick={toggleMenu}>Blog</a>
           <a href="#contato" onClick={toggleMenu}>Contato</a>
         </nav>
