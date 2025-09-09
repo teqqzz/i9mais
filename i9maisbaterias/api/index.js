@@ -4,13 +4,13 @@ import cors from 'cors';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import dotenv from 'dotenv';
+import pg from 'pg';
+import connectPgSimple from 'connect-pg-simple';
 
 dotenv.config();
 
-// Importa o inicializador do banco (que executa o seed)
-import { initializeDatabase } from './db/db.js'; 
+import { initializeDatabase, pool } from './db/db.js';
 
-// Importa as rotas
 import artigosRoutes from './routes/artigos.routes.js';
 import authRoutes from './routes/auth.routes.js';
 import projetosRoutes from './routes/projetos.routes.js';
@@ -22,16 +22,10 @@ const __dirname = path.dirname(__filename);
 
 const app = express();
 
-// --- INICIALIZAÇÃO DO BANCO ---
 await initializeDatabase();
 console.log('Banco de dados inicializado e sincronizado.');
 
-// --- CONFIGURAÇÃO DE CORS E MIDDLEWARES ---
-const whitelist = [
-    'http://localhost:5173', 
-    'https://i9mais-five.vercel.app' 
-];
-
+const whitelist = [ 'http://localhost:5173', 'https://i9mais-five.vercel.app' ];
 const corsOptions = {
     origin: function (origin, callback) {
         if (!origin || whitelist.indexOf(origin) !== -1 || process.env.NODE_ENV !== 'production') {
@@ -47,40 +41,41 @@ app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// --- SERVIDOR ESTÁTICO (APENAS PARA DEV LOCAL) ---
 if (process.env.NODE_ENV !== 'production') {
     app.use('/uploads', express.static(path.join(__dirname, '../public/uploads')));
     console.log('Servindo arquivos estáticos de /public/uploads para desenvolvimento local.');
 }
 
-// --- SESSÃO ---
+const PgSession = connectPgSimple(session);
+
 app.use(session({
-    secret: process.env.SESSION_SECRET || 'admin',
+    store: new PgSession({
+        pool: pool,
+        tableName: 'user_sessions',
+        createTableIfMissing: true,
+    }),
+    secret: process.env.SESSION_SECRET || 'seu-segredo-super-secreto',
     resave: false,
-    saveUninitialized: true,
+    saveUninitialized: false,
     cookie: {
         secure: process.env.NODE_ENV === 'production',
         httpOnly: true,
-        maxAge: 1000 * 60 * 60 * 24 
+        maxAge: 1000 * 60 * 60 * 24 * 7, // 7 dias
+        sameSite: 'lax'
     }
 }));
 
-// --- ROTAS DA API ---
 app.use('/api/artigos', artigosRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/projetos', projetosRoutes);
 app.use('/api/solucoes', solucoesRoutes);
 app.use('/api/contact', contactRoutes);
 
-
-// --- EXPORT PARA VERCEL ---
-// A Vercel precisa disso para "importar" seu app como uma função serverless.
 export default app;
 
 if (!process.env.VERCEL) {
   const PORT = process.env.PORT || 10000;
   app.listen(PORT, () => {
     console.log(`\n[SERVIDOR LOCAL API] Rodando em http://localhost:${PORT}`);
-    console.log('(Este servidor iniciou porque process.env.VERCEL não está definido.)');
   });
 }

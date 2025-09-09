@@ -322,3 +322,18 @@ body.admin-body {
     padding: 14px;
     font-size: 1rem;
 }
+
+
+.admin-sidebar-footer .user-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px;
+    margin-bottom: 10px;
+    background-color: rgba(255, 255, 255, 0.05);
+    border-radius: 6px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--text-light);
+    opacity: 0.9;
+}
