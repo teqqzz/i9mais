@@ -29,7 +29,7 @@ console.log('Banco de dados inicializado e sincronizado.');
 // --- CONFIGURAÇÃO DE CORS E MIDDLEWARES ---
 const whitelist = [
     'http://localhost:5173', 
-    'https://i9mais.vercel.app' 
+    'https://i9mais-five.vercel.app' 
 ];
 
 const corsOptions = {
