@@ -46,6 +46,8 @@ if (process.env.NODE_ENV !== 'production') {
     console.log('Servindo arquivos estáticos de /public/uploads para desenvolvimento local.');
 }
 
+app.set('trust proxy', 1);
+
 const PgSession = connectPgSimple(session);
 
 app.use(session({
