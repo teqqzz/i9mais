@@ -636,21 +636,6 @@ a {
   width: 100%;
 }
 
-.contact-intro-text {
-    font-size: 1.1rem;
-    line-height: 1.7;
-    color: #555;
-    margin-bottom: 40px; 
-}
-
-.form-success-message {
-    padding: 20px;
-    border: 1px solid #28a745;
-    border-radius: 6px;
-    background-color: #f0fff4;
-}
-
-
 /****************************************************************
 ** 10. RODAPÉ (FOOTER)
 ****************************************************************/
