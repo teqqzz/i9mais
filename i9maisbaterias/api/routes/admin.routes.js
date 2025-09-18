@@ -87,15 +87,16 @@ router.put('/impact-data', async (req, res) => {
 
 // ROTA PARA ATUALIZAR PREÇOS DA CALCULADORA 
 router.put('/calculator-prices', async (req, res) => {
-    const { nova, i9plus, peso_kg } = req.body;
+    const { nova, i9plus, peso_kg, vida_util_padrao, kg_co2_por_bateria } = req.body;
     
     try {
         await db.query('BEGIN');
         await db.query("UPDATE settings SET value = $1 WHERE key = 'calc_nova'", [nova]);
         await db.query("UPDATE settings SET value = $1 WHERE key = 'calc_i9plus'", [i9plus]);
         await db.query("UPDATE settings SET value = $1 WHERE key = 'calc_peso_kg'", [peso_kg]);
+        await db.query("UPDATE settings SET value = $1 WHERE key = 'calc_vida_util_padrao'", [vida_util_padrao]);
+        await db.query("UPDATE settings SET value = $1 WHERE key = 'calc_kg_co2_por_bateria'", [kg_co2_por_bateria]);
         await db.query('COMMIT');
-
         res.json({ success: true });
     } catch (err) {
         await db.query('ROLLBACK');

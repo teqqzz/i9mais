@@ -8,7 +8,13 @@ export function SettingsPage() {
     const [impactData, setImpactData] = useState({ mwh: 0, co2: 0, minerals: 0, cost: 0 });
     const [impactStatus, setImpactStatus] = useState('');
     
-    const [calcPrices, setCalcPrices] = useState({ nova: 0, i9plus: 0, peso_kg: 0 });
+    const [calcPrices, setCalcPrices] = useState({ 
+        nova: 0, 
+        i9plus: 0, 
+        peso_kg: 0, 
+        vida_util_padrao: 0, 
+        kg_co2_por_bateria: 0 
+    });
     const [calcStatus, setCalcStatus] = useState('');
 
     useEffect(() => {
@@ -146,11 +152,11 @@ export function SettingsPage() {
                 
                 <div className="admin-card" style={{ marginTop: '30px' }}>
                     <div className="admin-card-header">
-                        <h2>Preços da Calculadora de Economia</h2>
+                        <h2>Valores Base das Calculadoras</h2>
                     </div>
                     <div className="admin-card-body">
                         <form onSubmit={handleCalcPricesSave} className="admin-form">
-                            <p>Altere os valores base usados na "Calculadora de Economia Simples".</p>
+                            <p>Altere os valores padrão usados nos cálculos de ROI e Economia.</p>
                             <div className="form-grid">
                                 <div className="form-group">
                                     <label htmlFor="nova">Custo Bateria Nova (R$)</label>
@@ -164,9 +170,17 @@ export function SettingsPage() {
                                     <label htmlFor="peso_kg">Peso Médio Bateria (kg)</label>
                                     <input type="number" name="peso_kg" value={calcPrices.peso_kg} onChange={handleCalcPriceChange} />
                                 </div>
+                                <div className="form-group">
+                                    <label htmlFor="vida_util_padrao">Vida Útil Padrão (Anos)</label>
+                                    <input type="number" name="vida_util_padrao" value={calcPrices.vida_util_padrao} onChange={handleCalcPriceChange} />
+                                </div>
+                                <div className="form-group">
+                                    <label htmlFor="kg_co2_por_bateria">Kg de CO₂ por Bateria</label>
+                                    <input type="number" name="kg_co2_por_bateria" value={calcPrices.kg_co2_por_bateria} onChange={handleCalcPriceChange} />
+                                </div>
                             </div>
                             <div className="form-actions">
-                                <button type="submit" className="admin-btn primary">Salvar Preços da Calculadora</button>
+                                <button type="submit" className="admin-btn primary">Salvar Valores das Calculadoras</button>
                             </div>
                             {calcStatus && <p style={{ marginTop: '15px' }}>{calcStatus}</p>}
                         </form>

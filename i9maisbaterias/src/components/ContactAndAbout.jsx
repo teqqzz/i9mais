@@ -87,7 +87,7 @@ export function ContactAndAbout() {
                                 Caso queira marcar uma visita, informe na mensagem que lhe responderemos no e-mail.
                                     Ao fornecer seus dados, você autoriza o uso para fins de comunicação, em conformidade com a LGPD.
                         </p>
-
+                    <br></br>
                         {status.success ? (
                             <div className="form-success-message" style={{padding: '20px', border: '1px solid var(--admin-success)', borderRadius: '6px', backgroundColor: '#f0fff4'}}>
                                 <h3>Obrigado pelo contato!</h3>
