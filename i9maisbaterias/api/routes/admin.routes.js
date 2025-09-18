@@ -64,7 +64,7 @@ router.post('/settings/test-email', async (req, res) => {
     }
 });
 
-
+// ROTA PARA ATUALIZAR IMPACTO
 router.put('/impact-data', async (req, res) => {
     const { mwh, co2, minerals, cost } = req.body;
     
@@ -81,6 +81,25 @@ router.put('/impact-data', async (req, res) => {
     } catch (err) {
         await db.query('ROLLBACK');
         console.error("Erro ao atualizar dados de impacto:", err);
+        res.status(500).json({ error: 'Falha ao salvar os dados.' });
+    }
+});
+
+// ROTA PARA ATUALIZAR PREÇOS DA CALCULADORA 
+router.put('/calculator-prices', async (req, res) => {
+    const { nova, i9plus, peso_kg } = req.body;
+    
+    try {
+        await db.query('BEGIN');
+        await db.query("UPDATE settings SET value = $1 WHERE key = 'calc_nova'", [nova]);
+        await db.query("UPDATE settings SET value = $1 WHERE key = 'calc_i9plus'", [i9plus]);
+        await db.query("UPDATE settings SET value = $1 WHERE key = 'calc_peso_kg'", [peso_kg]);
+        await db.query('COMMIT');
+
+        res.json({ success: true });
+    } catch (err) {
+        await db.query('ROLLBACK');
+        console.error("Erro ao atualizar preços da calculadora:", err);
         res.status(500).json({ error: 'Falha ao salvar os dados.' });
     }
 });

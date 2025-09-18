@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { API_URL } from "@/config";
 
 function formatCurrency(value) {
   return new Intl.NumberFormat("pt-BR", {
@@ -7,18 +8,22 @@ function formatCurrency(value) {
   }).format(value);
 }
 
-const precos = {
-  nova: 8000,
-  i9plus: 3200,
-  peso_kg: 50,
-};
-
 export function SavingsCalculator() {
   const [formData, setFormData] = useState({
     quantity: 10,
     frequencyInYears: 2,
   });
+  const [precos, setPrecos] = useState(null);
   const [result, setResult] = useState(null);
+
+  useEffect(() => {
+    fetch(`${API_URL}/api/calculator-prices`)
+      .then((res) => res.json())
+      .then((data) => setPrecos(data))
+      .catch((err) =>
+        console.error("Falha ao carregar preços da calculadora", err)
+      );
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -27,6 +32,7 @@ export function SavingsCalculator() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    if (!precos) return;
 
     const savingsPerBattery = precos.nova - precos.i9plus;
     const totalSavings = formData.quantity * savingsPerBattery;
@@ -40,6 +46,15 @@ export function SavingsCalculator() {
     });
   };
 
+  if (!precos) {
+    return (
+      <div className="calculator-instance">
+        <h3>Calculadora de Economia Simples</h3>
+        <p>Carregando dados da calculadora...</p>
+      </div>
+    );
+  }
+
   return (
     <div className="calculator-instance">
       <h3>Calculadora de Economia Simples</h3>
@@ -47,7 +62,6 @@ export function SavingsCalculator() {
         className="calculator-wrapper"
         style={{ gridTemplateColumns: "1fr", gap: "20px" }}
       >
-        {" "}
         <div className="calculator-content">
           <p>
             Descubra a economia direta e o impacto ambiental positivo ao
@@ -86,7 +100,6 @@ export function SavingsCalculator() {
           </form>
         </div>
       </div>
-
       {result && (
         <div className="calculator-results active">
           <h3>Resultados (Economia):</h3>
@@ -109,7 +122,7 @@ export function SavingsCalculator() {
             </div>
           </div>
           <p className="result-cta">
-            <a href="#contato">Transforme custo em lucro</a>.
+            <a href="#contato">Transforme custo em lucro</a>
           </p>
         </div>
       )}
