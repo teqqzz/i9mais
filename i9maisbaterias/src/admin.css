@@ -337,3 +337,8 @@ body.admin-body {
     color: var(--text-light);
     opacity: 0.9;
 }
+.message-content {
+    max-width: 300px;
+    white-space: pre-wrap; /* Mantém a formatação do texto */
+    word-break: break-word;
+}

@@ -50,6 +50,11 @@ export function AdminLayout() {
                 <FaLightbulb /> Soluções
               </NavLink>
             </li>
+            <li>
+                <NavLink to="/admin/settings" className={getNavLinkClass}> {/* NOVO */}
+                    <FaCogs /> Configurações
+                </NavLink>
+            </li>
           </ul>
         </nav>
         <div className="admin-sidebar-footer">

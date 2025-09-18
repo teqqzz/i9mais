@@ -16,6 +16,8 @@ import authRoutes from './routes/auth.routes.js';
 import projetosRoutes from './routes/projetos.routes.js';
 import solucoesRoutes from './routes/solucoes.routes.js';
 import contactRoutes from './routes/contact.routes.js';
+import adminRoutes from './routes/admin.routes.js';
+import publicRoutes from './routes/public.routes.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -72,6 +74,8 @@ app.use('/api/auth', authRoutes);
 app.use('/api/projetos', projetosRoutes);
 app.use('/api/solucoes', solucoesRoutes);
 app.use('/api/contact', contactRoutes);
+app.use('/api/admin', adminRoutes);
+app.use('/api', publicRoutes);
 
 export default app;
 

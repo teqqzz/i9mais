@@ -27,6 +27,8 @@ import { SolutionListPage } from './pages/admin/SolutionListPage.jsx';
 import { SolutionFormPage } from './pages/admin/SolutionFormPage.jsx';
 import { ArticleListPage } from './pages/admin/ArticleListPage.jsx';
 import { ArticleFormPage } from './pages/admin/ArticleFormPage.jsx';
+import { MessagesPage } from './pages/admin/MessagesPage.jsx'; 
+import { SettingsPage } from './pages/admin/SettingsPage.jsx';
 
 
 // Configuração das rotas
@@ -71,6 +73,10 @@ const router = createBrowserRouter([
                     { path: 'artigos', element: <ArticleListPage /> },
                     { path: 'artigos/novo', element: <ArticleFormPage /> },
                     { path: 'artigos/editar/:id', element: <ArticleFormPage /> },
+
+                    // Rotas de Mensagens e Configurações
+                    { path: 'messages', element: <MessagesPage /> }, 
+                    { path: 'settings', element: <SettingsPage /> },
                 ]
             }
         ]
