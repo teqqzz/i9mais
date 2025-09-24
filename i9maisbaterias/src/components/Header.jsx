@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { FaTimes } from 'react-icons/fa';
+import { HashLink } from 'react-router-hash-link';
 
 // Componente Header com navegação e botão de voltar ao topo
 export function Header({ isHomePage }) {
@@ -60,11 +61,11 @@ export function Header({ isHomePage }) {
       
       {/* --- MENU DESKTOP ATUALIZADO --- */}
       <nav className="main-nav">
-        <a href="#solucoes">Soluções</a>
-        <a href="#impacto">Impacto</a>
-        <a href="#calculadora">Calculadora</a>
-        <a href="#blog">Blog</a>
-        <a href="#contato">Contato</a>
+        <HashLink smooth to="/#solucoes">Soluções</HashLink>
+        <HashLink smooth to="/#impacto">Impacto</HashLink>
+        <HashLink smooth to="/#calculadora">Calculadora</HashLink>
+        <HashLink smooth to="/#blog">Blog</HashLink>
+        <HashLink smooth to="/#contato">Contato</HashLink>
         <a href="#" onClick={scrollToTop} className={`nav-back-to-top ${showBackToTopLink ? 'show' : ''}`}>Voltar ao Topo</a>
       </nav>
 
@@ -80,11 +81,11 @@ export function Header({ isHomePage }) {
         </button>
         {/* --- MENU MOBILE ATUALIZADO --- */}
         <nav className="mobile-nav-links">
-          <a href="#solucoes" onClick={toggleMenu}>Soluções</a>
-          <a href="#impacto" onClick={toggleMenu}>Impacto</a>
-          <a href="#calculadora" onClick={toggleMenu}>Calculadora</a>
-          <a href="#blog" onClick={toggleMenu}>Blog</a>
-          <a href="#contato" onClick={toggleMenu}>Contato</a>
+           <HashLink smooth to="/#solucoes" onClick={closeMenu}>Soluções</HashLink>
+            <HashLink smooth to="/#impacto" onClick={closeMenu}>Impacto</HashLink>
+            <HashLink smooth to="/#calculadora" onClick={closeMenu}>Calculadora</HashLink>
+            <HashLink smooth to="/#blog" onClick={closeMenu}>Blog</HashLink>
+            <HashLink smooth to="/#contato" onClick={closeMenu}>Contato</HashLink>
         </nav>
       </div>
     </header>
