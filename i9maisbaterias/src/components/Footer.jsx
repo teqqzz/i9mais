@@ -1,4 +1,5 @@
 import React from 'react';
+import { HashLink } from 'react-router-hash-link';
 
 // Componente do Rodapé
 export function Footer() {
@@ -13,11 +14,11 @@ export function Footer() {
           <div className="footer-links">
             <h4>Navegação</h4>
             <ul>
-              <li><a href="#solucoes">Soluções</a></li>
-              <li><a href="#impacto">Nosso Impacto</a></li>
-              <li><a href="#calculadora">Calculadora</a></li>
-              <li><a href="#blog">Blog</a></li>
-              <li><a href="#contato">Contato</a></li>
+              <li> <HashLink smooth to="/#solucoes">Soluções</HashLink></li>
+              <li><HashLink smooth to="/#impacto">Impacto</HashLink></li>
+              <li><HashLink smooth to="/#calculadora">Calculadora</HashLink></li>
+              <li><HashLink smooth to="/#blog">Blog</HashLink></li>
+              <li><HashLink smooth to="/#contato">Contato</HashLink></li>
             </ul>
           </div>
           <div className="footer-contact">
