@@ -19,11 +19,20 @@ export const findByUsername = async (username) => {
 };
 
 export const findById = async (id) => {
-    const { rows } = await db.query(
-        'SELECT id, username, created_at FROM users WHERE id = $1',
-        [id]
-    );
-    return rows[0];
+    const { rows } = await db.query(
+        'SELECT id, username, created_at FROM users WHERE id = $1',
+        [id]
+    );
+    return rows[0];
+};
+
+export const getAll = async () => {
+    const { rows } = await db.query('SELECT id, username, created_at FROM users ORDER BY username ASC');
+    return rows;
+};
+
+export const deleteById = async (id) => {
+    await db.query('DELETE FROM users WHERE id = $1', [id]);
 };
 
 export const validatePassword = async (user, password) => {

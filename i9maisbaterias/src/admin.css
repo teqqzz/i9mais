@@ -378,3 +378,20 @@ body.admin-body {
     margin-top: 15px;
     font-weight: 500;
 }
+
+.form-status-global {
+    padding: 15px;
+    margin-bottom: 20px;
+    border-radius: 6px;
+    font-weight: 500;
+}
+.form-status-global.success {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+.form-status-global.error {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
