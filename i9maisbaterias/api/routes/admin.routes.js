@@ -42,11 +42,12 @@ router.post('/settings/test-email', async (req, res) => {
             return res.status(400).json({ error: 'Nenhum e-mail de destino configurado.' });
         }
         
+        // AQUI ESTÁ A CORREÇÃO: Tornamos o conteúdo do e-mail de teste mais realista.
         const testData = {
-            name: 'Usuário Admin',
-            email: 'admin@test.com',
+            name: 'Sistema i9+ Baterias',
+            email: 'nao-responda@i9mais.com',
             phone: 'N/A',
-            message: 'Este é um e-mail de teste enviado a partir do Painel Admin.'
+            message: 'Este é um e-mail de verificação para confirmar que as notificações de contato estão funcionando corretamente.'
         };
 
         const sent = await sendContactNotification(targetEmail, testData);
