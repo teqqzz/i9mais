@@ -6,7 +6,7 @@ dotenv.config();
 const transporter = nodemailer.createTransport({
     host: process.env.EMAIL_HOST,
     port: process.env.EMAIL_PORT,
-    secure: true, 
+    secure: true,
     auth: {
         user: process.env.EMAIL_USER,
         pass: process.env.EMAIL_PASS,
@@ -15,13 +15,14 @@ const transporter = nodemailer.createTransport({
 
 export const sendContactNotification = async (toAddress, formData) => {
     const mailOptions = {
-        from: `"Contato Site i9+" <${process.env.EMAIL_USER}>`,
+        from: '"Contato Site i9+" <onboarding@resend.dev>', 
         to: toAddress,
+        replyTo: formData.email, 
         subject: `Nova Mensagem de Contato de: ${formData.name}`,
         html: `
             <h2>Nova Mensagem Recebida do Site</h2>
             <p><strong>Nome:</strong> ${formData.name}</p>
-            <p><strong>Email:</strong> ${formData.email}</p>
+            <p><strong>Email (para resposta):</strong> ${formData.email}</p>
             <p><strong>Telefone:</strong> ${formData.phone || 'Não informado'}</p>
             <hr>
             <h3>Mensagem:</h3>
