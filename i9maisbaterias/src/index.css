@@ -893,9 +893,9 @@ body.internal-page {
 ** 13. SEÇÃO DASHBOARD DE IMPACTO (ImpactDashboard)
 ****************************************************************/
 
-/* Ajuste: A seção #impacto agora deve ser CINZA */
+
 #impacto .impact-card {
-  background-color: var(--background-light); /* Cards brancos no fundo cinza */
+  background-color: var(--background-light); 
   padding: 30px;
   border-radius: 8px;
   text-align: center;
@@ -939,7 +939,6 @@ body.internal-page {
 }
 @media (min-width: 1024px) {
   .calculators-grid {
-    /* Esta é a regra que coloca suas calculadoras lado a lado */
     grid-template-columns: 1fr 1fr;
     gap: 60px;
   }
@@ -948,7 +947,7 @@ body.internal-page {
 .calculator-instance {
   background-color: var(
     --background-light
-  ); /* Instância branca no fundo cinza */
+  ); 
   padding: 30px;
   border-radius: 8px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
@@ -996,7 +995,7 @@ body.internal-page {
 .calculator-results.active {
   opacity: 1;
   transform: translateY(0);
-  max-height: 1000px; /* Valor alto para permitir expansão */
+  max-height: 1000px; 
   margin-top: 30px;
   padding-top: 30px;
 }
@@ -1074,7 +1073,7 @@ body.internal-page {
   border-radius: 50%;
   background-color: var(
     --background-light
-  ); /* Fundo branco para seção branca (correto) */
+  ); 
   border: 3px solid var(--primary-blue);
   display: flex;
   align-items: center;
@@ -1083,7 +1082,7 @@ body.internal-page {
   color: var(--primary-blue);
 }
 .roadmap-content {
-  background-color: #fff; /* O card do roadmap deve ser sempre branco */
+  background-color: #fff; 
   padding: 25px;
   border-radius: 8px;
   border: 1px solid var(--border-color);
@@ -1100,4 +1099,31 @@ body.internal-page {
 }
 .roadmap-item:last-child {
   margin-bottom: 0;
+}
+
+
+.fixed-developer-credit {
+  position: fixed;
+  bottom: 15px; 
+  right: 15px;  
+  background-color: rgba(2, 16, 41, 0.85); 
+  color: rgba(255, 255, 255, 0.7); 
+  padding: 5px 10px;
+  border-radius: 5px;
+  font-size: 0.8rem;
+  z-index: 998; 
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(2px); 
+  -webkit-backdrop-filter: blur(2px);
+}
+
+.fixed-developer-credit a {
+  color: rgba(255, 255, 255, 0.9); 
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.fixed-developer-credit a:hover {
+  color: #fff; 
+  text-decoration: underline;
 }
