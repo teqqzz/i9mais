@@ -27,12 +27,11 @@ function App() {
       setDeveloperCreditHtml('Desenvolvido por Lucas'); 
     }
 
-    // Mensagem no console
     const style = 'font-size: 14px; background: #021029; color: #fff; padding: 5px 10px; border-radius: 5px;';
-    console.log('%Desenvolvido por Lucas (github.com/teqqzz)', style);
+    console.log('%cDesenvolvido por Lucas (github.com/teqqzz)', style);
 
-  }, []); // Roda apenas uma vez
-  // --- FIM DA LÓGICA DO CRÉDITO ---
+  }, []); 
+
 
 
  useEffect(() => {
