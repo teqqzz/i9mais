@@ -27,7 +27,7 @@ const app = express();
 await initializeDatabase();
 console.log('Banco de dados inicializado e sincronizado.');
 
-const whitelist = [ 'http://localhost:5173', 'https://i9mais-five.vercel.app' ];
+const whitelist = [ 'http://localhost:5173', 'https://i9mais-five.vercel.app', 'https://inovemais.ind.br/' ];
 const corsOptions = {
     origin: function (origin, callback) {
         if (!origin || whitelist.indexOf(origin) !== -1 || process.env.NODE_ENV !== 'production') {
