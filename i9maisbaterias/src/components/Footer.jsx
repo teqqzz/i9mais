@@ -24,9 +24,9 @@ return (
    <h4>Navegação</h4>
    <ul>
    <li><a href="#solucoes">Soluções</a></li>
-       <li><a href="/sobre">Sobre</a></li>
    <li><a href="#impacto">Nosso Impacto</a></li>
    <li><a href="#calculadora">Calculadora</a></li>
+   <li><a href="/sobre">Sobre</a></li>
    <li><a href="#blog">Blog</a></li>
    <li><a href="#contato">Contato</a></li>
    </ul>
