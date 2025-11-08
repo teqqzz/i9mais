@@ -2,21 +2,24 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { HelmetProvider } from 'react-helmet-async';
+
 import './index.css';
 import './admin.css';
 
 import { AuthProvider } from './context/AuthProvider.jsx';
-import { HomeContentProvider } from './context/HomeContentProvider.jsx'; // Corrigido
+import { HomeContentProvider } from './context/HomeContentProvider.jsx';
 import App from './App.jsx';
 import { AdminLayout } from './layouts/AdminLayout.jsx';
 import { ProtectedRoute } from './components/ProtectedRoute.jsx';
 
+// Páginas Públicas
 import { HomePage } from './pages/HomePage.jsx';
 import { BlogPostPage } from './pages/BlogPostPage.jsx';
 import { SolutionPage } from './pages/SolutionPage.jsx';
 import { ProjectPage } from './pages/ProjectPage.jsx';
 import { AboutPage } from './pages/AboutPage.jsx';
 
+// Páginas Admin
 import { LoginPage } from './pages/admin/LoginPage.jsx';
 import { ProjectListPage } from './pages/admin/ProjectListPage.jsx';
 import { ProjectFormPage } from './pages/admin/ProjectFormPage.jsx';
@@ -32,54 +35,54 @@ import { HomeLayoutEditor } from './pages/admin/HomeLayoutEditor.jsx';
 import { ApproachEditorPage } from './pages/admin/ApproachEditorPage.jsx';
 
 const router = createBrowserRouter([
-    {
-        path: '/',
-        element: <App />, 
-        children: [
-            { index: true, element: <HomePage /> },
-            { path: 'sobre', element: <AboutPage /> },
-            { path: 'blog/:slug', element: <BlogPostPage /> },
-            { path: 'solucoes/:slug', element: <SolutionPage /> },
-            { path: 'projetos/:slug', element: <ProjectPage /> },
-        ],
-    },
-    { path: '/login', element: <LoginPage /> },
-    {
-        path: '/admin',
-        element: <ProtectedRoute />,
-        children: [
-            {
-                element: <AdminLayout />, 
-                children: [
-                    { path: 'dashboard', element: <HomeLayoutEditor /> },
+  {
+    path: '/',
+    element: <App />, 
+    children: [
+      { index: true, element: <HomePage /> },
+      { path: 'sobre', element: <AboutPage /> },
+      { path: 'blog/:slug', element: <BlogPostPage /> },
+      { path: 'solucoes/:slug', element: <SolutionPage /> },
+      { path: 'projetos/:slug', element: <ProjectPage /> },
+    ],
+  },
+  { path: '/login', element: <LoginPage /> },
+  {
+    path: '/admin',
+    element: <ProtectedRoute />,
+    children: [
+      {
+        element: <AdminLayout />, 
+        children: [
+          { path: 'dashboard', element: <HomeLayoutEditor /> },
                     { path: 'approach-blocks', element: <ApproachEditorPage /> },
-                    { path: 'messages', element: <MessagesPage /> },
+          { path: 'messages', element: <MessagesPage /> },
                     { path: 'users', element: <UserManagementPage /> },
                     { path: 'sobre', element: <AboutPageEditor /> },
-                    { path: 'settings', element: <SettingsPage /> },
-                    { path: 'projetos', element: <ProjectListPage /> },
-section
-                    { path: 'projetos/editar/:id', element: <ProjectFormPage /> },
-                    { path: 'solucoes', element: <SolutionListPage /> },
-                    { path: 'solucoes/novo', element: <SolutionFormPage /> },
-                    { path: 'solucoes/editar/:id', element: <SolutionFormPage /> },
-                    { path: 'artigos', element: <ArticleListPage /> },
-                    { path: 'artigos/novo', element: <ArticleFormPage /> },
-                    { path: 'artigos/editar/:id', element: <ArticleFormPage /> },
-                ]
-            }
-        ]
-    }
+          { path: 'settings', element: <SettingsPage /> },
+          { path: 'projetos', element: <ProjectListPage /> },
+          { path: 'projetos/novo', element: <ProjectFormPage /> },
+          { path: 'projetos/editar/:id', element: <ProjectFormPage /> },
+          { path: 'solucoes', element: <SolutionListPage /> },
+          { path: 'solucoes/novo', element: <SolutionFormPage /> },
+          { path: 'solucoes/editar/:id', element: <SolutionFormPage /> },
+          { path: 'artigos', element: <ArticleListPage /> },
+          { path: 'artigos/novo', element: <ArticleFormPage /> },
+          { path: 'artigos/editar/:id', element: <ArticleFormPage /> },
+        ]
+      }
+    ]
+  }
 ]);
 
 ReactDOM.createRoot(document.getElementById('root')).render(
-    <React.StrictMode>
+  <React.StrictMode>
         <HelmetProvider>
-            <AuthProvider>
+        <AuthProvider>
                 <HomeContentProvider>
-                    <RouterProvider router={router} />
+              <RouterProvider router={router} />
                 </HomeContentProvider>
-            </AuthProvider>
+        </AuthProvider>
         </HelmetProvider>
-    </React.StrictMode>
+  </React.StrictMode>
 );
