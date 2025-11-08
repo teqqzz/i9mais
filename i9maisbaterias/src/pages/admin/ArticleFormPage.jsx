@@ -1,4 +1,4 @@
-import React, { useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { API_URL } from '@/config';
 import SunEditor from 'suneditor-react';
@@ -21,11 +21,11 @@ export function ArticleFormPage() {
     const [metaDescription, setMetaDescription] = useState('');
     const [publishDate, setPublishDate] = useState(new Date().toISOString().split('T')[0]);
 
+
+    const [isMetaTitleLocked, setIsMetaTitleLocked] = useState(false);
+    const [isMetaDescLocked, setIsMetaDescLocked] = useState(false);
+
   useEffect(() => {
-    if (!isEditing) {
-      setLoading(false);
-      return;
-    }
     if (isEditing) {
       setLoading(true);
       fetch(`${API_URL}/api/artigos/admin/${id}`, { credentials: 'include' }) 
@@ -37,9 +37,17 @@ export function ArticleFormPage() {
           setContent(data.content || '');
           setImageStyle(data.image_style);
           setCurrentImageUrl(data.image_url);
-                      setMetaTitle(data.meta_title || '');
-                      setMetaDescription(data.meta_description || '');
                       setPublishDate(new Date(data.publish_date || Date.now()).toISOString().split('T')[0]);
+
+            
+                      if (data.meta_title) {
+                        setMetaTitle(data.meta_title);
+                        setIsMetaTitleLocked(true);
+                      }
+                      if (data.meta_description) {
+                        setMetaDescription(data.meta_description);
+                        setIsMetaDescLocked(true);
+                      }
         })
         .catch(err => setError(err.message))
         .finally(() => setLoading(false));
@@ -47,18 +55,33 @@ export function ArticleFormPage() {
   }, [id, isEditing]);
 
 
+    useEffect(() => {
+        if (!isMetaTitleLocked) {
+            setMetaTitle(title.substring(0, 60)); 
+        }
+    }, [title, isMetaTitleLocked]);
+
+
+    useEffect(() => {
+        if (!isMetaDescLocked) {
+            setMetaDescription(summary.substring(0, 160)); 
+        }
+    }, [summary, isMetaDescLocked]);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
     setLoading(true);
     const formData = new FormData();
+        
+
     formData.append('title', title);
     formData.append('summary', summary);
     formData.append('content', content);
     formData.append('image_style', imageStyle);
     formData.append('publish_date', publishDate);
-        formData.append('meta_title', metaTitle);
-        formData.append('meta_description', metaDescription);
+        formData.append('meta_title', metaTitle || title.substring(0, 60)); 
+        formData.append('meta_description', metaDescription || summary.substring(0, 160)); 
     
     if (newImageFile) {
       formData.append('image', newImageFile);
@@ -70,11 +93,7 @@ export function ArticleFormPage() {
     const method = isEditing ? 'PUT' : 'POST';
 
     try {
-      const response = await fetch(url, {
-        method: method,
-        body: formData,
-        credentials: 'include', 
-      });
+      const response = await fetch(url, { method: method, body: formData, credentials: 'include' });
       const data = await response.json();
       if (!data.success) throw new Error(data.error || 'Falha ao salvar o artigo');
       navigate('/admin/artigos');
@@ -117,14 +136,30 @@ export function ArticleFormPage() {
                   <textarea rows="4" value={summary} onChange={(e) => setSummary(e.target.value)}></textarea>
                 </div>
 
-                                <h4 className="form-subtitle" style={{gridColumn: '1 / -1'}}>Campos de SEO</h4>
+                                <h4 className="form-subtitle" style={{gridColumn: '1 / -1'}}>Campos de SEO (Automático)</h4>
                                 <div className="form-group full-width">
                   <label>Meta Título (SEO)</label>
-                  <input type="text" value={metaTitle} onChange={(e) => setMetaTitle(e.target.value)} placeholder="Título que aparecerá no Google (max 60 chars)" />
+                  <input 
+                                        type="text" 
+                                        value={metaTitle} 
+                                        onChange={(e) => {
+                                            setMetaTitle(e.target.value);
+                                            setIsMetaTitleLocked(true); 
+                                        }} 
+                                        placeholder="Preenchido pelo Título (max 60 chars)" 
+                                    />
                 </div>
                                 <div className="form-group full-width">
                   <label>Meta Descrição (SEO)</label>
-                  <textarea rows="3" value={metaDescription} onChange={(e) => setMetaDescription(e.target.value)} placeholder="Descrição que aparecerá no Google (max 160 chars)"></textarea>
+                  <textarea 
+                                        rows="3" 
+                                        value={metaDescription} 
+                                        onChange={(e) => {
+                                            setMetaDescription(e.target.value);
+                                            setIsMetaDescLocked(true); 
+                                        }} 
+                                        placeholder="Preenchido pelo Resumo (max 160 chars)"
+                                    ></textarea>
                 </div>
 
                 <div className="form-group full-width">
