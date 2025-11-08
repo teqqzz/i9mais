@@ -11,7 +11,6 @@ import { ImpactDashboard } from "../components/ImpactDashboard";
 import { RoiCalculator } from "../components/RoiCalculator";
 import { SavingsCalculator } from "../components/SavingsCalculator";
 
-// 1. Componente para o novo "Bloco de Texto Customizado"
 function CustomTextBlock({ content }) {
     return (
         <section className="unique-approach-section" style={{ backgroundColor: 'var(--background-light)' }}>
@@ -27,7 +26,6 @@ function CustomTextBlock({ content }) {
     );
 }
 
-// 2. Mapeia as chaves do banco para os componentes React
 const componentMap = {
     hero: (content) => <Hero content={content} />,
     solutions: () => <SolutionsSection />,
@@ -52,7 +50,7 @@ const componentMap = {
     ),
     blog: () => <BlogCarousel />,
     contact: () => <ContactAndAbout />,
-    custom_text: (content) => <CustomTextBlock content={content} />, // Mapeia o novo bloco
+    custom_text: (content) => <CustomTextBlock content={content} />,
 };
 
 export function HomePage() {
@@ -62,13 +60,23 @@ export function HomePage() {
     useEffect(() => {
         setIsLoading(true);
         fetch(`${API_URL}/api/home-layout`)
-            .then(res => res.json())
+            .then(res => {
+                if (!res.ok) { // Adiciona verificação de erro
+                    throw new Error(`Falha no fetch: ${res.status}`);
+                }
+                return res.json();
+            })
             .then(data => {
-                setLayout(data);
+                if (Array.isArray(data)) { // Garante que a resposta é um array
+                    setLayout(data);
+                } else {
+                    setLayout([]); // Define como array vazio em caso de erro
+                }
                 setIsLoading(false);
             })
             .catch(err => {
                 console.error("Erro ao buscar layout da home:", err);
+                setLayout([]); // Define como array vazio em caso de erro
                 setIsLoading(false);
             });
     }, []);
@@ -80,10 +88,8 @@ export function HomePage() {
    return (
       <>
             {layout.map(section => {
-                // Acha o componente correspondente no mapa
                 const Component = componentMap[section.component_key];
-                // Renderiza o componente, passando os dados de conteúdo para ele
-                return Component ? Component(section.content_data) : null;
+                return Component ? <Component key={section.id} content={section.content_data} /> : null;
             })}
       </>
    );
