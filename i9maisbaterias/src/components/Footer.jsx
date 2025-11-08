@@ -1,16 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import { API_URL } from '@/config';
-import { useHomeContent } from '../hooks/useHomeContent';
 
 export function Footer() {
-  const { homeContent, isLoading } = useHomeContent();
+  const [footerContent, setFooterContent] = useState(null);
  const [developerCreditHtml, setDeveloperCreditHtml] = useState('');
 
   useEffect(() => {
-    // Busca o conteúdo estático (Hero/Footer) - movido para o HomeContentProvider
+    // Busca o conteúdo do rodapé (que está no JSON da Home)
+    fetch(`${API_URL}/api/page/home`)
+      .then(res => res.json())
+      .then(data => setFooterContent(data))
+      .catch(err => console.error("Falha ao carregar conteúdo do rodapé", err));
   }, []);
 
  useEffect(() => {
+    // Lógica para os créditos ofuscados
     const encodedCredit = 'RGVzZW52b2x2aWRvIHBvciA8YSBocmVmPSJodHRwczovL2dpdGh1Yi5jb20vdGVxcXp6IiB0YXJnZXQ9Il9ibGFuayIgcmVsPSJub29wZW5lciBub3JlZmVycmVyIj5MdWNhczwvYT4=';
   try { setDeveloperCreditHtml(atob(encodedCredit)); } catch (e) { console.error("Falha ao decodificar os créditos.", e); }
   const style = 'font-size: 14px; background: #021029; color: #fff; padding: 5px 10px; border-radius: 5px;';
@@ -23,7 +27,7 @@ return (
   <div className="footer-top">
   <div className="footer-about">
    <img src="/images/logo-i9+.png" alt="Logo i9+ Baterias" className="footer-logo" />
-   <p>{isLoading || !homeContent ? 'Carregando...' : homeContent.footerAbout}</p>
+   <p>{footerContent ? footerContent.footerAbout : 'Carregando...'}</p>
   </div>
   <div className="footer-links">
    <h4>Navegação</h4>
@@ -38,8 +42,8 @@ return (
   </div>
   <div className="footer-contact">
    <h4>Contato</h4>
-   <p>{isLoading || !homeContent ? '...' : homeContent.footerContactAddress}</p>
-   <p>{isLoading || !homeContent ? '...' : homeContent.footerContactEmail}</p>
+   <p>{footerContent ? footerContent.footerContactAddress : '...'}</p>
+   <p>{footerContent ? footerContent.footerContactEmail : '...'}</p>
   </div>
   <div className="footer-social">
       <h4>Vamos nos conectar?</h4>

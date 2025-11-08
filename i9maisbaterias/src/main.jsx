@@ -6,7 +6,6 @@ import './index.css';
 import './admin.css';
 
 import { AuthProvider } from './context/AuthProvider.jsx';
-import { HomeContentProvider } from './context/HomeContentProvider.jsx';
 import App from './App.jsx';
 import { AdminLayout } from './layouts/AdminLayout.jsx';
 import { ProtectedRoute } from './components/ProtectedRoute.jsx';
@@ -78,9 +77,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
         <HelmetProvider>
         <AuthProvider>
-                <HomeContentProvider>
-              <RouterProvider router={router} />
-                </HomeContentProvider>
+          <RouterProvider router={router} />
         </AuthProvider>
         </HelmetProvider>
   </React.StrictMode>
