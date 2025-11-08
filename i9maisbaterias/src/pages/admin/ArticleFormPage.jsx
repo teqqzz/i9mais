@@ -21,7 +21,6 @@ export function ArticleFormPage() {
     const [metaDescription, setMetaDescription] = useState('');
     const [publishDate, setPublishDate] = useState(new Date().toISOString().split('T')[0]);
 
-
     const [isMetaTitleLocked, setIsMetaTitleLocked] = useState(false);
     const [isMetaDescLocked, setIsMetaDescLocked] = useState(false);
 
@@ -38,8 +37,6 @@ export function ArticleFormPage() {
           setImageStyle(data.image_style);
           setCurrentImageUrl(data.image_url);
                       setPublishDate(new Date(data.publish_date || Date.now()).toISOString().split('T')[0]);
-
-            
                       if (data.meta_title) {
                         setMetaTitle(data.meta_title);
                         setIsMetaTitleLocked(true);
@@ -54,17 +51,15 @@ export function ArticleFormPage() {
     }
   }, [id, isEditing]);
 
-
     useEffect(() => {
         if (!isMetaTitleLocked) {
-            setMetaTitle(title.substring(0, 60)); 
+            setMetaTitle(title.substring(0, 60));
         }
     }, [title, isMetaTitleLocked]);
 
-
     useEffect(() => {
         if (!isMetaDescLocked) {
-            setMetaDescription(summary.substring(0, 160)); 
+            setMetaDescription(summary.substring(0, 160));
         }
     }, [summary, isMetaDescLocked]);
 
@@ -73,15 +68,13 @@ export function ArticleFormPage() {
     setError('');
     setLoading(true);
     const formData = new FormData();
-        
-
     formData.append('title', title);
     formData.append('summary', summary);
     formData.append('content', content);
     formData.append('image_style', imageStyle);
     formData.append('publish_date', publishDate);
-        formData.append('meta_title', metaTitle || title.substring(0, 60)); 
-        formData.append('meta_description', metaDescription || summary.substring(0, 160)); 
+        formData.append('meta_title', metaTitle || title.substring(0, 60));
+        formData.append('meta_description', metaDescription || summary.substring(0, 160));
     
     if (newImageFile) {
       formData.append('image', newImageFile);
@@ -136,7 +129,10 @@ export function ArticleFormPage() {
                   <textarea rows="4" value={summary} onChange={(e) => setSummary(e.target.value)}></textarea>
                 </div>
 
-                                <h4 className="form-subtitle" style={{gridColumn: '1 / -1'}}>Campos de SEO (Automático)</h4>
+                                <h4 className="form-subtitle" style={{gridColumn: '1 / -1'}}>Campos de SEO (Otimização para Google)</h4>
+                                <p style={{gridColumn: '1 / -1', fontSize: '0.9rem', color: '#555', marginTop: '-10px', marginBottom: '15px'}}>
+                                    (Explicação: Estes campos definem o título e a descrição que aparecem no Google. Eles já são preenchidos automaticamente. Só altere se quiser que o texto no Google seja *diferente* do Título/Resumo principal.)
+                                </p>
                                 <div className="form-group full-width">
                   <label>Meta Título (SEO)</label>
                   <input 
@@ -144,7 +140,7 @@ export function ArticleFormPage() {
                                         value={metaTitle} 
                                         onChange={(e) => {
                                             setMetaTitle(e.target.value);
-                                            setIsMetaTitleLocked(true); 
+                                            setIsMetaTitleLocked(true);
                                         }} 
                                         placeholder="Preenchido pelo Título (max 60 chars)" 
                                     />
@@ -156,7 +152,7 @@ export function ArticleFormPage() {
                                         value={metaDescription} 
                                         onChange={(e) => {
                                             setMetaDescription(e.target.value);
-                                            setIsMetaDescLocked(true); 
+                                            setIsMetaDescLocked(true);
                                         }} 
                                         placeholder="Preenchido pelo Resumo (max 160 chars)"
                                     ></textarea>

@@ -3,7 +3,7 @@ import { useParams, useNavigate, Link } from 'react-router-dom';
 import { API_URL } from '@/config';
 import SunEditor from 'suneditor-react';
 import 'suneditor/dist/css/suneditor.min.css'; 
-import { formatImageUrl } from '../../utils/formatImageUrl'; // CORREÇÃO: Importação adicionada
+import { formatImageUrl } from '../../utils/formatImageUrl';
 
 export function SolutionFormPage() {
   const { id } = useParams(); 
@@ -21,6 +21,9 @@ export function SolutionFormPage() {
     const [metaDescription, setMetaDescription] = useState('');
     const [publishDate, setPublishDate] = useState(new Date().toISOString().split('T')[0]);
 
+    const [isMetaTitleLocked, setIsMetaTitleLocked] = useState(false);
+    const [isMetaDescLocked, setIsMetaDescLocked] = useState(false);
+
   useEffect(() => {
     if (isEditing) {
       setLoading(true);
@@ -33,14 +36,33 @@ export function SolutionFormPage() {
           setContent(data.content || '');
           setImageStyle(data.image_style);
           setCurrentImageUrl(data.image_url);
-                      setMetaTitle(data.meta_title || '');
-                      setMetaDescription(data.meta_description || '');
                       setPublishDate(new Date(data.publish_date || Date.now()).toISOString().split('T')[0]);
+                      
+                      if (data.meta_title) {
+                        setMetaTitle(data.meta_title);
+                        setIsMetaTitleLocked(true);
+                      }
+                      if (data.meta_description) {
+                        setMetaDescription(data.meta_description);
+                        setIsMetaDescLocked(true);
+                      }
         })
         .catch(err => setError(err.message))
         .finally(() => setLoading(false));
     }
   }, [id, isEditing]);
+
+    useEffect(() => {
+        if (!isMetaTitleLocked) {
+            setMetaTitle(title.substring(0, 60));
+        }
+    }, [title, isMetaTitleLocked]);
+
+    useEffect(() => {
+        if (!isMetaDescLocked) {
+            setMetaDescription(summary.substring(0, 160));
+        }
+    }, [summary, isMetaDescLocked]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -52,8 +74,8 @@ export function SolutionFormPage() {
     formData.append('content', content);
     formData.append('image_style', imageStyle);
     formData.append('publish_date', publishDate);
-        formData.append('meta_title', metaTitle);
-        formData.append('meta_description', metaDescription);
+        formData.append('meta_title', metaTitle || title.substring(0, 60));
+        formData.append('meta_description', metaDescription || summary.substring(0, 160));
     
     if (newImageFile) {
       formData.append('image', newImageFile);
@@ -75,7 +97,7 @@ export function SolutionFormPage() {
       navigate('/admin/solucoes');
     } catch (err) {
       setError(err.message);
-    } finally {
+e   } finally {
       setLoading(false);
     }
   };
@@ -105,20 +127,39 @@ export function SolutionFormPage() {
                   <select value={imageStyle} onChange={(e) => setImageStyle(e.target.value)}>
                     <option value="cover">Cover</option>
                     <option value="contain">Contain</option>
-                  </select>
+Â                </select>
                 </div>
                 <div className="form-group full-width">
                                     <label>Resumo (Para o card)</label>
                   <textarea rows="4" value={summary} onChange={(e) => setSummary(e.target.value)}></textarea>
                 </div>
-                                <h4 className="form-subtitle" style={{gridColumn: '1 / -1'}}>Campos de SEO</h4>
+                                <h4 className="form-subtitle" style={{gridColumn: '1 / -1'}}>Campos de SEO (Otimização para Google)</h4>
+                                <p style={{gridColumn: '1 / -1', fontSize: '0.9rem', color: '#555', marginTop: '-10px', marginBottom: '15px'}}>
+                                    (Explicação: Estes campos definem o título e a descrição que aparecem no Google. Eles já são preenchidos automaticamente. Só altere se quiser que o texto no Google seja *diferente* do Título/Resumo principal.)
+                                </p>
                                 <div className="form-group full-width">
                   <label>Meta Título (SEO)</label>
-                  <input type="text" value={metaTitle} onChange={(e) => setMetaTitle(e.target.value)} />
+                  <input 
+                                        type="text" 
+                                        value={metaTitle} 
+                                        onChange={(e) => {
+                                            setMetaTitle(e.target.value);
+                                            setIsMetaTitleLocked(true);
+                                        }} 
+                                        placeholder="Preenchido pelo Título (max 60 chars)"
+                                    />
                 </div>
                                 <div className="form-group full-width">
                   <label>Meta Descrição (SEO)</label>
-                  <textarea rows="3" value={metaDescription} onChange={(e) => setMetaDescription(e.target.value)}></textarea>
+                                    <textarea 
+                                        rows="3" 
+                                        value={metaDescription} 
+                                        onChange={(e) => {
+                                            setMetaDescription(e.target.value);
+                                            setIsMetaDescLocked(true);
+                                        }} 
+                                        placeholder="Preenchido pelo Resumo (max 160 chars)"
+                                    ></textarea>
                 </div>
                 <div className="form-group full-width">
                                     <label>Imagem Principal</label>
@@ -126,20 +167,19 @@ export function SolutionFormPage() {
                   {isEditing && currentImageUrl && !newImageFile && (
                     <div>
                       <p>Imagem Atual:</p>
-                      <img src={formatImageUrl(currentImageUrl)} alt="Preview" className="image-preview" />
-Â                   </div>
+Â                     <img src={formatImageUrl(currentImageUrl)} alt="Preview" className="image-preview" />
+                    </div>
                   )}
-                </div>
+it             </div>
                 <div className="form-group full-width">
                   <label>Conteúdo Completo da Página</label>
-                  <SunEditor setContents={content} onChange={setContent} height="400" />
+source
                 </div>
-              </div>
+             s </div>
               {error && <p style={{ color: 'red', marginTop: '20px' }}>{error}</p>}
             </div>
             <div className="form-actions">
-              <button type="submit" className="admin-btn primary" disabled={loading}>{loading ? 'Salvando...' : 'Salvar Solução'}</button>
-              <Link to="/admin/solucoes" className="admin-btn secondary">Cancelar</Link>
+all
             </div>
           </form>
         </div>

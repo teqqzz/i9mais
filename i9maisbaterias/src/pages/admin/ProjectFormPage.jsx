@@ -3,7 +3,7 @@ import { useParams, useNavigate, Link } from 'react-router-dom';
 import { API_URL } from '@/config';
 import SunEditor from 'suneditor-react';
 import 'suneditor/dist/css/suneditor.min.css'; 
-import { formatImageUrl } from '../../utils/formatImageUrl'; // CORREÇÃO: Importação adicionada
+import { formatImageUrl } from '../../utils/formatImageUrl';
 
 const formatDateForInput = (dateString) => {
   if (!dateString) return new Date().toISOString().split('T')[0]; 
@@ -25,6 +25,8 @@ export function ProjectFormPage() {
   const [content, setContent] = useState('');
     const [metaTitle, setMetaTitle] = useState('');
     const [metaDescription, setMetaDescription] = useState('');
+    const [isMetaTitleLocked, setIsMetaTitleLocked] = useState(false);
+    const [isMetaDescLocked, setIsMetaDescLocked] = useState(false);
 
   useEffect(() => {
     if (isEditing) {
@@ -39,13 +41,31 @@ export function ProjectFormPage() {
           setImageStyle(data.image_style);
           setCurrentImageUrl(data.image_url);
           setPublishDate(formatDateForInput(data.publish_date)); 
-                      setMetaTitle(data.meta_title || '');
-                      setMetaDescription(data.meta_description || '');
+                      if (data.meta_title) {
+                        setMetaTitle(data.meta_title);
+                        setIsMetaTitleLocked(true);
+                      }
+                      if (data.meta_description) {
+                        setMetaDescription(data.meta_description);
+                        setIsMetaDescLocked(true);
+                      }
         })
         .catch(err => setError(err.message))
         .finally(() => setLoading(false));
     }
   }, [id, isEditing]);
+
+    useEffect(() => {
+        if (!isMetaTitleLocked) {
+            setMetaTitle(title.substring(0, 60));
+        }
+    }, [title, isMetaTitleLocked]);
+
+    useEffect(() => {
+        if (!isMetaDescLocked) {
+            setMetaDescription(summary.substring(0, 160));
+        }
+    }, [summary, isMetaDescLocked]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -56,8 +76,8 @@ export function ProjectFormPage() {
     formData.append('content', content);
     formData.append('image_style', imageStyle);
     formData.append('publish_date', publishDate); 
-    formData.append('meta_title', metaTitle);
-    formData.append('meta_description', metaDescription);
+    formData.append('meta_title', metaTitle || title.substring(0, 60));
+    formData.append('meta_description', metaDescription || summary.substring(0, 160));
     
     if (newImageFile) {
       formData.append('image', newImageFile);
@@ -116,14 +136,33 @@ export function ProjectFormPage() {
                   <textarea rows="4" value={summary} onChange={(e) => setSummary(e.target.value)}></textarea>
                 </div>
                 
-                                <h4 className="form-subtitle" style={{gridColumn: '1 / -1'}}>Campos de SEO</h4>
+                                <h4 className="form-subtitle" style={{gridColumn: '1 / -1'}}>Campos de SEO (Otimização para Google)</h4>
+                                <p style={{gridColumn: '1 / -1', fontSize: '0.9rem', color: '#555', marginTop: '-10px', marginBottom: '15px'}}>
+                                    (Explicação: Estes campos definem o título e a descrição que aparecem no Google. Eles já são preenchidos automaticamente. Só altere se quiser que o texto no Google seja *diferente* do Título/Resumo principal.)
+                                </p>
                                 <div className="form-group full-width">
                   <label>Meta Título (SEO)</label>
-                  <input type="text" value={metaTitle} onChange={(e) => setMetaTitle(e.target.value)} />
+                  <input 
+                                        type="text" 
+                                        value={metaTitle} 
+                                        onChange={(e) => {
+                                            setMetaTitle(e.target.value);
+                                            setIsMetaTitleLocked(true);
+                                        }} 
+                                        placeholder="Preenchido pelo Título (max 60 chars)"
+                                    />
                 </div>
                                 <div className="form-group full-width">
                   <label>Meta Descrição (SEO)</label>
-                  <textarea rows="3" value={metaDescription} onChange={(e) => setMetaDescription(e.target.value)}></textarea>
+                  <textarea 
+                                        rows="3" 
+                                        value={metaDescription} 
+                                        onChange={(e) => {
+                                            setMetaDescription(e.target.value);
+                                            setIsMetaDescLocked(true);
+                                        }} 
+                                        placeholder="Preenchido pelo Resumo (max 160 chars)"
+                                    ></textarea>
                 </div>
               
                 <div className="form-group full-width">
