@@ -18,7 +18,9 @@ import {
     useSortable,
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { FaEye, FaEyeSlash, FaGripLines, FaLock, FaPencilAlt, FaPlus, FaTimes } from 'react-icons/fa';
+import { FaEye, FaEyeSlash, FaGripLines, FaLock, FaPencilAlt, FaPlus, FaTimes, FaTrash } from 'react-icons/fa';
+import SunEditor from 'suneditor-react';
+import 'suneditor/dist/css/suneditor.min.css'; 
 import '../../admin.css';
 
 function EditSectionModal({ section, onClose, onSave }) {
@@ -30,6 +32,10 @@ function EditSectionModal({ section, onClose, onSave }) {
         setContentData(prev => ({ ...prev, [name]: value }));
     };
 
+    const handleSunEditorChange = (name, content) => {
+        setContentData(prev => ({ ...prev, [name]: content }));
+    };
+
     const handleApproachBlockChange = (index, field, value) => {
         const newBlocks = [...(contentData.blocks || [])];
         newBlocks[index][field] = value;
@@ -37,7 +43,7 @@ function EditSectionModal({ section, onClose, onSave }) {
     };
 
     const handleAddApproachBlock = () => {
-        const newBlock = { id: Date.now(), icon: '🆕', title: 'Novo Bloco', text: 'Clique para editar.' };
+        const newBlock = { id: Date.now(), icon: '🆕', title: 'Novo Bloco', text: '<p>Clique para editar.</p>' };
         setContentData(prev => ({ ...prev, blocks: [...(prev.blocks || []), newBlock] }));
     };
 
@@ -70,7 +76,14 @@ function EditSectionModal({ section, onClose, onSave }) {
                                 <div className="form-grid">
                                     <div className="form-group" style={{maxWidth: '100px'}}><label>Ícone</label><input type="text" value={block.icon} onChange={(e) => handleApproachBlockChange(index, 'icon', e.target.value)} /></div>
                                     <div className="form-group" style={{gridColumn: 'span 2'}}><label>Título do Bloco</label><input type="text" value={block.title} onChange={(e) => handleApproachBlockChange(index, 'title', e.target.value)} /></div>
-                                    <div className="form-group full-width"><label>Texto</label><textarea rows="3" value={block.text} onChange={(e) => handleApproachBlockChange(index, 'text', e.target.value)}></textarea></div>
+                                    <div className="form-group full-width"><label>Texto</label>
+                                        <SunEditor 
+                                            setContents={block.text} 
+                                            onChange={(content) => handleApproachBlockChange(index, 'text', content)} 
+                                            height="150"
+                                            setOptions={{ buttonList: [['undo', 'redo'], ['bold', 'italic', 'underline'], ['removeFormat']] }}
+                                        />
+                                    </div>
                                 </div>
                                 <button type="button" onClick={() => handleRemoveApproachBlock(block.id)} className="admin-btn danger small" style={{marginTop: '10px'}}><FaTrash /> Remover Bloco</button>
                             </div>
@@ -82,7 +95,22 @@ function EditSectionModal({ section, onClose, onSave }) {
                 return (
                     <>
                         <div className="form-group"><label>Título da Seção</label><input type="text" name="title" value={contentData.title} onChange={handleChange} /></div>
-                        <div className="form-group"><label>Conteúdo (HTML)</label><textarea name="content" rows="10" value={contentData.content} onChange={handleChange} placeholder="Você pode usar HTML aqui, ex: <p>Texto</p> <h3>Subtítulo</h3>"></textarea></div>
+                        <div className="form-group"><label>Conteúdo</label>
+                            <SunEditor 
+                                setContents={contentData.content} 
+                                onChange={(newContent) => handleSunEditorChange('content', newContent)}
+                                height="250"
+                                setOptions={{
+                                    buttonList: [
+                                        ['undo', 'redo'],
+                                        ['font', 'fontSize', 'formatBlock'],
+                                        ['bold', 'italic', 'underline', 'strike'],
+                                        ['link', 'list', 'align'],
+                                        ['removeFormat']
+                                    ]
+                                }}
+                            />
+                        </div>
                     </>
                 );
             case 'contact':
@@ -133,7 +161,7 @@ function SortableItem({ id, item, onToggle, onEdit, onDelete }) {
             <span className="item-title">{item.title}</span>
             
             {item.edit_path ? (
-                <Link to={item.edit_path} className="admin-btn small secondary" title="Gerenciar Itens"><FaPencilAlt /></Link>
+                <Link to={item.edit_path} className="admin-btn small secondary" title="Gerenciar Itens (Projetos, Artigos, etc.)"><FaPencilAlt /></Link>
             ) : (
                 <button onClick={onEditClick} className="admin-btn small secondary" title="Editar Conteúdo"><FaPencilAlt /></button>
             )}
@@ -165,6 +193,7 @@ export function HomeLayoutEditor() {
         setIsLoading(true);
         try {
             const res = await fetch(`${API_URL}/api/admin/home-layout`, { credentials: 'include' });
+            if (!res.ok) throw new Error('Falha ao buscar layout');
             const data = await res.json();
             setSections(data);
         } catch { 
