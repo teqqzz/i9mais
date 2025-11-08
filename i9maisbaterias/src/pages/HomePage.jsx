@@ -1,5 +1,5 @@
 import React from "react";
-import { useHomeContent } from "../hooks/useHomeContent";
+import { API_URL } from '@/config';
 import { LoadingSpinner } from "../components/LoadingSpinner";
 import { Hero } from "../components/Hero";
 import { SolutionsSection } from "../components/SolutionsSection";
@@ -10,11 +10,14 @@ import { UniqueApproachSection } from "../components/UniqueApproachSection";
 import { ImpactDashboard } from "../components/ImpactDashboard";
 import { RoiCalculator } from "../components/RoiCalculator";
 import { SavingsCalculator } from "../components/SavingsCalculator";
+import { useHomeContent } from "../hooks/useHomeContent";
 
 function CustomTextBlock({ content }) {
     if (!content) return null;
     return (
-        <section className="unique-approach-section" style={{ backgroundColor: 'var(--background-light)' }}>
+        // A classe "unique-approach-section" já tem o padding correto.
+        // O style={{...}} que forçava o fundo branco foi removido daqui.
+        <section className="unique-approach-section"> 
             <div className="container">
                 <h2 className="section-title">{content.title}</h2>
                 <div 
