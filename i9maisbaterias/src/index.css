@@ -1127,3 +1127,28 @@ body.internal-page {
   color: #fff; 
   text-decoration: underline;
 }
+
+/* --- Estilos do Spinner de Carregamento --- */
+.loading-spinner-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  min-height: 200px; 
+  padding: 40px;
+}
+
+.loading-spinner {
+  width: 50px;
+  height: 50px;
+  border: 5px solid rgba(2, 16, 41, 0.1); 
+  border-top-color: var(--primary-blue); 
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

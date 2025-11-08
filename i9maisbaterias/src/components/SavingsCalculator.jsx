@@ -1,28 +1,27 @@
 import React, { useState, useEffect } from "react";
-import { API_URL } from "@/config";
+import { API_URL } from '@/config';
+import { LoadingSpinner } from './LoadingSpinner'; 
 
 function formatCurrency(value) {
-  return new Intl.NumberFormat("pt-BR", {
-    style: "currency",
-    currency: "BRL",
-  }).format(value);
+ return new Intl.NumberFormat("pt-BR", {
+  style: "currency",
+  currency: "BRL",
+ }).format(value);
 }
 
 export function SavingsCalculator() {
-  const [formData, setFormData] = useState({
-    quantity: 10,
-    frequencyInYears: 2,
-  });
+ const [formData, setFormData] = useState({
+  quantity: 10,
+  frequencyInYears: 2,
+ });
   const [precos, setPrecos] = useState(null);
-  const [result, setResult] = useState(null);
+ const [result, setResult] = useState(null);
 
   useEffect(() => {
     fetch(`${API_URL}/api/calculator-prices`)
-      .then((res) => res.json())
-      .then((data) => setPrecos(data))
-      .catch((err) =>
-        console.error("Falha ao carregar preços da calculadora", err)
-      );
+      .then(res => res.json())
+      .then(data => setPrecos(data))
+      .catch(err => console.error("Falha ao carregar preços da calculadora", err));
   }, []);
 
   const handleChange = (e) => {
@@ -30,102 +29,68 @@ export function SavingsCalculator() {
     setFormData((prev) => ({ ...prev, [name]: parseInt(value, 10) || 0 }));
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (!precos) return;
+ const handleSubmit = (e) => {
+  e.preventDefault();
+    if (!precos) return; 
 
-    const savingsPerBattery = precos.nova - precos.i9plus;
-    const totalSavings = formData.quantity * savingsPerBattery;
-    const totalWasteAvoided = formData.quantity * precos.peso_kg;
-    const savingsPerCycle = totalSavings;
+  const savingsPerBattery = precos.nova - precos.i9plus;
+  const totalSavings = formData.quantity * savingsPerBattery;
+  const totalWasteAvoided = formData.quantity * precos.peso_kg;
+  const savingsPerCycle = totalSavings;
 
-    setResult({
-      savings: savingsPerCycle,
-      waste: totalWasteAvoided,
-      cycle: formData.frequencyInYears,
-    });
-  };
-
+  setResult({
+   savings: savingsPerCycle,
+   waste: totalWasteAvoided,
+   cycle: formData.frequencyInYears,
+  });
+ };
+  
   if (!precos) {
     return (
       <div className="calculator-instance">
         <h3>Calculadora de Economia Simples</h3>
-        <p>Carregando dados da calculadora...</p>
+        <LoadingSpinner />
       </div>
     );
   }
 
-  return (
-    <div className="calculator-instance">
-      <h3>Calculadora de Economia Simples</h3>
-      <div
-        className="calculator-wrapper"
-        style={{ gridTemplateColumns: "1fr", gap: "20px" }}
-      >
-        <div className="calculator-content">
-          <p>
-            Descubra a economia direta e o impacto ambiental positivo ao
-            requalificar sua frota atual.
-          </p>
-        </div>
-        <div className="calculator-form-area">
-          <form onSubmit={handleSubmit} className="calculator-form">
-            <div className="form-group">
-              <label htmlFor="sav_quantity">
-                Nº de Baterias (empilhadeiras, etc)
-              </label>
-              <input
-                type="number"
-                id="sav_quantity"
-                name="quantity"
-                value={formData.quantity}
-                onChange={handleChange}
-                min="1"
-              />
-            </div>
-            <div className="form-group">
-              <label htmlFor="sav_frequency">Frequência de Troca (Anos)</label>
-              <input
-                type="number"
-                id="sav_frequency"
-                name="frequencyInYears"
-                value={formData.frequencyInYears}
-                onChange={handleChange}
-                min="1"
-              />
-            </div>
-            <button type="submit" className="cta-button">
-              Calcular Economia
-            </button>
-          </form>
-        </div>
-      </div>
-      {result && (
-        <div className="calculator-results active">
-          <h3>Resultados (Economia):</h3>
-          <div className="results-grid">
-            <div className="result-item">
-              <span className="result-value">
-                {formatCurrency(result.savings)}
-              </span>
-              <span className="result-label">
-                Economia direta a cada {result.cycle} anos.
-              </span>
-            </div>
-            <div className="result-item">
-              <span className="result-value">
-                {result.waste.toLocaleString("pt-BR")} kg
-              </span>
-              <span className="result-label">
-                Resíduos perigosos evitados (chumbo/lítio).
-              </span>
-            </div>
-          </div>
-          <p className="result-cta">
-            <a href="#contato">Transforme custo em lucro</a>
-          </p>
-        </div>
-      )}
+ return (
+  <div className="calculator-instance">
+   <h3>Calculadora de Economia Simples</h3>
+   <div className="calculator-wrapper" style={{ gridTemplateColumns: "1fr", gap: "20px" }} >
+    <div className="calculator-content">
+     <p>Descubra a economia direta e o impacto ambiental positivo ao requalificar sua frota atual.</p>
     </div>
-  );
+    <div className="calculator-form-area">
+     <form onSubmit={handleSubmit} className="calculator-form">
+      <div className="form-group">
+       <label htmlFor="sav_quantity">Nº de Baterias (empilhadeiras, etc)</label>
+       <input type="number" id="sav_quantity" name="quantity" value={formData.quantity} onChange={handleChange} min="1" />
+      </div>
+      <div className="form-group">
+       <label htmlFor="sav_frequency">Frequência de Troca (Anos)</label>
+       <input type="number" id="sav_frequency" name="frequencyInYears" value={formData.frequencyInYears} onChange={handleChange} min="1" />
+      </div>
+      <button type="submit" className="cta-button">Calcular Economia</button>
+     </form>
+    </div>
+   </div>
+   {result && (
+    <div className="calculator-results active">
+     <h3>Resultados (Economia):</h3>
+     <div className="results-grid">
+      <div className="result-item">
+       <span className="result-value">{formatCurrency(result.savings)}</span>
+       <span className="result-label">Economia direta a cada {result.cycle} anos.</span>
+      </div>
+      <div className="result-item">
+       <span className="result-value">{result.waste.toLocaleString("pt-BR")} kg</span>
+       <span className="result-label">Resíduos perigosos evitados (chumbo/lítio).</span>
+      </div>
+     </div>
+     <p className="result-cta"><a href="#contato">Transforme custo em lucro</a></p>
+    </div>
+   )}
+  </div>
+ );
 }

@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { API_URL } from '@/config';
+import { LoadingSpinner } from './LoadingSpinner'; // Importe o spinner
 
 function animateValue(setter, key, end, duration) {
   let startTimestamp = null;
@@ -17,14 +18,22 @@ function animateValue(setter, key, end, duration) {
 
 export function ImpactDashboard() {
   const [counters, setCounters] = useState({ mwh: 0, co2: 0, minerals: 0, cost: 0 });
-    const [finalValues, setFinalValues] = useState(null);
+    const [finalValues, setFinalValues] = useState(null); 
   const sectionRef = useRef(null);
+    const [isLoading, setIsLoading] = useState(true); 
 
     useEffect(() => {
+        setIsLoading(true);
         fetch(`${API_URL}/api/impact-data`)
             .then(res => res.json())
-            .then(data => setFinalValues(data))
-            .catch(err => console.error("Falha ao carregar dados de impacto:", err));
+            .then(data => {
+                setFinalValues(data);
+                setIsLoading(false); 
+            })
+            .catch(err => {
+                console.error("Falha ao carregar dados de impacto:", err);
+                setIsLoading(false); 
+            });
     }, []);
 
   useEffect(() => {
@@ -41,11 +50,9 @@ export function ImpactDashboard() {
     }, { threshold: 0.5 });
 
         const currentSectionRef = sectionRef.current;
-
     if (currentSectionRef) {
       observer.observe(currentSectionRef);
     }
-
     return () => {
           if (currentSectionRef) {
             observer.unobserve(currentSectionRef);
@@ -60,28 +67,32 @@ export function ImpactDashboard() {
           <h2>Nosso Impacto em Números</h2>
           <p>Dados quantitativos que provam nosso compromisso com a sustentabilidade.</p>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-          <div className="glass-card text-center">
-            <h3 className="text-5xl font-extrabold gradient-text">{counters.mwh.toLocaleString('pt-BR')}</h3>
-            <p className="mt-2 text-lg font-semibold">MWh Reinstalados</p>
-            <p className="text-sm text-gray-400">Energia armazenada em baterias de "Second Life".</p>
-          </div>
-          <div className="glass-card text-center">
-            <h3 className="text-5xl font-extrabold gradient-text">{counters.co2.toLocaleString('pt-BR')}</h3>
-            <p className="mt-2 text-lg font-semibold">Ton. de CO₂ Evitadas</p>
-            <p className="text-sm text-gray-400">Emissões prevenidas ao evitar a produção de baterias novas.</p>
-          </div>
-          <div className="glass-card text-center">
-            <h3 className="text-5xl font-extrabold gradient-text">{counters.minerals.toLocaleString('pt-BR')}</h3>
-            <p className="mt-2 text-lg font-semibold">Kg de Minerais Recuperados</p>
-            <p className="text-sm text-gray-400">Lítio, Cobalto e Níquel recuperados via hidrometalurgia.</p>
-          </div>
-          <div className="glass-card text-center">
-            <h3 className="text-5xl font-extrabold gradient-text">{counters.cost}%</h3>
-            <p className="mt-2 text-lg font-semibold">Redução Média de Custo</p>
-            <p className="text-sm text-gray-400">Economia para clientes que adotaram nossas soluções.</p>
-          </div>
-        </div>
+                {isLoading ? (
+                    <LoadingSpinner />
+                ) : (
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <div className="glass-card text-center">
+                  <h3 className="text-5xl font-extrabold gradient-text">{counters.mwh.toLocaleString('pt-BR')}</h3>
+                  <p className="mt-2 text-lg font-semibold">MWh Reinstalados</p>
+                  <p className="text-sm text-gray-400">Energia armazenada em baterias de "Second Life".</p>
+                </div>
+                <div className="glass-card text-center">
+                  <h3 className="text-5xl font-extrabold gradient-text">{counters.co2.toLocaleString('pt-BR')}</h3>
+                  <p className="mt-2 text-lg font-semibold">Ton. de CO₂ Evitadas</p>
+                  <p className="text-sm text-gray-400">Emissões prevenidas ao evitar a produção de baterias novas.</p>
+                </div>
+                <div className="glass-card text-center">
+                  <h3 className="text-5xl font-extrabold gradient-text">{counters.minerals.toLocaleString('pt-BR')}</h3>
+                  <p className="mt-2 text-lg font-semibold">Kg de Minerais Recuperados</p>
+                  <p className="text-sm text-gray-400">Lítio, Cobalto e Níquel recuperados via hidrometalurgia.</p>
+                </div>
+                <div className="glass-card text-center">
+                  <h3 className="text-5xl font-extrabold gradient-text">{counters.cost}%</h3>
+                  <p className="mt-2 text-lg font-semibold">Redução Média de Custo</p>
+                  <p className="text-sm text-gray-400">Economia para clientes que adotaram nossas soluções.</p>
+                </div>
+              </div>
+                )}
       </div>
     </section>
   );

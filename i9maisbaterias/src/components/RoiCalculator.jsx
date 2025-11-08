@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { API_URL } from '@/config';
+import { LoadingSpinner } from './LoadingSpinner';
 
 function formatCurrency(value) {
  return new Intl.NumberFormat("pt-BR", {
@@ -57,7 +58,7 @@ export function RoiCalculator() {
     return (
       <div className="calculator-instance">
         <h3>Calculadora de ROI Avançada</h3>
-        <p>Carregando dados da calculadora...</p>
+        <LoadingSpinner />
       </div>
     );
   }
