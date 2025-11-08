@@ -23,24 +23,29 @@ async function handleUpload(file) {
     return urlData.publicUrl;
 }
 
-// --- Rotas de Mensagens, Configurações, Usuários, etc. (EXISTENTES) ---
+// --- Rotas de Mensagens ---
 router.get('/messages', async (req, res) => {
     const { rows } = await db.query('SELECT * FROM messages ORDER BY created_at DESC');
     res.json(rows);
 });
+
 router.delete('/messages/:id', async (req, res) => {
     await db.query('DELETE FROM messages WHERE id = $1', [req.params.id]);
     res.json({ success: true });
 });
+
+// --- Rotas de Configurações ---
 router.get('/settings/contact-email', async (req, res) => {
     const { rows } = await db.query("SELECT value FROM settings WHERE key = 'contact_email'");
     res.json({ email: rows[0]?.value || '' });
 });
+
 router.put('/settings/contact-email', async (req, res) => {
     const { email } = req.body;
     await db.query("INSERT INTO settings (key, value) VALUES ('contact_email', $1) ON CONFLICT (key) DO UPDATE SET value = $1", [email]);
     res.json({ success: true });
 });
+
 router.post('/settings/test-email', async (req, res) => {
     try {
         const { rows } = await db.query("SELECT value FROM settings WHERE key = 'contact_email'");
@@ -57,6 +62,8 @@ router.post('/settings/test-email', async (req, res) => {
         res.status(500).json({ error: 'Erro interno no servidor.' });
     }
 });
+
+// --- Rotas de Dados Dinâmicos ---
 router.put('/impact-data', async (req, res) => {
     const { mwh, co2, minerals, cost } = req.body;
     try {
@@ -72,6 +79,7 @@ router.put('/impact-data', async (req, res) => {
         res.status(500).json({ error: 'Falha ao salvar os dados.' });
     }
 });
+
 router.put('/calculator-prices', async (req, res) => {
     const { nova, i9plus, peso_kg, vida_util_padrao, kg_co2_por_bateria } = req.body;
     try {
@@ -88,6 +96,8 @@ router.put('/calculator-prices', async (req, res) => {
         res.status(500).json({ error: 'Falha ao salvar os dados.' });
     }
 });
+
+// --- Rotas de Gerenciamento de Usuários ---
 router.get('/users', async (req, res) => {
     try {
         const users = await userModel.getAll();
@@ -96,6 +106,7 @@ router.get('/users', async (req, res) => {
         res.status(500).json({ error: err.message });
     }
 });
+
 router.post('/users', async (req, res) => {
     const { username, password } = req.body;
     if (!username || !password) { return res.status(400).json({ error: 'Nome de usuário e senha são obrigatórios.' }); }
@@ -108,6 +119,7 @@ router.post('/users', async (req, res) => {
         res.status(500).json({ error: err.message });
     }
 });
+
 router.delete('/users/:id', async (req, res) => {
     const userIdToDelete = parseInt(req.params.id, 10);
     const currentUserId = req.session.user.id;
@@ -119,6 +131,7 @@ router.delete('/users/:id', async (req, res) => {
         res.status(500).json({ error: err.message });
     }
 });
+
 router.put('/users/change-password', async (req, res) => {
     const { currentPassword, newPassword } = req.body;
     const userId = req.session.user.id;
@@ -134,10 +147,13 @@ router.put('/users/change-password', async (req, res) => {
         res.status(500).json({ error: err.message });
     }
 });
+
+// --- Rotas de Páginas Estáticas ---
 router.get('/page/about-us', async (req, res) => {
     const { rows } = await db.query("SELECT value FROM settings WHERE key = 'page_about_us'");
     res.json({ content: rows[0]?.value || '' });
 });
+
 router.put('/page/about-us', async (req, res) => {
     const { content } = req.body;
     try {
@@ -147,7 +163,8 @@ router.put('/page/about-us', async (req, res) => {
         res.status(500).json({ error: 'Falha ao salvar a página.' });
     }
 });
-// --- ROTAS DO PAGE BUILDER DA HOME ---
+
+// --- Rotas do Page Builder da Home ---
 router.get('/home-layout', async (req, res) => {
     try {
         const { rows } = await db.query("SELECT * FROM home_page_sections ORDER BY position ASC");
@@ -162,7 +179,7 @@ router.put('/home-layout/order', async (req, res) => {
     try {
         await db.query('BEGIN');
         for (let i = 0; i < order.length; i++) {
-            const sectionId = order[i]; // Agora usamos o ID
+            const sectionId = order[i];
             const newPosition = i;
             await db.query("UPDATE home_page_sections SET position = $1 WHERE id = $2", [newPosition, sectionId]);
         }
@@ -187,7 +204,6 @@ router.put('/home-layout/toggle/:id', async (req, res) => {
     }
 });
 
-// Busca o conteúdo de UMA seção para o modal de edição
 router.get('/home-section/:id', async (req, res) => {
     try {
         const { id } = req.params;
@@ -201,19 +217,25 @@ router.get('/home-section/:id', async (req, res) => {
     }
 });
 
-// Salva o conteúdo de UMA seção (do modal)
 router.put('/home-section/:id', upload.single('heroImage'), async (req, res) => {
     try {
         const { id } = req.params;
-        let contentData = req.body; // Recebe os campos do formulário
+        const { rows } = await db.query("SELECT content_data FROM home_page_sections WHERE id = $1", [id]);
+        let contentData = rows[0].content_data || {};
+
+        for (const key in req.body) {
+            if (key === 'blocks') {
+                contentData[key] = JSON.parse(req.body[key]);
+            } else {
+                contentData[key] = req.body[key];
+            }
+        }
         
-        // Se uma imagem foi enviada (específico para o Hero)
         if (req.file) {
             const newImageUrl = await handleUpload(req.file);
             contentData.heroImageUrl = newImageUrl;
         }
 
-        // Converte o objeto de volta para JSON
         const contentJson = JSON.stringify(contentData);
         
         await db.query("UPDATE home_page_sections SET content_data = $1 WHERE id = $2", [contentJson, id]);
@@ -224,17 +246,13 @@ router.put('/home-section/:id', upload.single('heroImage'), async (req, res) => 
     }
 });
 
-// Adiciona uma nova seção customizada (o "botão de mais")
 router.post('/home-sections', async (req, res) => {
     const { title, content } = req.body;
     try {
         const { rows: posRows } = await db.query("SELECT MAX(position) as max_pos FROM home_page_sections");
         const newPosition = (posRows[0].max_pos || 0) + 1;
         
-        const newSectionData = {
-            title: title,
-            content: content
-        };
+        const newSectionData = { title: title, content: content };
 
         const { rows } = await db.query(
             "INSERT INTO home_page_sections (component_key, title, position, is_visible, is_deletable, edit_path, content_data) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *",
@@ -246,15 +264,63 @@ router.post('/home-sections', async (req, res) => {
     }
 });
 
-// Deleta uma seção customizada
 router.delete('/home-sections/:id', async (req, res) => {
     const { id } = req.params;
     try {
-        // Apenas permite deletar se is_deletable = true
         await db.query("DELETE FROM home_page_sections WHERE id = $1 AND is_deletable = true", [id]);
         res.json({ success: true });
     } catch (err) {
         res.status(500).json({ error: "Falha ao deletar seção." });
+    }
+});
+
+// --- ROTA DOS BLOCOS DE ABORDAGEM (QUE ESTAVA FALTANDO) ---
+router.get('/approach-blocks', async (req, res) => {
+    try {
+        const { rows } = await db.query("SELECT * FROM home_approach_blocks ORDER BY position ASC");
+        res.json(rows);
+    } catch (err) {
+        res.status(500).json({ error: "Falha ao buscar blocos." });
+    }
+});
+
+router.post('/approach-blocks', async (req, res) => {
+    const { icon, title, text } = req.body;
+    try {
+        const { rows: posRows } = await db.query("SELECT MAX(position) as max_pos FROM home_approach_blocks");
+        const newPosition = (posRows[0].max_pos || 0) + 1;
+        
+        const { rows } = await db.query(
+            "INSERT INTO home_approach_blocks (icon, title, text, position) VALUES ($1, $2, $3, $4) RETURNING *",
+            [icon, title, text, newPosition]
+        );
+        res.status(201).json(rows[0]);
+    } catch (err) {
+        res.status(500).json({ error: "Falha ao criar bloco." });
+    }
+});
+
+router.put('/approach-blocks/:id', async (req, res) => {
+    const { id } = req.params;
+    const { icon, title, text } = req.body;
+    try {
+        const { rows } = await db.query(
+            "UPDATE home_approach_blocks SET icon = $1, title = $2, text = $3 WHERE id = $4 RETURNING *",
+            [icon, title, text, id]
+        );
+        res.json(rows[0]);
+    } catch (err) {
+        res.status(500).json({ error: "Falha ao atualizar bloco." });
+    }
+});
+
+router.delete('/approach-blocks/:id', async (req, res) => {
+    const { id } = req.params;
+    try {
+        await db.query("DELETE FROM home_approach_blocks WHERE id = $1", [id]);
+        res.json({ success: true });
+    } catch (err) {
+        res.status(500).json({ error: "Falha ao deletar bloco." });
     }
 });
 

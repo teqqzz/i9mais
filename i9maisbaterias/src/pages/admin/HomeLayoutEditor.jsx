@@ -31,7 +31,7 @@ function EditSectionModal({ section, onClose, onSave }) {
     };
 
     const handleApproachBlockChange = (index, field, value) => {
-        const newBlocks = [...contentData.blocks];
+        const newBlocks = [...(contentData.blocks || [])];
         newBlocks[index][field] = value;
         setContentData(prev => ({ ...prev, blocks: newBlocks }));
     };
@@ -155,7 +155,7 @@ export function HomeLayoutEditor() {
     const [sections, setSections] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [status, setStatus] = useState('');
-    const [statusType, setStatusType] = useState('success'); // 'success' or 'error'
+    const [statusType, setStatusType] = useState('success');
     const [editingSection, setEditingSection] = useState(null);
     const [showAddModal, setShowAddModal] = useState(false);
 
@@ -254,7 +254,7 @@ export function HomeLayoutEditor() {
         }
     };
     
-    const handleAddSection = async (id, contentData) => { // 'id' é nulo aqui, 'contentData' vem do modal
+    const handleAddSection = async (id, contentData) => {
         const newSectionData = {
             title: contentData.title,
             content: contentData.content

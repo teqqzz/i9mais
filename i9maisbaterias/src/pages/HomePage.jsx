@@ -1,5 +1,5 @@
 import React from "react";
-import { API_URL } from '@/config';
+import { useHomeContent } from "../hooks/useHomeContent";
 import { LoadingSpinner } from "../components/LoadingSpinner";
 import { Hero } from "../components/Hero";
 import { SolutionsSection } from "../components/SolutionsSection";
@@ -10,9 +10,9 @@ import { UniqueApproachSection } from "../components/UniqueApproachSection";
 import { ImpactDashboard } from "../components/ImpactDashboard";
 import { RoiCalculator } from "../components/RoiCalculator";
 import { SavingsCalculator } from "../components/SavingsCalculator";
-import { useHomeContent } from "../hooks/useHomeContent";
 
 function CustomTextBlock({ content }) {
+    if (!content) return null;
     return (
         <section className="unique-approach-section" style={{ backgroundColor: 'var(--background-light)' }}>
             <div className="container">
@@ -71,7 +71,10 @@ export function HomePage() {
                 const Component = componentMap[section.component_key];
                 const allData = { impactData, calculatorPrices };
                 
-                if (!Component) return null;
+                if (!Component) {
+                    console.warn(`Componente não encontrado para a chave: ${section.component_key}`);
+                    return null;
+                }
                 
                 return <Component key={section.id} content={section.content_data} allData={allData} />;
             })}

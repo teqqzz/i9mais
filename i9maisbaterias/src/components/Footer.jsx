@@ -5,7 +5,6 @@ export function Footer() {
   const { layout, isLoading } = useHomeContent();
  const [developerCreditHtml, setDeveloperCreditHtml] = useState('');
 
-  // Encontra os dados do rodapé (que vêm da seção 'contact')
   const footerContent = React.useMemo(() => {
     if (isLoading || !Array.isArray(layout)) return null;
     const contactSection = layout.find(s => s.component_key === 'contact');
@@ -16,7 +15,7 @@ export function Footer() {
     const encodedCredit = 'RGVzZW52b2x2aWRvIHBvciA8YSBocmVmPSJodHRwczovL2dpdGh1Yi5jb20vdGVxcXp6IiB0YXJnZXQ9Il9ibGFuayIgcmVsPSJub29wZW5lciBub3JlZmVycmVyIj5MdWNhczwvYT4=';
   try { setDeveloperCreditHtml(atob(encodedCredit)); } catch (e) { console.error("Falha ao decodificar os créditos.", e); }
   const style = 'font-size: 14px; background: #021029; color: #fff; padding: 5px 10px; border-radius: 5px;';
-  console.log('%cFeito por Lucas (github.com/teqqzz)', style);
+  console.log('%cDesenvolvido por Lucas (github.com/teqqzz)', style);
  }, []);
 
 return (
