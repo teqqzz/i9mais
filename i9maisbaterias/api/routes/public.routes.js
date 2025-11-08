@@ -52,8 +52,16 @@ router.get('/page/home', async (req, res) => {
         const contentObject = JSON.parse(rows[0].value);
         res.json(contentObject);
     } catch (err) {
-        console.error("Erro ao buscar ou parsear conteúdo da home:", err);
         res.status(500).json({ error: "Falha ao buscar dados da página." });
+    }
+});
+
+router.get('/page/home/approach-blocks', async (req, res) => {
+    try {
+        const { rows } = await db.query("SELECT * FROM home_approach_blocks ORDER BY position ASC");
+        res.json(rows);
+    } catch (err) {
+        res.status(500).json({ error: "Falha ao buscar blocos de abordagem." });
     }
 });
 

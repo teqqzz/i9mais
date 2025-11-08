@@ -1,33 +1,40 @@
-import React from 'react';
-import { useHomeContent } from '../hooks/useHomeContent';
+import React, { useState, useEffect } from 'react';
+import { API_URL } from '@/config';
 import { LoadingSpinner } from './LoadingSpinner';
 
 export function UniqueApproachSection() {
-  const { homeContent, isLoading } = useHomeContent();
+  const [blocks, setBlocks] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    setIsLoading(true);
+    fetch(`${API_URL}/api/page/home/approach-blocks`)
+      .then(res => res.json())
+      .then(data => {
+        setBlocks(data);
+        setIsLoading(false);
+      })
+      .catch(err => {
+        console.error("Erro ao buscar blocos de abordagem:", err);
+        setIsLoading(false);
+      });
+  }, []);
 
  return (
   <section className="unique-approach-section">
    <div className="container">
     <h2 className="section-title">Nossa Abordagem Única</h2>
-        {isLoading || !homeContent ? (
+        {isLoading ? (
             <LoadingSpinner />
         ) : (
             <div className="approach-grid">
-         <div className="approach-item">
-          <span className="icon">♻️</span>
-          <h3>{homeContent.approach1Title}</h3>
-          <p>{homeContent.approach1Text}</p>
-         </div>
-         <div className="approach-item">
-          <span className="icon">🔬</span> 
-          <h3>{homeContent.approach2Title}</h3>
-          <p>{homeContent.approach2Text}</p>
-         </div>
-         <div className="approach-item">
-          <span className="icon">📊</span> 
-          <h3>{homeContent.approach3Title}</h3>
-          <p>{homeContent.approach3Text}</p>
-         </div>
+                {blocks.map(block => (
+                    <div className="approach-item" key={block.id}>
+                        <span className="icon">{block.icon}</span>
+                        <h3>{block.title}</h3>
+                        <p>{block.text}</p>
+                    </div>
+                ))}
         </div>
         )}
    </div>

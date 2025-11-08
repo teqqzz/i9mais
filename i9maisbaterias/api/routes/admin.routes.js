@@ -222,4 +222,58 @@ router.put('/home-layout/:key/toggle', async (req, res) => {
     }
 });
 
+// Listar todos os blocos
+router.get('/approach-blocks', async (req, res) => {
+    try {
+        const { rows } = await db.query("SELECT * FROM home_approach_blocks ORDER BY position ASC");
+        res.json(rows);
+    } catch (err) {
+        res.status(500).json({ error: "Falha ao buscar blocos." });
+    }
+});
+
+// Criar um novo bloco
+router.post('/approach-blocks', async (req, res) => {
+    const { icon, title, text } = req.body;
+    try {
+        // Pega a maior posição atual e adiciona 1
+        const { rows: posRows } = await db.query("SELECT MAX(position) as max_pos FROM home_approach_blocks");
+        const newPosition = (posRows[0].max_pos || 0) + 1;
+        
+        const { rows } = await db.query(
+            "INSERT INTO home_approach_blocks (icon, title, text, position) VALUES ($1, $2, $3, $4) RETURNING *",
+            [icon, title, text, newPosition]
+        );
+        res.status(201).json(rows[0]);
+    } catch (err) {
+        res.status(500).json({ error: "Falha ao criar bloco." });
+    }
+});
+
+// Atualizar um bloco
+router.put('/approach-blocks/:id', async (req, res) => {
+    const { id } = req.params;
+    const { icon, title, text } = req.body;
+    try {
+        const { rows } = await db.query(
+            "UPDATE home_approach_blocks SET icon = $1, title = $2, text = $3 WHERE id = $4 RETURNING *",
+            [icon, title, text, id]
+        );
+        res.json(rows[0]);
+    } catch (err) {
+        res.status(500).json({ error: "Falha ao atualizar bloco." });
+    }
+});
+
+// Deletar um bloco
+router.delete('/approach-blocks/:id', async (req, res) => {
+    const { id } = req.params;
+    try {
+        await db.query("DELETE FROM home_approach_blocks WHERE id = $1", [id]);
+        res.json({ success: true });
+    } catch (err) {
+        res.status(500).json({ error: "Falha ao deletar bloco." });
+    }
+});
+
 export default router;

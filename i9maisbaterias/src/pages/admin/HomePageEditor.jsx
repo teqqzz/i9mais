@@ -70,7 +70,7 @@ export function HomePageEditor() {
     if (isLoading || !formData) {
         return (
             <>
-                <header className="admin-header"><h1>Editar Página Inicial</h1></header>
+                <header className="admin-header"><h1>Editar Conteúdo da Página Inicial</h1></header>
                 <main className="admin-page-content"><LoadingSpinner /></main>
             </>
         );
@@ -78,7 +78,7 @@ export function HomePageEditor() {
 
     return (
         <>
-            <header className="admin-header"><h1>Editar Página Inicial</h1></header>
+            <header className="admin-header"><h1>Editar Conteúdo da Página Inicial</h1></header>
             <main className="admin-page-content">
                 <form onSubmit={handleSubmit} className="admin-form">
                     
@@ -101,21 +101,7 @@ export function HomePageEditor() {
                         </div>
                     </div>
 
-                    <div className="admin-card" style={{ marginTop: '30px' }}>
-                        <div className="admin-card-header"><h2>Seção "Nossa Abordagem"</h2></div>
-                        <div className="admin-card-body">
-                            <div className="form-grid">
-                                <div className="form-group"><label>Título Bloco 1</label><input type="text" name="approach1Title" value={formData.approach1Title} onChange={handleChange} /></div>
-                                <div className="form-group"><label>Texto Bloco 1</label><textarea name="approach1Text" rows="5" value={formData.approach1Text} onChange={handleChange}></textarea></div>
-                                
-                                <div className="form-group"><label>Título Bloco 2</label><input type="text" name="approach2Title" value={formData.approach2Title} onChange={handleChange} /></div>
-                                <div className="form-group"><label>Texto Bloco 2</label><textarea name="approach2Text" rows="5" value={formData.approach2Text} onChange={handleChange}></textarea></div>
-
-                                <div className="form-group"><label>Título Bloco 3</label><input type="text" name="approach3Title" value={formData.approach3Title} onChange={handleChange} /></div>
-                                <div className="form-group"><label>Texto Bloco 3</label><textarea name="approach3Text" rows="5" value={formData.approach3Text} onChange={handleChange}></textarea></div>
-                            </div>
-                        </div>
-                    </div>
+                    {/* A SEÇÃO "NOSSA ABORDAGEM" FOI REMOVIDA DESTE FORMULÁRIO */}
 
                     <div className="admin-card" style={{ marginTop: '30px' }}>
                         <div className="admin-card-header"><h2>Informações do Rodapé</h2></div>

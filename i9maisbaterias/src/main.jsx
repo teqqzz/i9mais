@@ -2,7 +2,6 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { HelmetProvider } from 'react-helmet-async';
-
 import './index.css';
 import './admin.css';
 
@@ -31,7 +30,7 @@ import { UserManagementPage } from './pages/admin/UserManagementPage.jsx';
 import { AboutPageEditor } from './pages/admin/AboutPageEditor.jsx';
 import { HomePageEditor } from './pages/admin/HomePageEditor.jsx';
 import { HomeLayoutEditor } from './pages/admin/HomeLayoutEditor.jsx';
-// O DashboardPage não é mais importado
+import { ApproachEditorPage } from './pages/admin/ApproachEditorPage.jsx';
 
 const router = createBrowserRouter([
   {
@@ -55,6 +54,7 @@ const router = createBrowserRouter([
         children: [
           { path: 'dashboard', element: <HomeLayoutEditor /> },
                     { path: 'home-editor', element: <HomePageEditor /> },
+                    { path: 'approach-blocks', element: <ApproachEditorPage /> },
           { path: 'messages', element: <MessagesPage /> },
                     { path: 'users', element: <UserManagementPage /> },
                     { path: 'sobre', element: <AboutPageEditor /> },
