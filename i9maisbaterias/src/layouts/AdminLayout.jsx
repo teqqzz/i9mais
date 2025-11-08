@@ -5,7 +5,7 @@ import '../admin.css';
 import { 
     FaProjectDiagram, FaFileAlt, FaLightbulb, 
     FaSignOutAlt, FaUserCircle, FaEnvelope, FaCogs, FaUsersCog,
-    FaInfoCircle, FaGripLines, FaPencilAlt
+    FaInfoCircle, FaGripLines, FaPencilAlt, FaCubes
 } from 'react-icons/fa';
 
 export function AdminLayout() {
@@ -28,11 +28,12 @@ export function AdminLayout() {
            <nav className="admin-sidebar-nav">
              <ul>
                         <li><NavLink to="/admin/dashboard" className={getNavLinkClass}><FaGripLines /> Página Inicial</NavLink></li>
+                        <li><NavLink to="/admin/approach-blocks" className={getNavLinkClass}><FaCubes /> Blocos (Abordagem)</NavLink></li>
+                        <li><NavLink to="/admin/messages" className={getNavLinkClass}><FaEnvelope /> Mensagens</NavLink></li>
                         <li><NavLink to="/admin/projetos" className={getNavLinkClass}><FaProjectDiagram /> Projetos</NavLink></li>
                         <li><NavLink to="/admin/artigos" className={getNavLinkClass}><FaFileAlt /> Artigos</NavLink></li>
                         <li><NavLink to="/admin/solucoes" className={getNavLinkClass}><FaLightbulb /> Soluções</NavLink></li>
                         <li><NavLink to="/admin/sobre" className={getNavLinkClass}><FaInfoCircle /> Página Sobre</NavLink></li>
-                        <li><NavLink to="/admin/messages" className={getNavLinkClass}><FaEnvelope /> Mensagens</NavLink></li>
                         <li><NavLink to="/admin/users" className={getNavLinkClass}><FaUsersCog /> Usuários</NavLink></li>
                         <li><NavLink to="/admin/settings" className={getNavLinkClass}><FaCogs /> Configurações</NavLink></li>
              </ul>

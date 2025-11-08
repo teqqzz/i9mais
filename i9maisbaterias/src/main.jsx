@@ -6,6 +6,7 @@ import './index.css';
 import './admin.css';
 
 import { AuthProvider } from './context/AuthProvider.jsx';
+import { HomeContentProvider } from './context/HomeContentProvider.jsx';
 import App from './App.jsx';
 import { AdminLayout } from './layouts/AdminLayout.jsx';
 import { ProtectedRoute } from './components/ProtectedRoute.jsx';
@@ -27,7 +28,7 @@ import { MessagesPage } from './pages/admin/MessagesPage.jsx';
 import { SettingsPage } from './pages/admin/SettingsPage.jsx';
 import { UserManagementPage } from './pages/admin/UserManagementPage.jsx';
 import { AboutPageEditor } from './pages/admin/AboutPageEditor.jsx';
-import { HomePageEditor } from './pages/admin/HomePageEditor.jsx';
+// HomePageEditor foi removido daqui
 import { HomeLayoutEditor } from './pages/admin/HomeLayoutEditor.jsx';
 import { ApproachEditorPage } from './pages/admin/ApproachEditorPage.jsx';
 
@@ -52,7 +53,6 @@ const router = createBrowserRouter([
         element: <AdminLayout />, 
         children: [
           { path: 'dashboard', element: <HomeLayoutEditor /> },
-                    { path: 'home-editor', element: <HomePageEditor /> },
                     { path: 'approach-blocks', element: <ApproachEditorPage /> },
           { path: 'messages', element: <MessagesPage /> },
                     { path: 'users', element: <UserManagementPage /> },
@@ -77,7 +77,9 @@ ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
         <HelmetProvider>
         <AuthProvider>
-          <RouterProvider router={router} />
+                <HomeContentProvider>
+              <RouterProvider router={router} />
+                </HomeContentProvider>
         </AuthProvider>
         </HelmetProvider>
   </React.StrictMode>
