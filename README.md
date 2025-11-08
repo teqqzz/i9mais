@@ -4,17 +4,17 @@
 
 Este repositório contém o código-fonte completo (Frontend e Backend) do site institucional desenvolvido para a empresa **i9+ Baterias**.
 
-## 📖 Contexto do Projeto
+##  Contexto do Projeto
 
 Este projeto foi desenvolvido como parte da atividade de extensão "Tecnologia e Sociedade" da **Universidade Positivo**. O desafio proposto pela disciplina era identificar uma empresa ou organização real e apresentar uma proposta de solução tecnológica que gerasse valor e inovação.
 
 A proposta desenvolvida por este grupo foi a criação de um site moderno e totalmente gerenciável para a i9+ Baterias, com foco em apresentar suas soluções de forma clara e permitir que a equipe da empresa tenha total autonomia para atualizar o conteúdo.
 
-## ✨ Funcionalidades Principais
+##  Funcionalidades Principais
 
 O projeto é dividido em duas partes principais: o site público (Frontend) e o painel de gerenciamento (Backend).
 
-### 🚀 Site Público (Frontend)
+###  Site Público (Frontend)
 
 * **Conteúdo 100% Dinâmico:** Todas as seções de conteúdo (Projetos, Soluções, Blog, Números de Impacto) são carregadas a partir da API.
 * **Carrosséis Interativos:** Para Soluções, Projetos e Blog, com animações de carregamento (`loading spinner`).
@@ -23,7 +23,7 @@ O projeto é dividido em duas partes principais: o site público (Frontend) e o 
 * **Formulário de Contato:** Salva a mensagem no banco de dados e dispara um e-mail de notificação para o administrador (via Resend).
 * **Créditos Ofuscados:** Um crédito de desenvolvedor fixo no canto da tela, com o link ofuscado (Base64) e renderizado via `useEffect` para dificultar a remoção.
 
-### 🔒 Painel Administrativo (Backend)
+###  Painel Administrativo (Backend)
 
 * **Autenticação Segura:** Sistema de login com `express-session` e armazenamento de sessão no Supabase (PostgreSQL), corrigindo problemas de persistência em ambientes serverless.
 * **Gerenciamento de Conteúdo (CRUD):** Páginas dedicadas para Criar, Ler, Atualizar e Deletar **Projetos**, **Artigos** e **Soluções**.
@@ -37,7 +37,7 @@ O projeto é dividido em duas partes principais: o site público (Frontend) e o 
     * Atualizar os valores base (preços, pesos, etc.) usados nas calculadoras.
 * **Upload de Arquivos:** Integração direta com o **Supabase Storage** para upload de imagens de destaque.
 
-## 🛠️ Tecnologias Utilizadas
+##  Tecnologias Utilizadas
 
 * **Frontend:** React (Vite), React Router, `react-router-hash-link`, Swiper.js
 * **Backend:** Node.js, Express.js
