@@ -60,7 +60,7 @@ export function Header({ isHomePage }) {
         <HashLink smooth to="/#solucoes">Soluções</HashLink>
         <HashLink smooth to="/#impacto">Impacto</HashLink>
         <HashLink smooth to="/#calculadora">Calculadora</HashLink>
-        <Link to="/sobre">Sobre</Link> {/* NOVO LINK */}
+        <Link to="/sobre">Sobre</Link> 
         <HashLink smooth to="/#blog">Blog</HashLink>
         <HashLink smooth to="/#contato">Contato</HashLink>
     <a href="#" onClick={scrollToTop} className={`nav-back-to-top ${showBackToTopLink ? 'show' : ''}`}>Voltar ao Topo</a>
@@ -78,7 +78,7 @@ export function Header({ isHomePage }) {
             <HashLink smooth to="/#solucoes" onClick={closeMenu}>Soluções</HashLink>
             <HashLink smooth to="/#impacto" onClick={closeMenu}>Impacto</HashLink>
             <HashLink smooth to="/#calculadora" onClick={closeMenu}>Calculadora</HashLink>
-            <Link to="/sobre" onClick={closeMenu}>Sobre</Link> {/* NOVO LINK */}
+            <Link to="/sobre" onClick={closeMenu}>Sobre</Link> 
             <HashLink smooth to="/#blog" onClick={closeMenu}>Blog</HashLink>
             <HashLink smooth to="/#contato" onClick={closeMenu}>Contato</HashLink>
     </nav>

@@ -22,8 +22,8 @@ export function AboutPage() {
             });
     }, []);
 
-    // Imagem de header estática para a página (você pode trocar)
-    const headerImageUrl = formatImageUrl('/uploads/rota-2030-pd-baterias.jpg');
+
+    const headerImageUrl = formatImageUrl('/images/logo-i9+.png');
 
     return (
         <div className="page-container">
