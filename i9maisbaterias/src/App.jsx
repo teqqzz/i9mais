@@ -19,8 +19,10 @@ function App() {
   useEffect(() => {
     const encodedCredit = 'RGVzZW52b2x2aWRvIHBvciA8YSBocmVmPSJodHRwczovL2dpdGh1Yi5jb20vdGVxcXp6IiB0YXJnZXQ9Il9ibGFuayIgcmVsPSJub29wZW5lciBub3JlZmVycmVyIj5MdWNhczwvYT4=';
     try { setDeveloperCreditHtml(atob(encodedCredit)); } catch (e) { console.error("Falha ao decodificar os créditos.", e); }
+
     const style = 'font-size: 14px; background: #021029; color: #fff; padding: 5px 10px; border-radius: 5px;';
-    console.log('%cFeito com ❤️ por Lucas (github.com/teqqzz)', style);
+    console.log('%cDesenvolvido por Lucas (github.com/teqqzz)', style);
+
   }, []); 
 
  useEffect(() => {
@@ -41,7 +43,10 @@ function App() {
    <main><Outlet /></main>
    <Footer />
    <BackToTopButton />
-      <div className="fixed-developer-credit" dangerouslySetInnerHTML={{ __html: developerCreditHtml }} />
+      <div 
+        className="fixed-developer-credit" 
+        dangerouslySetInnerHTML={{ __html: developerCreditHtml }} 
+      />
   </>
  );
 }
