@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import { HelmetProvider } from 'react-helmet-async';
 
 import './index.css';
 import './admin.css';
@@ -25,7 +26,7 @@ import { ArticleListPage } from './pages/admin/ArticleListPage.jsx';
 import { ArticleFormPage } from './pages/admin/ArticleFormPage.jsx';
 import { MessagesPage } from './pages/admin/MessagesPage.jsx';
 import { SettingsPage } from './pages/admin/SettingsPage.jsx';
-import { UserManagementPage } from './pages/admin/UserManagementPage.jsx'; 
+import { UserManagementPage } from './pages/admin/UserManagementPage.jsx';
 
 const router = createBrowserRouter([
   {
@@ -48,7 +49,7 @@ const router = createBrowserRouter([
         children: [
           { path: 'dashboard', element: <DashboardPage /> },
           { path: 'messages', element: <MessagesPage /> },
-                    { path: 'users', element: <UserManagementPage /> }, // NOVO
+                    { path: 'users', element: <UserManagementPage /> },
           { path: 'settings', element: <SettingsPage /> },
           { path: 'projetos', element: <ProjectListPage /> },
           { path: 'projetos/novo', element: <ProjectFormPage /> },
@@ -67,8 +68,10 @@ const router = createBrowserRouter([
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    <AuthProvider>
-      <RouterProvider router={router} />
-    </AuthProvider>
+        <HelmetProvider>
+        <AuthProvider>
+          <RouterProvider router={router} />
+        </AuthProvider>
+        </HelmetProvider>
   </React.StrictMode>
 );

@@ -3,157 +3,147 @@ import { useParams, useNavigate, Link } from 'react-router-dom';
 import { API_URL } from '@/config';
 import SunEditor from 'suneditor-react';
 import 'suneditor/dist/css/suneditor.min.css'; 
-
+import { formatImageUrl } from '../../utils/formatImageUrl'; // CORREÇÃO: Importação adicionada
 
 export function SolutionFormPage() {
-    const { id } = useParams(); 
-    const navigate = useNavigate();
-    const isEditing = Boolean(id);
-    const [title, setTitle] = useState('');
-    const [summary, setSummary] = useState('');
-    const [imageStyle, setImageStyle] = useState('cover');
-    const [currentImageUrl, setCurrentImageUrl] = useState(''); 
-    const [newImageFile, setNewImageFile] = useState(null); 
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState('');
-    const [content, setContent] = useState('');
+  const { id } = useParams(); 
+  const navigate = useNavigate();
+  const isEditing = Boolean(id);
+  const [title, setTitle] = useState('');
+  const [summary, setSummary] = useState('');
+  const [imageStyle, setImageStyle] = useState('cover');
+  const [currentImageUrl, setCurrentImageUrl] = useState(''); 
+  const [newImageFile, setNewImageFile] = useState(null); 
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+  const [content, setContent] = useState('');
+    const [metaTitle, setMetaTitle] = useState('');
+    const [metaDescription, setMetaDescription] = useState('');
+    const [publishDate, setPublishDate] = useState(new Date().toISOString().split('T')[0]);
 
-    // Buscar dados da solução se estivermos editando
-    useEffect(() => {
-        if (isEditing) {
-            setLoading(true);
-            fetch(`${API_URL}/api/solucoes/admin/${id}`, { credentials: 'include' })
-                .then(res => res.json())
-                .then(data => {
-                    if (data.error) throw new Error(data.error);
-                    setTitle(data.title);
-                    setSummary(data.summary);
-                    setContent(data.content || '');
-                    setImageStyle(data.image_style);
-                    setCurrentImageUrl(data.image_url);
-                })
-                .catch(err => setError(err.message))
-                .finally(() => setLoading(false));
-        }
-    }, [id, isEditing]);
+  useEffect(() => {
+    if (isEditing) {
+      setLoading(true);
+      fetch(`${API_URL}/api/solucoes/admin/${id}`, { credentials: 'include' })
+        .then(res => res.json())
+        .then(data => {
+          if (data.error) throw new Error(data.error);
+          setTitle(data.title);
+          setSummary(data.summary);
+          setContent(data.content || '');
+          setImageStyle(data.image_style);
+          setCurrentImageUrl(data.image_url);
+                      setMetaTitle(data.meta_title || '');
+                      setMetaDescription(data.meta_description || '');
+                      setPublishDate(new Date(data.publish_date || Date.now()).toISOString().split('T')[0]);
+        })
+        .catch(err => setError(err.message))
+        .finally(() => setLoading(false));
+    }
+  }, [id, isEditing]);
 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError('');
+    setLoading(true);
+    const formData = new FormData();
+    formData.append('title', title);
+    formData.append('summary', summary);
+    formData.append('content', content);
+    formData.append('image_style', imageStyle);
+    formData.append('publish_date', publishDate);
+        formData.append('meta_title', metaTitle);
+        formData.append('meta_description', metaDescription);
+    
+    if (newImageFile) {
+      formData.append('image', newImageFile);
+    } else if (isEditing) {
+      formData.append('image_url', currentImageUrl);
+    }
 
-    // Função para enviar o formulário
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        setError('');
-        setLoading(true);
-        const formData = new FormData();
-        formData.append('title', title);
-        formData.append('summary', summary);
-        formData.append('content', content);
-        formData.append('image_style', imageStyle);
-        
-        if (newImageFile) {
-            formData.append('image', newImageFile);
-        } else if (isEditing) {
-            formData.append('image_url', currentImageUrl);
-        }
+    const url = isEditing ? `${API_URL}/api/solucoes/${id}` : `${API_URL}/api/solucoes`;
+    const method = isEditing ? 'PUT' : 'POST';
 
-        const url = isEditing ? `${API_URL}/api/solucoes/${id}` : `${API_URL}/api/solucoes`;
-        const method = isEditing ? 'PUT' : 'POST';
+    try {
+      const response = await fetch(url, {
+        method: method,
+        body: formData,
+        credentials: 'include', 
+      });
+      const data = await response.json();
+      if (!data.success) throw new Error(data.error || 'Falha ao salvar a solução');
+      navigate('/admin/solucoes');
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-        try {
-            const response = await fetch(url, {
-                method: method,
-                body: formData,
-                credentials: 'include', 
-            });
+  if (loading && isEditing) return <p>Carregando dados da solução...</p>;
 
-            const data = await response.json();
-            if (!data.success) throw new Error(data.error || 'Falha ao salvar a solução');
-
-            alert(`Solução ${isEditing ? 'atualizada' : 'criada'} com sucesso!`);
-            navigate('/admin/solucoes');
-
-        } catch (err) {
-            setError(err.message);
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    if (loading && isEditing) return <p>Carregando dados da solução...</p>;
-
-    return (
-        <>
-            <header className="admin-header">
-                <h1>{isEditing ? 'Editar Solução' : 'Criar Nova Solução'}</h1>
-            </header>
-            <main className="admin-page-content">
-                <div className="admin-card">
-                    <form onSubmit={handleSubmit} className="admin-form">
-                        <div className="admin-card-body">
-                            <div className="form-grid">
-                                <div className="form-group">
-                                    <label htmlFor="title">Título da Solução</label>
-                                    <input type="text" id="title" value={title} onChange={(e) => setTitle(e.target.value)} required />
-                                </div>
-                                <div className="form-group">
-                                    <label htmlFor="image_style">Estilo da Imagem</label>
-                                    <select id="image_style" value={imageStyle} onChange={(e) => setImageStyle(e.target.value)}>
-                                        <option value="cover">Cover (Para Fotos)</option>
-                                        <option value="contain">Contain (Para Logos)</option>
-                                    </select>
-                                </div>
-                                <div className="form-group full-width">
-                                    <label htmlFor="summary">Resumo (Para o card na homepage)</label>
-                                    <textarea id="summary" rows="4" value={summary} onChange={(e) => setSummary(e.target.value)}></textarea>
-                                </div>
-                                
-                                <div className="form-group full-width">
-                                    <label htmlFor="image">Imagem Principal</label>
-                                    <input type="file" id="image" accept="image/png, image/jpeg, image/jpg" onChange={(e) => setNewImageFile(e.target.files[0])} />
-                                    {isEditing && currentImageUrl && !newImageFile && (
-                                        <div>
-                                            <p>Imagem Atual:</p>
-                                            <img src={`${API_URL}${currentImageUrl}`} alt="Preview" className="image-preview" />
-                                        </div>
-                                    )}
-                                </div>
-
-                                <div className="form-group full-width">
-                                    <label>Conteúdo Completo da Página</label>
-                                <SunEditor
-                                    setContents={content}
-                                    onChange={setContent}
-                                    height="500"
-                                    setDefaultStyle="font-family: inherit; font-size: 1rem;"
-                                    setOptions={{
-                                        buttonList: [
-                                            ['undo', 'redo'],
-                                            ['font', 'fontSize', 'formatBlock'],
-                                            ['bold', 'underline', 'italic', 'strike', 'subscript', 'superscript'],
-                                            ['fontColor', 'hiliteColor', 'textStyle'],
-                                            ['removeFormat'],
-                                            ['outdent', 'indent'],
-                                            ['align', 'horizontalRule', 'list', 'lineHeight'],
-                                            ['table', 'link', 'image', 'video'], 
-                                            ['fullScreen', 'showBlocks', 'codeView'],
-                                            ['preview', 'print'],
-                                        ]
-                                    }}
-                                />
-                                </div>
-                            </div>
-                            
-                            {error && <p style={{ color: 'red', marginTop: '20px' }}>{error}</p>}
-
-                        </div>
-                        <div className="form-actions">
-                            <button type="submit" className="admin-btn primary" disabled={loading}>
-                                {loading ? 'Salvando...' : (isEditing ? 'Salvar Alterações' : 'Criar Solução')}
-                            </button>
-                            <Link to="/admin/solucoes" className="admin-btn secondary">Cancelar</Link>
-                        </div>
-                    </form>
+  return (
+    <>
+      <header className="admin-header">
+        <h1>{isEditing ? 'Editar Solução' : 'Criar Nova Solução'}</h1>
+      </header>
+      <main className="admin-page-content">
+        <div className="admin-card">
+          <form onSubmit={handleSubmit} className="admin-form">
+            <div className="admin-card-body">
+              <div className="form-grid">
+                <div className="form-group">
+                  <label>Título da Solução</label>
+                  <input type="text" value={title} onChange={(e) => setTitle(e.target.value)} required />
                 </div>
-            </main>
-        </>
-    );
+                                <div className="form-group">
+                  <label>Data de Publicação</label>
+                  <input type="date" value={publishDate} onChange={(e) => setPublishDate(e.target.value)} required />
+                </div>
+                <div className="form-group">
+                  <label>Estilo da Imagem</label>
+                  <select value={imageStyle} onChange={(e) => setImageStyle(e.target.value)}>
+                    <option value="cover">Cover</option>
+                    <option value="contain">Contain</option>
+                  </select>
+                </div>
+                <div className="form-group full-width">
+                                    <label>Resumo (Para o card)</label>
+                  <textarea rows="4" value={summary} onChange={(e) => setSummary(e.target.value)}></textarea>
+                </div>
+                                <h4 className="form-subtitle" style={{gridColumn: '1 / -1'}}>Campos de SEO</h4>
+                                <div className="form-group full-width">
+                  <label>Meta Título (SEO)</label>
+                  <input type="text" value={metaTitle} onChange={(e) => setMetaTitle(e.target.value)} />
+                </div>
+                                <div className="form-group full-width">
+                  <label>Meta Descrição (SEO)</label>
+                  <textarea rows="3" value={metaDescription} onChange={(e) => setMetaDescription(e.target.value)}></textarea>
+                </div>
+                <div className="form-group full-width">
+                                    <label>Imagem Principal</label>
+                  <input type="file" accept="image/*" onChange={(e) => setNewImageFile(e.target.files[0])} />
+                  {isEditing && currentImageUrl && !newImageFile && (
+                    <div>
+                      <p>Imagem Atual:</p>
+                      <img src={formatImageUrl(currentImageUrl)} alt="Preview" className="image-preview" />
+Â                   </div>
+                  )}
+                </div>
+                <div className="form-group full-width">
+                  <label>Conteúdo Completo da Página</label>
+                  <SunEditor setContents={content} onChange={setContent} height="400" />
+                </div>
+              </div>
+              {error && <p style={{ color: 'red', marginTop: '20px' }}>{error}</p>}
+            </div>
+            <div className="form-actions">
+              <button type="submit" className="admin-btn primary" disabled={loading}>{loading ? 'Salvando...' : 'Salvar Solução'}</button>
+              <Link to="/admin/solucoes" className="admin-btn secondary">Cancelar</Link>
+            </div>
+          </form>
+        </div>
+      </main>
+    </>
+  );
 }
