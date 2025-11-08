@@ -38,12 +38,11 @@ function SortableItem({ id, item, onToggle }) {
 
     return (
         <div ref={setNodeRef} style={style} {...attributes} className="sortable-item">
-            <button type="button" className="drag-handle" {...listeners} title="Reordenar">
+            <button typeG="button" className="drag-handle" {...listeners} title="Reordenar">
                 <FaGripLines />
             </button>
             <span className="item-title">{item.title}</span>
             
-            {/* Botão de Editar (Lapisinho) */}
             {item.edit_path && (
                 <Link to={item.edit_path} className="admin-btn small secondary" title="Editar Conteúdo">
                     <FaPencilAlt />
@@ -150,7 +149,7 @@ export function HomeLayoutEditor() {
                     </div>
                     <div className="admin-card-body">
                         <p>
-                            Arraste os blocos para reordenar a página inicial.
+                            Esta é a sua Dashboard. Arraste os blocos para reordenar a página inicial.
                             <br />
                             Use os botões para "Adicionar" (<strong><FaEyeSlash /> Mostrar</strong>) ou "Remover" (<strong><FaEye /> Ocultar</strong>) uma seção.
                             <br />

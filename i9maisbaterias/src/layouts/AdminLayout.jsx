@@ -5,7 +5,7 @@ import '../admin.css';
 import { 
     FaProjectDiagram, FaFileAlt, FaLightbulb, 
     FaSignOutAlt, FaUserCircle, FaEnvelope, FaCogs, FaUsersCog,
-    FaInfoCircle, FaHome, FaGripLines, FaPencilAlt, FaCubes
+    FaInfoCircle, FaGripLines, FaPencilAlt, FaHome, FaCubes
 } from 'react-icons/fa';
 
 export function AdminLayout() {
@@ -27,14 +27,21 @@ export function AdminLayout() {
            </div>
            <nav className="admin-sidebar-nav">
              <ul>
-                        <li><NavLink to="/admin/dashboard" className={getNavLinkClass}><FaGripLines /> Layout da Home</NavLink></li>
-                        <li><NavLink to="/admin/home-editor" className={getNavLinkClass}><FaHome /> Conteúdo da Home</NavLink></li>
-                        <li><NavLink to="/admin/approach-blocks" className={getNavLinkClass}><FaCubes /> Blocos (Abordagem)</NavLink></li>
-                        <li><NavLink to="/admin/messages" className={getNavLinkClass}><FaEnvelope /> Mensagens</NavLink></li>
+                        {/* Este é o link principal para a página de layout */}
+                        <li><NavLink to="/admin/dashboard" className={getNavLinkClass}><FaGripLines /> Página Inicial</NavLink></li>
+                        
+                        {/* Links para gerenciar os *itens* dos carrosséis */}
                         <li><NavLink to="/admin/projetos" className={getNavLinkClass}><FaProjectDiagram /> Projetos</NavLink></li>
                         <li><NavLink to="/admin/artigos" className={getNavLinkClass}><FaFileAlt /> Artigos</NavLink></li>
                         <li><NavLink to="/admin/solucoes" className={getNavLinkClass}><FaLightbulb /> Soluções</NavLink></li>
+                        
+                        {/* Links para gerenciar o conteúdo de outras seções */}
+                        <li><NavLink to="/admin/home-editor" className={getNavLinkClass}><FaHome /> Conteúdo (Hero/Rodapé)</NavLink></li>
+                        <li><NavLink to="/admin/approach-blocks" className={getNavLinkClass}><FaCubes /> Blocos (Abordagem)</NavLink></li>
                         <li><NavLink to="/admin/sobre" className={getNavLinkClass}><FaInfoCircle /> Página Sobre</NavLink></li>
+                        
+                        {/* Links de administração do site */}
+                        <li><NavLink to="/admin/messages" className={getNavLinkClass}><FaEnvelope /> Mensagens</NavLink></li>
                         <li><NavLink to="/admin/users" className={getNavLinkClass}><FaUsersCog /> Usuários</NavLink></li>
                         <li><NavLink to="/admin/settings" className={getNavLinkClass}><FaCogs /> Configurações</NavLink></li>
              </ul>
