@@ -7,19 +7,16 @@ import './index.css';
 import './admin.css';
 
 import { AuthProvider } from './context/AuthProvider.jsx';
-// A linha 'HomeContentProvider' foi removida daqui
 import App from './App.jsx';
 import { AdminLayout } from './layouts/AdminLayout.jsx';
 import { ProtectedRoute } from './components/ProtectedRoute.jsx';
 
-// Páginas Públicas
 import { HomePage } from './pages/HomePage.jsx';
 import { BlogPostPage } from './pages/BlogPostPage.jsx';
 import { SolutionPage } from './pages/SolutionPage.jsx';
 import { ProjectPage } from './pages/ProjectPage.jsx';
 import { AboutPage } from './pages/AboutPage.jsx';
 
-// Páginas Admin
 import { LoginPage } from './pages/admin/LoginPage.jsx';
 import { ProjectListPage } from './pages/admin/ProjectListPage.jsx';
 import { ProjectFormPage } from './pages/admin/ProjectFormPage.jsx';
@@ -31,7 +28,7 @@ import { MessagesPage } from './pages/admin/MessagesPage.jsx';
 import { SettingsPage } from './pages/admin/SettingsPage.jsx';
 import { UserManagementPage } from './pages/admin/UserManagementPage.jsx';
 import { AboutPageEditor } from './pages/admin/AboutPageEditor.jsx';
-import { HomePageEditor } from './pages/admin/HomePageEditor.jsx';
+// HomePageEditor foi removido daqui
 import { HomeLayoutEditor } from './pages/admin/HomeLayoutEditor.jsx';
 import { ApproachEditorPage } from './pages/admin/ApproachEditorPage.jsx';
 
@@ -56,7 +53,6 @@ const router = createBrowserRouter([
         element: <AdminLayout />, 
         children: [
           { path: 'dashboard', element: <HomeLayoutEditor /> },
-                    { path: 'home-editor', element: <HomePageEditor /> },
                     { path: 'approach-blocks', element: <ApproachEditorPage /> },
           { path: 'messages', element: <MessagesPage /> },
                     { path: 'users', element: <UserManagementPage /> },
