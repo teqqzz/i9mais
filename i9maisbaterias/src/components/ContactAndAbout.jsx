@@ -22,7 +22,7 @@ export function ContactAndAbout() {
       const data = await response.json();
       if (!response.ok || !data.success) {
         throw new Error(data.error || 'Falha ao enviar mensagem.');
-      }
+            }
       setStatus({ sending: false, error: null, success: true });
       setFormData({ name: '', email: '', phone: '', message: '' });
     } catch (err) {
@@ -34,17 +34,12 @@ export function ContactAndAbout() {
     <section id="contato" className="contact-about-section">
       <div className="container">
         <div className="contact-about-grid">
-          
-                    {/* A SEÇÃO "ABOUT-CONTENT" FOI REMOVIDA DAQUI */}
-
           <div className="contact-content" style={{ gridColumn: '1 / -1' }}>
             <h2 className="section-title">Entre em Contato</h2>
-                        
                         <p className="contact-intro-text" style={{ textAlign: 'center' }}>
                             Caso queira marcar uma visita ou tirar dúvidas,
                             preencha o formulário abaixo que lhe responderemos no e-mail.
                         </p>
-
             {status.success ? (
               <div className="form-success-message">
                 <h3>Obrigado pelo contato!</h3>
@@ -60,12 +55,11 @@ export function ContactAndAbout() {
                 {status.error && <p style={{ color: 'red', marginBottom: '10px' }}>Erro: {status.error}</p>}
                 <button type="submit" className="cta-button" disabled={status.sending}>
                   {status.sending ? 'Enviando...' : 'Enviar Mensagem'}
-
                 </button>
               </form>
             )}
           </div>
-        </div>
+.       </div>
       </div>
     </section>
   );

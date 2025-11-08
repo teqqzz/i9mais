@@ -1,6 +1,5 @@
-import React, { useState, useEffect } from "react";
-import { API_URL } from '@/config';
-import { LoadingSpinner } from './LoadingSpinner'; 
+import React, { useState } from "react";
+import { LoadingSpinner } from './LoadingSpinner';
 
 function formatCurrency(value) {
  return new Intl.NumberFormat("pt-BR", {
@@ -9,29 +8,22 @@ function formatCurrency(value) {
  }).format(value);
 }
 
-export function SavingsCalculator() {
+export function SavingsCalculator({ calculatorPrices }) {
  const [formData, setFormData] = useState({
   quantity: 10,
   frequencyInYears: 2,
  });
-  const [precos, setPrecos] = useState(null);
  const [result, setResult] = useState(null);
 
-  useEffect(() => {
-    fetch(`${API_URL}/api/calculator-prices`)
-      .then(res => res.json())
-      .then(data => setPrecos(data))
-      .catch(err => console.error("Falha ao carregar preços da calculadora", err));
-  }, []);
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: parseInt(value, 10) || 0 }));
-  };
+ const handleChange = (e) => {
+  const { name, value } = e.target;
+  setFormData((prev) => ({ ...prev, [name]: parseInt(value, 10) || 0 }));
+ };
 
  const handleSubmit = (e) => {
   e.preventDefault();
-    if (!precos) return; 
+    if (!calculatorPrices) return;
+    const precos = calculatorPrices;
 
   const savingsPerBattery = precos.nova - precos.i9plus;
   const totalSavings = formData.quantity * savingsPerBattery;
@@ -45,7 +37,7 @@ export function SavingsCalculator() {
   });
  };
   
-  if (!precos) {
+  if (!calculatorPrices) {
     return (
       <div className="calculator-instance">
         <h3>Calculadora de Economia Simples</h3>

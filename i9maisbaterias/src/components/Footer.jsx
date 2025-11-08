@@ -1,28 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { API_URL } from '@/config';
+import { useHomeContent } from '../hooks/useHomeContent';
 
 export function Footer() {
-  const [footerContent, setFooterContent] = useState(null);
+  const { layout, isLoading } = useHomeContent();
  const [developerCreditHtml, setDeveloperCreditHtml] = useState('');
 
-  useEffect(() => {
-    fetch(`${API_URL}/api/page/home`)
-      .then(res => {
-          if (!res.ok) throw new Error('Falha ao buscar conteúdo do rodapé');
-          return res.json();
-      })
-      .then(data => {
-          if (typeof data === 'object' && data !== null) {
-              setFooterContent(data);
-          } else {
-              setFooterContent({}); // Define como objeto vazio para evitar erros
-          }
-      })
-      .catch(err => {
-          console.error("Falha ao carregar conteúdo do rodapé", err);
-          setFooterContent({}); // Define como objeto vazio em caso de erro
-      });
-  }, []);
+  // Encontra os dados do rodapé (que vêm da seção 'contact')
+  const footerContent = React.useMemo(() => {
+    if (isLoading || !Array.isArray(layout)) return null;
+    const contactSection = layout.find(s => s.component_key === 'contact');
+    return contactSection ? contactSection.content_data : null;
+  }, [layout, isLoading]);
 
  useEffect(() => {
     const encodedCredit = 'RGVzZW52b2x2aWRvIHBvciA8YSBocmVmPSJodHRwczovL2dpdGh1Yi5jb20vdGVxcXp6IiB0YXJnZXQ9Il9ibGFuayIgcmVsPSJub29wZW5lciBub3JlZmVycmVyIj5MdWNhczwvYT4=';

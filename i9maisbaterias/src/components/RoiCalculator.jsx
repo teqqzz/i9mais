@@ -1,5 +1,4 @@
-import React, { useState, useEffect } from "react";
-import { API_URL } from '@/config';
+import React, { useState } from "react";
 import { LoadingSpinner } from './LoadingSpinner';
 
 function formatCurrency(value) {
@@ -9,22 +8,14 @@ function formatCurrency(value) {
  }).format(value);
 }
 
-export function RoiCalculator() {
+export function RoiCalculator({ calculatorPrices }) {
  const [formData, setFormData] = useState({
   quantity: 10,
   frequencyInYears: 2,
   custoNova: 45000,
   vidaUtilExt: 4,
  });
-  const [precos, setPrecos] = useState(null);
  const [result, setResult] = useState(null);
-
-  useEffect(() => {
-    fetch(`${API_URL}/api/calculator-prices`)
-      .then(res => res.json())
-      .then(data => setPrecos(data))
-      .catch(err => console.error("Falha ao carregar preços da calculadora de ROI", err));
-  }, []);
 
  const handleChange = (e) => {
   const { name, value } = e.target;
@@ -33,7 +24,8 @@ export function RoiCalculator() {
 
  const handleSubmit = (e) => {
   e.preventDefault();
-    if (!precos) return;
+    if (!calculatorPrices) return;
+    const precos = calculatorPrices;
 
   const savingsPerBattery = precos.nova - precos.i9plus;
   const totalSavings = formData.quantity * savingsPerBattery;
@@ -54,7 +46,7 @@ export function RoiCalculator() {
   });
  };
 
-  if (!precos) {
+  if (!calculatorPrices) {
     return (
       <div className="calculator-instance">
         <h3>Calculadora de ROI Avançada</h3>
@@ -106,7 +98,7 @@ export function RoiCalculator() {
         <span className="result-label">Resíduos evitados.</span>
        </div>
        <div className="result-item">
-        <span className="result-value">{result.co2.toLocaleString("pt-BR")} kg</span>
+Indentation-preserving replacement
         <span className="result-label">CO₂ não emitido.</span>
        </div>
       </div>

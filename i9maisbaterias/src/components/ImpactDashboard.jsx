@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { API_URL } from '@/config';
-import { LoadingSpinner } from './LoadingSpinner'; // Importe o spinner
+import { LoadingSpinner } from './LoadingSpinner';
 
 function animateValue(setter, key, end, duration) {
   let startTimestamp = null;
@@ -16,35 +15,19 @@ function animateValue(setter, key, end, duration) {
   window.requestAnimationFrame(step);
 };
 
-export function ImpactDashboard() {
+export function ImpactDashboard({ impactData }) {
   const [counters, setCounters] = useState({ mwh: 0, co2: 0, minerals: 0, cost: 0 });
-    const [finalValues, setFinalValues] = useState(null); 
   const sectionRef = useRef(null);
-    const [isLoading, setIsLoading] = useState(true); 
-
-    useEffect(() => {
-        setIsLoading(true);
-        fetch(`${API_URL}/api/impact-data`)
-            .then(res => res.json())
-            .then(data => {
-                setFinalValues(data);
-                setIsLoading(false); 
-            })
-            .catch(err => {
-                console.error("Falha ao carregar dados de impacto:", err);
-                setIsLoading(false); 
-            });
-    }, []);
 
   useEffect(() => {
-        if (!finalValues) return;
+        if (!impactData) return;
 
     const observer = new IntersectionObserver((entries) => {
       if (entries[0].isIntersecting) {
-        animateValue(setCounters, 'mwh', finalValues.mwh, 2000);
-        animateValue(setCounters, 'co2', finalValues.co2, 2000);
-        animateValue(setCounters, 'minerals', finalValues.minerals, 2000);
-        animateValue(setCounters, 'cost', finalValues.cost, 2000);
+        animateValue(setCounters, 'mwh', impactData.mwh, 2000);
+        animateValue(setCounters, 'co2', impactData.co2, 2000);
+        animateValue(setCounters, 'minerals', impactData.minerals, 2000);
+        animateValue(setCounters, 'cost', impactData.cost, 2000);
         observer.disconnect();
       }
     }, { threshold: 0.5 });
@@ -58,7 +41,7 @@ export function ImpactDashboard() {
             observer.unobserve(currentSectionRef);
           }
         };
-  }, [finalValues]);
+  }, [impactData]);
 
   return (
     <section id="impacto" ref={sectionRef} className="py-20 bg-gray-900">
@@ -67,7 +50,7 @@ export function ImpactDashboard() {
           <h2>Nosso Impacto em Números</h2>
           <p>Dados quantitativos que provam nosso compromisso com a sustentabilidade.</p>
         </div>
-                {isLoading ? (
+                {!impactData ? (
                     <LoadingSpinner />
                 ) : (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
