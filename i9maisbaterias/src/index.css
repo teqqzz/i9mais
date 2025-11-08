@@ -353,10 +353,8 @@ main > section:nth-child(even) {
     background-color: var(--background-grey); /* Cinza claro */
 }
 
-/* 3. Regras de Exceção: Força a cor correta para seções especiais,
-      não importa a ordem que o admin escolher. */
-main > section.hero-section,
-main > section#impacto {
+/* 3. Regras de Exceção: Força a cor correta para seções especiais */
+main > section.hero-section {
     background-color: var(--dark-blue) !important;
 }
 
