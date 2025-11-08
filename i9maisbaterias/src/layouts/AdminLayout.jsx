@@ -5,7 +5,7 @@ import '../admin.css';
 import { 
     FaProjectDiagram, FaFileAlt, FaLightbulb, 
     FaSignOutAlt, FaUserCircle, FaEnvelope, FaCogs, FaUsersCog,
-    FaInfoCircle, FaHome, FaGripLines, FaPencilAlt
+    FaInfoCircle, FaGripLines, FaPencilAlt
 } from 'react-icons/fa';
 
 export function AdminLayout() {
@@ -19,7 +19,6 @@ export function AdminLayout() {
 
    const getNavLinkClass = ({ isActive }) => (isActive ? 'active' : '');
 
-    // O ponto final que estava aqui foi removido.
    return (
       <div className="admin-layout">
          <aside className="admin-sidebar">
@@ -28,8 +27,7 @@ export function AdminLayout() {
            </div>
            <nav className="admin-sidebar-nav">
              <ul>
-                        <li><NavLink to="/admin/dashboard" className={getNavLinkClass}><FaGripLines /> Layout da Home</NavLink></li>
-                        <li><NavLink to="/admin/home-editor" className={getNavLinkClass}><FaHome /> Conteúdo da Home</NavLink></li>
+                        <li><NavLink to="/admin/dashboard" className={getNavLinkClass}><FaGripLines /> Página Inicial</NavLink></li>
                         <li><NavLink to="/admin/messages" className={getNavLinkClass}><FaEnvelope /> Mensagens</NavLink></li>
                         <li><NavLink to="/admin/projetos" className={getNavLinkClass}><FaProjectDiagram /> Projetos</NavLink></li>
                         <li><NavLink to="/admin/artigos" className={getNavLinkClass}><FaFileAlt /> Artigos</NavLink></li>

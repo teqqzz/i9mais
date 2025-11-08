@@ -1,20 +1,26 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom'; // Importar Link
+import { Link } from 'react-router-dom';
 import { API_URL } from '@/config';
 import { LoadingSpinner } from '../../components/LoadingSpinner';
 import {
-    DndContext, closestCenter, KeyboardSensor, PointerSensor,
-    useSensor, useSensors,
+    DndContext,
+    closestCenter,
+    KeyboardSensor,
+    PointerSensor,
+    useSensor,
+    useSensors,
 } from '@dnd-kit/core';
 import {
-    arrayMove, SortableContext, sortableKeyboardCoordinates,
-    verticalListSortingStrategy, useSortable,
+    arrayMove,
+    SortableContext,
+    sortableKeyboardCoordinates,
+    verticalListSortingStrategy,
+    useSortable,
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { FaEye, FaEyeSlash, FaGripLines, FaLock, FaPencilAlt } from 'react-icons/fa'; // Importar FaPencilAlt
+import { FaEye, FaEyeSlash, FaGripLines, FaLock, FaPencilAlt } from 'react-icons/fa';
 import '../../admin.css';
 
-// Componente de item arrastável
 function SortableItem({ id, item, onToggle }) {
     const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id });
 
@@ -57,7 +63,6 @@ function SortableItem({ id, item, onToggle }) {
     );
 }
 
-// Página principal do editor de layout
 export function HomeLayoutEditor() {
     const [sections, setSections] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
@@ -126,7 +131,7 @@ export function HomeLayoutEditor() {
     if (isLoading) {
         return (
             <>
-                <header className="admin-header"><h1>Layout da Página Inicial</h1></header>
+                <header className="admin-header"><h1>Página Inicial</h1></header>
                 <main className="admin-page-content"><LoadingSpinner /></main>
             </>
         );
@@ -134,20 +139,22 @@ export function HomeLayoutEditor() {
 
     return (
         <>
-            <header className="admin-header"><h1>Layout da Página Inicial (Dashboard)</h1></header>
+            <header className="admin-header"><h1>Editor da Página Inicial</h1></header>
             <main className="admin-page-content">
                 <div className="admin-card">
                     <div className="admin-card-header">
-                        <h2>Reordenar Seções da Home</h2>
+                        <h2>Layout da Home</h2>
                         <button onClick={handleSaveOrder} className="admin-btn primary" disabled={!!status}>
                             {status ? status : 'Salvar Ordem'}
                         </button>
                     </div>
                     <div className="admin-card-body">
                         <p>
-                            Esta é a sua Dashboard. Arraste os blocos para reordenar a página inicial.
+                            Arraste os blocos para reordenar a página inicial.
                             <br />
-                            Use os botões (👁️ / 👁️‍🗨️) para "Mostrar" ou "Ocultar" uma seção, e o lápis (✏️) para editar seu conteúdo.
+                            Use os botões para "Adicionar" (<strong><FaEyeSlash /> Mostrar</strong>) ou "Remover" (<strong><FaEye /> Ocultar</strong>) uma seção.
+                            <br />
+                            Use o lápis (<strong><FaPencilAlt /></strong>) para editar o conteúdo de uma seção específica.
                         </p>
                         
                         <DndContext 
