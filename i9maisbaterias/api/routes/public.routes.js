@@ -43,4 +43,18 @@ router.get('/page/about-us', async (req, res) => {
     }
 });
 
+router.get('/page/home', async (req, res) => {
+    try {
+        const { rows } = await db.query("SELECT value FROM settings WHERE key = 'page_home_content'");
+        if (rows.length === 0) {
+            throw new Error("Conteúdo da página inicial não encontrado.");
+        }
+        const contentObject = JSON.parse(rows[0].value);
+        res.json(contentObject);
+    } catch (err) {
+        console.error("Erro ao buscar ou parsear conteúdo da home:", err);
+        res.status(500).json({ error: "Falha ao buscar dados da página." });
+    }
+});
+
 export default router;

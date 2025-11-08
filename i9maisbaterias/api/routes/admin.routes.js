@@ -174,4 +174,26 @@ router.put('/page/about-us', async (req, res) => {
     }
 });
 
+
+
+router.get('/page/home', async (req, res) => {
+    try {
+        const { rows } = await db.query("SELECT value FROM settings WHERE key = 'page_home_content'");
+        const contentObject = JSON.parse(rows[0].value);
+        res.json(contentObject);
+    } catch (err) {
+        res.status(500).json({ error: 'Falha ao carregar dados da página inicial.' });
+    }
+});
+
+router.put('/page/home', async (req, res) => {
+    const content = req.body;
+    try {
+        const contentJson = JSON.stringify(content);
+        await db.query("UPDATE settings SET value = $1 WHERE key = 'page_home_content'", [contentJson]);
+        res.json({ success: true });
+    } catch (err) {
+        res.status(500).json({ error: 'Falha ao salvar a página inicial.' });
+    }
+});
 export default router;
