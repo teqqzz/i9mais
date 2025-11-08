@@ -1,11 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { API_URL } from '@/config';
 import { LoadingSpinner } from '../../components/LoadingSpinner';
+import { formatImageUrl } from '../../utils/formatImageUrl';
 
 export function HomePageEditor() {
     const [formData, setFormData] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
     const [status, setStatus] = useState('');
+    
+    const [newImageFile, setNewImageFile] = useState(null);
+    const [currentImageUrl, setCurrentImageUrl] = useState('');
 
     useEffect(() => {
         setIsLoading(true);
@@ -13,6 +17,7 @@ export function HomePageEditor() {
             .then(res => res.json())
             .then(data => {
                 setFormData(data);
+                setCurrentImageUrl(data.heroImageUrl);
                 setIsLoading(false);
             })
             .catch(err => {
@@ -30,15 +35,33 @@ export function HomePageEditor() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setStatus('Salvando...');
+        
+        const dataToUpload = new FormData();
+        
+        for (const key in formData) {
+            dataToUpload.append(key, formData[key]);
+        }
+        
+        if (newImageFile) {
+            dataToUpload.append('heroImage', newImageFile);
+        } else {
+            dataToUpload.append('heroImageUrl', currentImageUrl);
+        }
+
         const res = await fetch(`${API_URL}/api/admin/page/home`, {
             method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(formData),
+            body: dataToUpload,
             credentials: 'include'
         });
         
         if (res.ok) {
             setStatus('Salvo com sucesso!');
+            if (newImageFile) {
+                // Apenas fazemos o fetch novamente para atualizar a URL da imagem de preview
+                fetch(`${API_URL}/api/admin/page/home`, { credentials: 'include' })
+                    .then(r => r.json()).then(d => setCurrentImageUrl(d.heroImageUrl));
+                setNewImageFile(null);
+            }
         } else {
             setStatus('Erro ao salvar.');
         }
@@ -65,6 +88,17 @@ export function HomePageEditor() {
                         <div className="admin-card-body">
                             <div className="form-group"><label>Título Principal (H1)</label><input type="text" name="heroTitle" value={formData.heroTitle} onChange={handleChange} /></div>
                             <div className="form-group"><label>Subtítulo (Parágrafo)</label><textarea name="heroSubtitle" rows="3" value={formData.heroSubtitle} onChange={handleChange}></textarea></div>
+                            
+                            <div className="form-group" style={{marginTop: '20px'}}>
+                <label>Imagem de Fundo (Hero)</label>
+                <input type="file" accept="image/*" onChange={(e) => setNewImageFile(e.target.files[0])} />
+                {currentImageUrl && !newImageFile && (
+                  <div>
+                    <p style={{marginTop: '10px'}}>Imagem Atual:</p>
+                    <img src={formatImageUrl(currentImageUrl)} alt="Preview" className="image-preview" />
+                  </div>
+                )}
+              </div>
                         </div>
                     </div>
 

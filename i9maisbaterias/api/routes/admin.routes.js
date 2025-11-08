@@ -3,11 +3,26 @@ import db from '../db/db.js';
 import requireAuth from '../middleware/auth.js';
 import { sendContactNotification } from '../utils/emailService.js';
 import * as userModel from '../models/user.js';
+import path from 'path';
+import { slugify } from '../utils/slugify.js';
+import upload from '../middleware/uploads.js';
+import { supabaseAdmin } from '../db/supabaseClient.js';
 
 const router = express.Router();
+const SUPABASE_BUCKET = 'uploads';
 router.use(requireAuth);
 
-// --- Rotas de Mensagens ---
+async function handleUpload(file) {
+    if (!file) return null;
+    const fileName = `${Date.now()}-${slugify(path.parse(file.originalname).name)}${path.extname(file.originalname)}`;
+    const { data, error } = await supabaseAdmin.storage
+        .from(SUPABASE_BUCKET)
+        .upload(fileName, file.buffer, { contentType: file.mimetype, cacheControl: '3600' });
+    if (error) throw new Error(`Falha no upload para o Supabase: ${error.message}`);
+    const { data: urlData } = supabaseAdmin.storage.from(SUPABASE_BUCKET).getPublicUrl(fileName);
+    return urlData.publicUrl;
+}
+
 router.get('/messages', async (req, res) => {
     const { rows } = await db.query('SELECT * FROM messages ORDER BY created_at DESC');
     res.json(rows);
@@ -18,7 +33,6 @@ router.delete('/messages/:id', async (req, res) => {
     res.json({ success: true });
 });
 
-// --- Rotas de Configurações ---
 router.get('/settings/contact-email', async (req, res) => {
     const { rows } = await db.query("SELECT value FROM settings WHERE key = 'contact_email'");
     res.json({ email: rows[0]?.value || '' });
@@ -42,7 +56,6 @@ router.post('/settings/test-email', async (req, res) => {
             return res.status(400).json({ error: 'Nenhum e-mail de destino configurado.' });
         }
         
-        // AQUI ESTÁ A CORREÇÃO: Tornamos o conteúdo do e-mail de teste mais realista.
         const testData = {
             name: 'Sistema i9+ Baterias',
             email: 'nao-responda@i9mais.com',
@@ -62,7 +75,6 @@ router.post('/settings/test-email', async (req, res) => {
     }
 });
 
-// --- Rotas de Dados Dinâmicos ---
 router.put('/impact-data', async (req, res) => {
     const { mwh, co2, minerals, cost } = req.body;
     try {
@@ -96,7 +108,6 @@ router.put('/calculator-prices', async (req, res) => {
     }
 });
 
-// --- Rotas de Gerenciamento de Usuários ---
 router.get('/users', async (req, res) => {
     try {
         const users = await userModel.getAll();
@@ -157,13 +168,11 @@ router.put('/users/change-password', async (req, res) => {
     }
 });
 
-// Buscar o conteúdo da página Sobre
 router.get('/page/about-us', async (req, res) => {
     const { rows } = await db.query("SELECT value FROM settings WHERE key = 'page_about_us'");
     res.json({ content: rows[0]?.value || '' });
 });
 
-// Salvar o conteúdo da página Sobre
 router.put('/page/about-us', async (req, res) => {
     const { content } = req.body;
     try {
@@ -173,8 +182,6 @@ router.put('/page/about-us', async (req, res) => {
         res.status(500).json({ error: 'Falha ao salvar a página.' });
     }
 });
-
-
 
 router.get('/page/home', async (req, res) => {
     try {
@@ -186,14 +193,36 @@ router.get('/page/home', async (req, res) => {
     }
 });
 
-router.put('/page/home', async (req, res) => {
-    const content = req.body;
+router.put('/page/home', upload.single('heroImage'), async (req, res) => {
     try {
+        let heroImageUrl = req.body.heroImageUrl;
+        
+        if (req.file) {
+            heroImageUrl = await handleUpload(req.file);
+        }
+
+        const content = {
+            heroTitle: req.body.heroTitle,
+            heroSubtitle: req.body.heroSubtitle,
+            approach1Title: req.body.approach1Title,
+            approach1Text: req.body.approach1Text,
+            approach2Title: req.body.approach2Title,
+            approach2Text: req.body.approach2Text,
+            approach3Title: req.body.approach3Title,
+            approach3Text: req.body.approach3Text,
+            footerAbout: req.body.footerAbout,
+            footerContactEmail: req.body.footerContactEmail,
+            footerContactAddress: req.body.footerContactAddress,
+            heroImageUrl: heroImageUrl
+        };
+        
         const contentJson = JSON.stringify(content);
         await db.query("UPDATE settings SET value = $1 WHERE key = 'page_home_content'", [contentJson]);
         res.json({ success: true });
     } catch (err) {
+        console.error("Erro ao salvar página inicial:", err);
         res.status(500).json({ error: 'Falha ao salvar a página inicial.' });
     }
 });
+
 export default router;
