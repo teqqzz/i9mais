@@ -2,16 +2,16 @@ import React, { useState, useEffect } from 'react';
 import { API_URL } from '@/config';
 import { useAuth } from '../../hooks/useAuth';
 import { FaTrash, FaUserPlus } from 'react-icons/fa';
+import { LoadingSpinner } from '../../components/LoadingSpinner';
 
 export function UserManagementPage() {
     const { user: currentUser } = useAuth();
     const [users, setUsers] = useState([]);
+    const [isLoading, setIsLoading] = useState(true);
     
-    // States para o formulário de novo usuário
     const [newUsername, setNewUsername] = useState('');
     const [newPassword, setNewPassword] = useState('');
 
-    // States para o formulário de alterar senha
     const [currentPassword, setCurrentPassword] = useState('');
     const [changePassword, setChangePassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
@@ -19,9 +19,16 @@ export function UserManagementPage() {
     const [status, setStatus] = useState({ type: '', message: '' });
 
     const fetchUsers = async () => {
-        const res = await fetch(`${API_URL}/api/admin/users`, { credentials: 'include' });
-        const data = await res.json();
-        setUsers(data);
+        setIsLoading(true);
+        try {
+            const res = await fetch(`${API_URL}/api/admin/users`, { credentials: 'include' });
+            const data = await res.json();
+            setUsers(data);
+        } catch (err) {
+            console.error("Erro ao buscar usuários:", err);
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     useEffect(() => {
@@ -97,55 +104,61 @@ export function UserManagementPage() {
             <main className="admin-page-content">
                 {status.message && <div className={`form-status-global ${status.type}`}>{status.message}</div>}
 
-                <div className="admin-card">
-                    <div className="admin-card-header"><h2>Usuários Existentes</h2></div>
-                    <div className="admin-card-body">
-                        <table className="admin-table">
-                            <thead><tr><th>Nome de Usuário</th><th>Ações</th></tr></thead>
-                            <tbody>
-                                {users.map(user => (
-                                    <tr key={user.id}>
-                                        <td>{user.username} {user.id === currentUser.id && '(Você)'}</td>
-                                        <td>
-                                            <button 
-                                                onClick={() => handleDeleteUser(user.id, user.username)} 
-                                                className="admin-btn danger"
-                                                disabled={user.id === currentUser.id}
-                                                title={user.id === currentUser.id ? "Você não pode se deletar" : "Deletar usuário"}
-                                            >
-                                                <FaTrash />
-                                            </button>
-                                        </td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
+                {isLoading ? (
+                    <LoadingSpinner />
+                ) : (
+                    <>
+                        <div className="admin-card">
+                            <div className="admin-card-header"><h2>Usuários Existentes</h2></div>
+                            <div className="admin-card-body">
+                                <table className="admin-table">
+                                    <thead><tr><th>Nome de Usuário</th><th>Ações</th></tr></thead>
+                                    <tbody>
+                                        {users.map(user => (
+                                            <tr key={user.id}>
+                                                <td>{user.username} {user.id === currentUser.id && '(Você)'}</td>
+                                                <td>
+                                                    <button 
+                                                        onClick={() => handleDeleteUser(user.id, user.username)} 
+                                                        className="admin-btn danger"
+                                                        disabled={user.id === currentUser.id}
+                                                        title={user.id === currentUser.id ? "Você não pode se deletar" : "Deletar usuário"}
+                                                    >
+                                                        <FaTrash />
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
 
-                <div className="settings-grid" style={{ marginTop: '30px' }}>
-                    <div className="admin-card">
-                        <div className="admin-card-header"><h2><FaUserPlus /> Adicionar Novo Usuário</h2></div>
-                        <div className="admin-card-body">
-                            <form onSubmit={handleAddUser} className="admin-form">
-                                <div className="form-group"><label>Nome de Usuário</label><input type="text" value={newUsername} onChange={(e) => setNewUsername(e.target.value)} required /></div>
-                                <div className="form-group"><label>Senha</label><input type="password" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} required /></div>
-                                <div className="form-actions"><button type="submit" className="admin-btn primary">Adicionar Usuário</button></div>
-                            </form>
+                        <div className="settings-grid" style={{ marginTop: '30px' }}>
+                            <div className="admin-card">
+                                <div className="admin-card-header"><h2><FaUserPlus /> Adicionar Novo Usuário</h2></div>
+                                <div className="admin-card-body">
+                                    <form onSubmit={handleAddUser} className="admin-form">
+                                        <div className="form-group"><label>Nome de Usuário</label><input type="text" value={newUsername} onChange={(e) => setNewUsername(e.target.value)} required /></div>
+                                        <div className="form-group"><label>Senha</label><input type="password" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} required /></div>
+                                        <div className="form-actions"><button type="submit" className="admin-btn primary">Adicionar Usuário</button></div>
+                                    </form>
+                                </div>
+                            </div>
+                            <div className="admin-card">
+                                <div className="admin-card-header"><h2>Alterar Minha Senha</h2></div>
+                                <div className="admin-card-body">
+                                    <form onSubmit={handleChangePassword} className="admin-form">
+                                        <div className="form-group"><label>Senha Atual</label><input type="password" value={currentPassword} onChange={(e) => setCurrentPassword(e.target.value)} required /></div>
+                                        <div className="form-group"><label>Nova Senha</label><input type="password" value={changePassword} onChange={(e) => setChangePassword(e.target.value)} required /></div>
+                                        <div className="form-group"><label>Confirmar Nova Senha</label><input type="password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} required /></div>
+                                        <div className="form-actions"><button type="submit" className="admin-btn primary">Alterar Senha</button></div>
+                                    </form>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                    <div className="admin-card">
-                        <div className="admin-card-header"><h2>Alterar Minha Senha</h2></div>
-                        <div className="admin-card-body">
-                            <form onSubmit={handleChangePassword} className="admin-form">
-                                <div className="form-group"><label>Senha Atual</label><input type="password" value={currentPassword} onChange={(e) => setCurrentPassword(e.target.value)} required /></div>
-                                <div className="form-group"><label>Nova Senha</label><input type="password" value={changePassword} onChange={(e) => setChangePassword(e.target.value)} required /></div>
-                                <div className="form-group"><label>Confirmar Nova Senha</label><input type="password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} required /></div>
-                                <div className="form-actions"><button type="submit" className="admin-btn primary">Alterar Senha</button></div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
+                    </>
+                )}
             </main>
         </>
     );

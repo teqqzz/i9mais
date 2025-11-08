@@ -46,7 +46,12 @@ export function HomePageEditor() {
     };
 
     if (isLoading || !formData) {
-        return <div className="admin-page-content"><LoadingSpinner /></div>;
+        return (
+            <>
+                <header className="admin-header"><h1>Editar Página Inicial</h1></header>
+                <main className="admin-page-content"><LoadingSpinner /></main>
+            </>
+        );
     }
 
     return (
@@ -95,6 +100,7 @@ export function HomePageEditor() {
                             {status ? status : 'Salvar Alterações da Página Inicial'}
                         </button>
                     </div>
+                    {status && <p className="form-status" style={{marginTop: '15px'}}>{status}</p>}
 
                 </form>
             </main>

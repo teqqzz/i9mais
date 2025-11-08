@@ -1,56 +1,80 @@
 import React, { useState, useEffect } from 'react';
-import { Helmet } from 'react-helmet-async';
+import { Link } from 'react-router-dom';
 import { API_URL } from '@/config';
-import { LoadingSpinner } from '../components/LoadingSpinner';
-import { formatImageUrl } from '../utils/formatImageUrl';
-import { Link } from 'react-router-dom'; // 1. Importar o Link
+import SunEditor from 'suneditor-react';
+import 'suneditor/dist/css/suneditor.min.css'; 
+import { LoadingSpinner } from '../../components/LoadingSpinner';
 
-export function AboutPage() {
+export function AboutPageEditor() {
     const [content, setContent] = useState('');
     const [loading, setLoading] = useState(true);
+    const [status, setStatus] = useState('');
+    const [error, setError] = useState('');
 
     useEffect(() => {
         setLoading(true);
-        fetch(`${API_URL}/api/page/about-us`)
+        fetch(`${API_URL}/api/admin/page/about-us`, { credentials: 'include' })
             .then(res => res.json())
             .then(data => {
                 setContent(data.content);
-                setLoading(false);
             })
-            .catch(err => {
-                console.error("Falha ao carregar conteúdo da página Sobre:", err);
+            .catch(() => {
+                setError('Falha ao carregar conteúdo.');
+            })
+            .finally(() => {
                 setLoading(false);
             });
     }, []);
 
-    const headerImageUrl = formatImageUrl('/uploads/rota-2030-pd-baterias.jpg');
+    const handleSave = async () => {
+        setStatus('Salvando...');
+        setError('');
+        const res = await fetch(`${API_URL}/api/admin/page/about-us`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ content }),
+            credentials: 'include'
+        });
+        
+        if (res.ok) {
+            setStatus('Salvo com sucesso!');
+        } else {
+            setStatus('Erro ao salvar.');
+        }
+        setTimeout(() => setStatus(''), 3000);
+    };
 
     return (
-        <div className="page-container">
-            <Helmet>
-                <title>Sobre Nós | i9+ Baterias</title>
-                <meta name="description" content="Conheça a história, missão e visão da i9+ Baterias, líder em inovação e economia circular no setor energético." />
-            </Helmet>
-            
-            <div 
-                className="page-header" 
-                style={{ backgroundImage: `url('${headerImageUrl}')` }}
-            >
-                <h1>Sobre a i9+ Baterias</h1>
-            </div>
-
-            <div className="container page-content">
+        <>
+            <header className="admin-header">
+                <h1>Editar Página "Sobre Nós"</h1>
+            </header>
+            <main className="admin-page-content">
                 {loading ? (
                     <LoadingSpinner />
                 ) : (
-                    <>
-                        <div dangerouslySetInnerHTML={{ __html: content }} />
-                        <Link to="/" className="cta-button back-button">
-                            Voltar para a Home
-                        </Link>
-                    </>
+                    <div className="admin-card">
+                        <div className="admin-card-body">
+                            <p>Use o editor abaixo para alterar o conteúdo da página <Link to="/sobre" target="_blank">/sobre</Link> do site.</p>
+                            
+                            {error && <p className="form-status-global error">{error}</p>}
+
+                            <div className="form-group" style={{marginTop: '20px'}}>
+                                <SunEditor 
+                                    setContents={content} 
+                                    onChange={setContent} 
+                                    height="600" 
+                                />
+                            </div>
+                            <div className="form-actions">
+                                <button onClick={handleSave} className="admin-btn primary" disabled={!!status}>
+                                    {status ? status : 'Salvar Conteúdo'}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
                 )}
-            </div>
-        </div>
+            </main>
+        </>
     );
 }

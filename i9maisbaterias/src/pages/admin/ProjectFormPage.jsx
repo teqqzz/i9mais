@@ -1,9 +1,10 @@
-import React, { useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { API_URL } from '@/config';
 import SunEditor from 'suneditor-react';
 import 'suneditor/dist/css/suneditor.min.css'; 
 import { formatImageUrl } from '../../utils/formatImageUrl';
+import { LoadingSpinner } from '../../components/LoadingSpinner';
 
 const formatDateForInput = (dateString) => {
   if (!dateString) return new Date().toISOString().split('T')[0]; 
@@ -20,7 +21,7 @@ export function ProjectFormPage() {
   const [publishDate, setPublishDate] = useState(formatDateForInput(null)); 
   const [currentImageUrl, setCurrentImageUrl] = useState('');
   const [newImageFile, setNewImageFile] = useState(null);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(isEditing);
   const [error, setError] = useState('');
   const [content, setContent] = useState('');
     const [metaTitle, setMetaTitle] = useState('');
@@ -100,7 +101,14 @@ export function ProjectFormPage() {
     }
   };
 
-  if (loading && isEditing) return <p>Carregando...</p>;
+  if (loading && isEditing) {
+        return (
+            <>
+                <header className="admin-header"><h1>Editar Projeto</h1></header>
+                <main className="admin-page-content"><LoadingSpinner /></main>
+            </>
+        );
+    }
 
   return (
     <>
@@ -181,7 +189,7 @@ export function ProjectFormPage() {
                   <SunEditor setContents={content} onChange={setContent} height="400" />
                 </div>
               </div>
-              {error && <p style={{ color: 'red', marginTop: '20px' }}>{error}</p>}
+              {error && <p className="form-status-global error">{error}</p>}
             </div>
             <div className="form-actions">
               <button type="submit" className="admin-btn primary" disabled={loading}>{loading ? 'Salvando...' : 'Salvar Projeto'}</button>

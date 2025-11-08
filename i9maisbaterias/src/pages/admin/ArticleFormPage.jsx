@@ -4,6 +4,7 @@ import { API_URL } from '@/config';
 import SunEditor from 'suneditor-react';
 import 'suneditor/dist/css/suneditor.min.css';
 import { formatImageUrl } from '../../utils/formatImageUrl';
+import { LoadingSpinner } from '../../components/LoadingSpinner';
 
 export function ArticleFormPage() {
   const { id } = useParams(); 
@@ -14,13 +15,12 @@ export function ArticleFormPage() {
   const [imageStyle, setImageStyle] = useState('cover');
   const [currentImageUrl, setCurrentImageUrl] = useState(''); 
   const [newImageFile, setNewImageFile] = useState(null); 
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(isEditing);
   const [error, setError] = useState('');
   const [content, setContent] = useState('');
     const [metaTitle, setMetaTitle] = useState('');
     const [metaDescription, setMetaDescription] = useState('');
     const [publishDate, setPublishDate] = useState(new Date().toISOString().split('T')[0]);
-
     const [isMetaTitleLocked, setIsMetaTitleLocked] = useState(false);
     const [isMetaDescLocked, setIsMetaDescLocked] = useState(false);
 
@@ -97,7 +97,14 @@ export function ArticleFormPage() {
     }
   };
 
-  if (loading && isEditing) return <p>Carregando dados do artigo...</p>;
+  if (loading && isEditing) {
+        return (
+            <>
+                <header className="admin-header"><h1>Editar Artigo</h1></header>
+                <main className="admin-page-content"><LoadingSpinner /></main>
+            </>
+        );
+    }
 
   return (
     <>

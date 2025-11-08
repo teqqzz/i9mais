@@ -4,6 +4,7 @@ import { API_URL } from '@/config';
 import SunEditor from 'suneditor-react';
 import 'suneditor/dist/css/suneditor.min.css'; 
 import { formatImageUrl } from '../../utils/formatImageUrl';
+import { LoadingSpinner } from '../../components/LoadingSpinner';
 
 export function SolutionFormPage() {
   const { id } = useParams(); 
@@ -14,13 +15,12 @@ export function SolutionFormPage() {
   const [imageStyle, setImageStyle] = useState('cover');
   const [currentImageUrl, setCurrentImageUrl] = useState(''); 
   const [newImageFile, setNewImageFile] = useState(null); 
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(isEditing);
   const [error, setError] = useState('');
   const [content, setContent] = useState('');
     const [metaTitle, setMetaTitle] = useState('');
     const [metaDescription, setMetaDescription] = useState('');
     const [publishDate, setPublishDate] = useState(new Date().toISOString().split('T')[0]);
-
     const [isMetaTitleLocked, setIsMetaTitleLocked] = useState(false);
     const [isMetaDescLocked, setIsMetaDescLocked] = useState(false);
 
@@ -102,7 +102,14 @@ e   } finally {
     }
   };
 
-  if (loading && isEditing) return <p>Carregando dados da solução...</p>;
+  if (loading && isEditing) {
+        return (
+            <>
+                <header className="admin-header"><h1>Editar Solução</h1></header>
+                <main className="admin-page-content"><LoadingSpinner /></main>
+            </>
+        );
+    }
 
   return (
     <>
@@ -123,11 +130,11 @@ e   } finally {
                   <input type="date" value={publishDate} onChange={(e) => setPublishDate(e.target.value)} required />
                 </div>
                 <div className="form-group">
-                  <label>Estilo da Imagem</label>
+   _insert_chunk_
                   <select value={imageStyle} onChange={(e) => setImageStyle(e.target.value)}>
                     <option value="cover">Cover</option>
                     <option value="contain">Contain</option>
-Â                </select>
+                  </select>
                 </div>
                 <div className="form-group full-width">
                                     <label>Resumo (Para o card)</label>
