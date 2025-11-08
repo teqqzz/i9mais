@@ -1,25 +1,20 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom'; // Importar Link
 import { API_URL } from '@/config';
 import { LoadingSpinner } from '../../components/LoadingSpinner';
 import {
-    DndContext,
-    closestCenter,
-    KeyboardSensor,
-    PointerSensor,
-    useSensor,
-    useSensors,
+    DndContext, closestCenter, KeyboardSensor, PointerSensor,
+    useSensor, useSensors,
 } from '@dnd-kit/core';
 import {
-    arrayMove,
-    SortableContext,
-    sortableKeyboardCoordinates,
-    verticalListSortingStrategy,
-    useSortable,
+    arrayMove, SortableContext, sortableKeyboardCoordinates,
+    verticalListSortingStrategy, useSortable,
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { FaEye, FaEyeSlash, FaGripLines, FaLock } from 'react-icons/fa';
+import { FaEye, FaEyeSlash, FaGripLines, FaLock, FaPencilAlt } from 'react-icons/fa'; // Importar FaPencilAlt
 import '../../admin.css';
 
+// Componente de item arrastável
 function SortableItem({ id, item, onToggle }) {
     const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id });
 
@@ -37,10 +32,18 @@ function SortableItem({ id, item, onToggle }) {
 
     return (
         <div ref={setNodeRef} style={style} {...attributes} className="sortable-item">
-            <button type="button" className="drag-handle" {...listeners}>
+            <button type="button" className="drag-handle" {...listeners} title="Reordenar">
                 <FaGripLines />
             </button>
             <span className="item-title">{item.title}</span>
+            
+            {/* Botão de Editar (Lapisinho) */}
+            {item.edit_path && (
+                <Link to={item.edit_path} className="admin-btn small secondary" title="Editar Conteúdo">
+                    <FaPencilAlt />
+                </Link>
+            )}
+
             <button 
                 type="button" 
                 onClick={onToggleClick} 
@@ -54,6 +57,7 @@ function SortableItem({ id, item, onToggle }) {
     );
 }
 
+// Página principal do editor de layout
 export function HomeLayoutEditor() {
     const [sections, setSections] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
@@ -116,7 +120,7 @@ export function HomeLayoutEditor() {
             method: 'PUT',
             credentials: 'include',
         });
-        fetchLayout(); // Recarrega os dados para mostrar o novo estado
+        fetchLayout();
     };
 
     if (isLoading) {
@@ -141,9 +145,9 @@ export function HomeLayoutEditor() {
                     </div>
                     <div className="admin-card-body">
                         <p>
-                            Esta é a sua nova Dashboard. Arraste os blocos para reordenar a página inicial.
+                            Esta é a sua Dashboard. Arraste os blocos para reordenar a página inicial.
                             <br />
-                            Use os botões para "Adicionar" (<strong><FaEyeSlash /> Mostrar</strong>) ou "Remover" (<strong><FaEye /> Ocultar</strong>) uma seção do site.
+                            Use os botões (👁️ / 👁️‍🗨️) para "Mostrar" ou "Ocultar" uma seção, e o lápis (✏️) para editar seu conteúdo.
                         </p>
                         
                         <DndContext 

@@ -225,7 +225,7 @@ router.put('/page/home', upload.single('heroImage'), async (req, res) => {
     }
 });
 
-// Lista TODAS as seções para o painel de admin
+// Lista TODAS as seções para o painel de admin, incluindo o edit_path
 router.get('/home-layout', async (req, res) => {
     try {
         const { rows } = await db.query("SELECT * FROM home_sections ORDER BY position ASC");
@@ -237,10 +237,9 @@ router.get('/home-layout', async (req, res) => {
 
 // Recebe uma nova ordem de seções e salva no banco
 router.put('/home-layout/order', async (req, res) => {
-    const { order } = req.body; // Espera um array de 'component_key'
+    const { order } = req.body;
     try {
         await db.query('BEGIN');
-        // Itera pelo array e atualiza a 'position' de cada item
         for (let i = 0; i < order.length; i++) {
             const componentKey = order[i];
             const newPosition = i;
@@ -267,5 +266,6 @@ router.put('/home-layout/:key/toggle', async (req, res) => {
         res.status(500).json({ error: 'Falha ao alterar visibilidade.' });
     }
 });
+
 
 export default router;
