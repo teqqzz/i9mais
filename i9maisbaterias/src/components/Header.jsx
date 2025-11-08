@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { FaTimes } from 'react-icons/fa';
-import { HashLink } from 'react-router-hash-link';
+import { HashLink } from 'react-router-hash-link'; 
 
 export function Header({ isHomePage }) {
  const [scrolled, setScrolled] = useState(false);
@@ -17,7 +17,7 @@ export function Header({ isHomePage }) {
    setShowBackToTopLink(window.scrollY > heroHeight);
   };
   window.addEventListener('scroll', handleScroll);
-  handleScroll(); 
+  handleScroll();
   return () => window.removeEventListener('scroll', handleScroll);
  }, [isHomePage]); 
 
@@ -39,7 +39,7 @@ export function Header({ isHomePage }) {
 
  const closeMenu = () => {
   setMenuOpen(false);
-    document.body.classList.remove('mobile-menu-is-open'); 
+    document.body.classList.remove('mobile-menu-is-open');
  };
 
  const scrollToTop = (event) => {
@@ -60,6 +60,7 @@ export function Header({ isHomePage }) {
         <HashLink smooth to="/#solucoes">Soluções</HashLink>
         <HashLink smooth to="/#impacto">Impacto</HashLink>
         <HashLink smooth to="/#calculadora">Calculadora</HashLink>
+        <Link to="/sobre">Sobre</Link> {/* NOVO LINK */}
         <HashLink smooth to="/#blog">Blog</HashLink>
         <HashLink smooth to="/#contato">Contato</HashLink>
     <a href="#" onClick={scrollToTop} className={`nav-back-to-top ${showBackToTopLink ? 'show' : ''}`}>Voltar ao Topo</a>
@@ -77,6 +78,7 @@ export function Header({ isHomePage }) {
             <HashLink smooth to="/#solucoes" onClick={closeMenu}>Soluções</HashLink>
             <HashLink smooth to="/#impacto" onClick={closeMenu}>Impacto</HashLink>
             <HashLink smooth to="/#calculadora" onClick={closeMenu}>Calculadora</HashLink>
+            <Link to="/sobre" onClick={closeMenu}>Sobre</Link> {/* NOVO LINK */}
             <HashLink smooth to="/#blog" onClick={closeMenu}>Blog</HashLink>
             <HashLink smooth to="/#contato" onClick={closeMenu}>Contato</HashLink>
     </nav>

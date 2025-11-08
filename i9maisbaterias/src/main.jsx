@@ -15,6 +15,7 @@ import { HomePage } from './pages/HomePage.jsx';
 import { BlogPostPage } from './pages/BlogPostPage.jsx';
 import { SolutionPage } from './pages/SolutionPage.jsx';
 import { ProjectPage } from './pages/ProjectPage.jsx';
+import { AboutPage } from './pages/AboutPage.jsx';
 
 import { LoginPage } from './pages/admin/LoginPage.jsx';
 import { DashboardPage } from './pages/admin/DashboardPage.jsx';
@@ -27,6 +28,7 @@ import { ArticleFormPage } from './pages/admin/ArticleFormPage.jsx';
 import { MessagesPage } from './pages/admin/MessagesPage.jsx';
 import { SettingsPage } from './pages/admin/SettingsPage.jsx';
 import { UserManagementPage } from './pages/admin/UserManagementPage.jsx';
+import { AboutPageEditor } from './pages/admin/AboutPageEditor.jsx';
 
 const router = createBrowserRouter([
   {
@@ -34,6 +36,7 @@ const router = createBrowserRouter([
     element: <App />, 
     children: [
       { index: true, element: <HomePage /> },
+      { path: 'sobre', element: <AboutPage /> },
       { path: 'blog/:slug', element: <BlogPostPage /> },
       { path: 'solucoes/:slug', element: <SolutionPage /> },
       { path: 'projetos/:slug', element: <ProjectPage /> },
@@ -50,6 +53,7 @@ const router = createBrowserRouter([
           { path: 'dashboard', element: <DashboardPage /> },
           { path: 'messages', element: <MessagesPage /> },
                     { path: 'users', element: <UserManagementPage /> },
+                    { path: 'sobre', element: <AboutPageEditor /> },
           { path: 'settings', element: <SettingsPage /> },
           { path: 'projetos', element: <ProjectListPage /> },
           { path: 'projetos/novo', element: <ProjectFormPage /> },

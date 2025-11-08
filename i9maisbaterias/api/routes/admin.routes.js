@@ -157,4 +157,21 @@ router.put('/users/change-password', async (req, res) => {
     }
 });
 
+// Buscar o conteúdo da página Sobre
+router.get('/page/about-us', async (req, res) => {
+    const { rows } = await db.query("SELECT value FROM settings WHERE key = 'page_about_us'");
+    res.json({ content: rows[0]?.value || '' });
+});
+
+// Salvar o conteúdo da página Sobre
+router.put('/page/about-us', async (req, res) => {
+    const { content } = req.body;
+    try {
+        await db.query("UPDATE settings SET value = $1 WHERE key = 'page_about_us'", [content]);
+        res.json({ success: true });
+    } catch (err) {
+        res.status(500).json({ error: 'Falha ao salvar a página.' });
+    }
+});
+
 export default router;

@@ -4,7 +4,8 @@ import { useAuth } from '../hooks/useAuth';
 import '../admin.css';
 import { 
     FaTachometerAlt, FaProjectDiagram, FaFileAlt, FaLightbulb, 
-    FaSignOutAlt, FaUserCircle, FaEnvelope, FaCogs, FaUsersCog 
+    FaSignOutAlt, FaUserCircle, FaEnvelope, FaCogs, FaUsersCog,
+    FaInfoCircle // 1. IMPORTAR NOVO ÍCONE
 } from 'react-icons/fa';
 
 export function AdminLayout() {
@@ -31,6 +32,7 @@ export function AdminLayout() {
                         <li><NavLink to="/admin/projetos" className={getNavLinkClass}><FaProjectDiagram /> Projetos</NavLink></li>
                         <li><NavLink to="/admin/artigos" className={getNavLinkClass}><FaFileAlt /> Artigos</NavLink></li>
                         <li><NavLink to="/admin/solucoes" className={getNavLinkClass}><FaLightbulb /> Soluções</NavLink></li>
+                        <li><NavLink to="/admin/sobre" className={getNavLinkClass}><FaInfoCircle /> Página Sobre</NavLink></li> {/* 2. ADICIONAR NOVO LINK */}
                         <li><NavLink to="/admin/users" className={getNavLinkClass}><FaUsersCog /> Usuários</NavLink></li>
                         <li><NavLink to="/admin/settings" className={getNavLinkClass}><FaCogs /> Configurações</NavLink></li>
              </ul>
@@ -41,6 +43,6 @@ export function AdminLayout() {
           </div>
          </aside>
          <div className="admin-main-content"><Outlet /></div>
-      </div>
+       </div>
    );
 }
