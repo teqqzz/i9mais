@@ -1,34 +1,16 @@
-import React, { useState, useEffect } from 'react';
-import { API_URL } from '@/config';
+import React from 'react';
 import { LoadingSpinner } from './LoadingSpinner';
 
-export function UniqueApproachSection() {
-  const [blocks, setBlocks] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    setIsLoading(true);
-    fetch(`${API_URL}/api/page/home/approach-blocks`)
-      .then(res => res.json())
-      .then(data => {
-        setBlocks(data);
-        setIsLoading(false);
-      })
-      .catch(err => {
-        console.error("Erro ao buscar blocos de abordagem:", err);
-        setIsLoading(false);
-      });
-  }, []);
-
+export function UniqueApproachSection({ content }) {
  return (
   <section className="unique-approach-section">
    <div className="container">
     <h2 className="section-title">Nossa Abordagem Única</h2>
-        {isLoading ? (
+        {!content || !content.blocks ? (
             <LoadingSpinner />
         ) : (
             <div className="approach-grid">
-                {blocks.map(block => (
+                {content.blocks.map(block => (
                     <div className="approach-item" key={block.id}>
                         <span className="icon">{block.icon}</span>
                         <h3>{block.title}</h3>

@@ -147,58 +147,24 @@ router.put('/page/about-us', async (req, res) => {
         res.status(500).json({ error: 'Falha ao salvar a página.' });
     }
 });
-router.get('/page/home', async (req, res) => {
-    try {
-        const { rows } = await db.query("SELECT value FROM settings WHERE key = 'page_home_content'");
-        const contentObject = JSON.parse(rows[0].value);
-        res.json(contentObject);
-    } catch (err) {
-        res.status(500).json({ error: 'Falha ao carregar dados da página inicial.' });
-    }
-});
-router.put('/page/home', upload.single('heroImage'), async (req, res) => {
-    try {
-        let heroImageUrl = req.body.heroImageUrl;
-        if (req.file) {
-            heroImageUrl = await handleUpload(req.file);
-        }
-        const content = {
-            heroTitle: req.body.heroTitle, heroSubtitle: req.body.heroSubtitle,
-            approach1Title: req.body.approach1Title, approach1Text: req.body.approach1Text,
-            approach2Title: req.body.approach2Title, approach2Text: req.body.approach2Text,
-            approach3Title: req.body.approach3Title, approach3Text: req.body.approach3Text,
-            footerAbout: req.body.footerAbout, footerContactEmail: req.body.footerContactEmail,
-            footerContactAddress: req.body.footerContactAddress, heroImageUrl: heroImageUrl
-        };
-        const contentJson = JSON.stringify(content);
-        await db.query("UPDATE settings SET value = $1 WHERE key = 'page_home_content'", [contentJson]);
-        res.json({ success: true });
-    } catch (err) {
-        res.status(500).json({ error: 'Falha ao salvar a página inicial.' });
-    }
-});
-
-// --- [AJUSTADO] ROTAS DE GERENCIAMENTO DO LAYOUT DA HOME ---
-
-// Lista TODAS as seções para o painel de admin, incluindo o edit_path
+// --- ROTAS DO PAGE BUILDER DA HOME ---
 router.get('/home-layout', async (req, res) => {
     try {
-        const { rows } = await db.query("SELECT * FROM home_sections ORDER BY position ASC");
+        const { rows } = await db.query("SELECT * FROM home_page_sections ORDER BY position ASC");
         res.json(rows);
     } catch (err) {
         res.status(500).json({ error: "Falha ao buscar layout." });
     }
 });
 
-// Recebe uma nova ordem de seções e salva no banco
 router.put('/home-layout/order', async (req, res) => {
     const { order } = req.body;
     try {
         await db.query('BEGIN');
         for (let i = 0; i < order.length; i++) {
-            const componentKey = order[i];
+            const sectionId = order[i]; // Agora usamos o ID
             const newPosition = i;
-            await db.query("UPDATE home_sections SET position = $1 WHERE component_key = $2", [newPosition, componentKey]);
+            await db.query("UPDATE home_page_sections SET position = $1 WHERE id = $2", [newPosition, sectionId]);
         }
         await db.query('COMMIT');
         res.json({ success: true });
@@ -208,13 +174,12 @@ router.put('/home-layout/order', async (req, res) => {
     }
 });
 
-// Alterna a visibilidade (mostrar/ocultar) de uma seção
-router.put('/home-layout/:key/toggle', async (req, res) => {
-    const { key } = req.params;
+router.put('/home-layout/toggle/:id', async (req, res) => {
+    const { id } = req.params;
     try {
         const { rows } = await db.query(
-            "UPDATE home_sections SET is_visible = NOT is_visible WHERE component_key = $1 AND is_fixed = false RETURNING is_visible", 
-            [key]
+            "UPDATE home_page_sections SET is_visible = NOT is_visible WHERE id = $1 AND is_deletable = true RETURNING is_visible", 
+            [id]
         );
         res.json({ success: true, is_visible: rows[0]?.is_visible });
     } catch (err) {
@@ -222,57 +187,74 @@ router.put('/home-layout/:key/toggle', async (req, res) => {
     }
 });
 
-// Listar todos os blocos
-router.get('/approach-blocks', async (req, res) => {
+// Busca o conteúdo de UMA seção para o modal de edição
+router.get('/home-section/:id', async (req, res) => {
     try {
-        const { rows } = await db.query("SELECT * FROM home_approach_blocks ORDER BY position ASC");
-        res.json(rows);
+        const { id } = req.params;
+        const { rows } = await db.query("SELECT * FROM home_page_sections WHERE id = $1", [id]);
+        if (rows.length === 0) {
+            return res.status(404).json({ error: "Seção não encontrada." });
+        }
+        res.json(rows[0]);
     } catch (err) {
-        res.status(500).json({ error: "Falha ao buscar blocos." });
+        res.status(500).json({ error: 'Falha ao carregar dados da seção.' });
     }
 });
 
-// Criar um novo bloco
-router.post('/approach-blocks', async (req, res) => {
-    const { icon, title, text } = req.body;
+// Salva o conteúdo de UMA seção (do modal)
+router.put('/home-section/:id', upload.single('heroImage'), async (req, res) => {
     try {
-        // Pega a maior posição atual e adiciona 1
-        const { rows: posRows } = await db.query("SELECT MAX(position) as max_pos FROM home_approach_blocks");
+        const { id } = req.params;
+        let contentData = req.body; // Recebe os campos do formulário
+        
+        // Se uma imagem foi enviada (específico para o Hero)
+        if (req.file) {
+            const newImageUrl = await handleUpload(req.file);
+            contentData.heroImageUrl = newImageUrl;
+        }
+
+        // Converte o objeto de volta para JSON
+        const contentJson = JSON.stringify(contentData);
+        
+        await db.query("UPDATE home_page_sections SET content_data = $1 WHERE id = $2", [contentJson, id]);
+        res.json({ success: true });
+    } catch (err) {
+        console.error("Erro ao salvar seção:", err);
+        res.status(500).json({ error: 'Falha ao salvar a seção.' });
+    }
+});
+
+// Adiciona uma nova seção customizada (o "botão de mais")
+router.post('/home-sections', async (req, res) => {
+    const { title, content } = req.body;
+    try {
+        const { rows: posRows } = await db.query("SELECT MAX(position) as max_pos FROM home_page_sections");
         const newPosition = (posRows[0].max_pos || 0) + 1;
         
+        const newSectionData = {
+            title: title,
+            content: content
+        };
+
         const { rows } = await db.query(
-            "INSERT INTO home_approach_blocks (icon, title, text, position) VALUES ($1, $2, $3, $4) RETURNING *",
-            [icon, title, text, newPosition]
+            "INSERT INTO home_page_sections (component_key, title, position, is_visible, is_deletable, edit_path, content_data) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *",
+            ['custom_text', title, newPosition, true, true, null, JSON.stringify(newSectionData)]
         );
         res.status(201).json(rows[0]);
     } catch (err) {
-        res.status(500).json({ error: "Falha ao criar bloco." });
+        res.status(500).json({ error: 'Falha ao criar nova seção.' });
     }
 });
 
-// Atualizar um bloco
-router.put('/approach-blocks/:id', async (req, res) => {
-    const { id } = req.params;
-    const { icon, title, text } = req.body;
-    try {
-        const { rows } = await db.query(
-            "UPDATE home_approach_blocks SET icon = $1, title = $2, text = $3 WHERE id = $4 RETURNING *",
-            [icon, title, text, id]
-        );
-        res.json(rows[0]);
-    } catch (err) {
-        res.status(500).json({ error: "Falha ao atualizar bloco." });
-    }
-});
-
-// Deletar um bloco
-router.delete('/approach-blocks/:id', async (req, res) => {
+// Deleta uma seção customizada
+router.delete('/home-sections/:id', async (req, res) => {
     const { id } = req.params;
     try {
-        await db.query("DELETE FROM home_approach_blocks WHERE id = $1", [id]);
+        // Apenas permite deletar se is_deletable = true
+        await db.query("DELETE FROM home_page_sections WHERE id = $1 AND is_deletable = true", [id]);
         res.json({ success: true });
     } catch (err) {
-        res.status(500).json({ error: "Falha ao deletar bloco." });
+        res.status(500).json({ error: "Falha ao deletar seção." });
     }
 });
 

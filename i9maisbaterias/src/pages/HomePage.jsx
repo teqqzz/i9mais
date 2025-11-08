@@ -11,21 +11,36 @@ import { ImpactDashboard } from "../components/ImpactDashboard";
 import { RoiCalculator } from "../components/RoiCalculator";
 import { SavingsCalculator } from "../components/SavingsCalculator";
 
-// 1. Mapeia as chaves do banco de dados para os componentes React
+// 1. Componente para o novo "Bloco de Texto Customizado"
+function CustomTextBlock({ content }) {
+    return (
+        <section className="unique-approach-section" style={{ backgroundColor: 'var(--background-light)' }}>
+            <div className="container">
+                <h2 className="section-title">{content.title}</h2>
+                <div 
+                    className="page-content" 
+                    style={{ maxWidth: '900px', padding: '0 20px' }}
+                    dangerouslySetInnerHTML={{ __html: content.content }} 
+                />
+            </div>
+        </section>
+    );
+}
+
+// 2. Mapeia as chaves do banco para os componentes React
 const componentMap = {
-    hero: Hero,
-    solutions: SolutionsSection,
-    unique_approach: UniqueApproachSection,
-    impact: ImpactDashboard,
-    projects: ProjectCarousel,
-    calculator: () => ( // Agrupa as duas calculadoras
+    hero: (content) => <Hero content={content} />,
+    solutions: () => <SolutionsSection />,
+    unique_approach: (content) => <UniqueApproachSection content={content} />,
+    impact: () => <ImpactDashboard />,
+    projects: () => <ProjectCarousel />,
+    calculator: () => (
         <section id="calculadora" className="calculators-section">
             <div className="container">
                 <div className="section-title text-center mb-12">
                     <h2>Calcule seu ROI e Sustentabilidade</h2>
                     <p className="max-w-3xl mx-auto">
-                        Use nossas ferramentas para simular o potencial de economia ao
-                        optar pela tecnologia "Second Life" da i9+.
+                        Use nossas ferramentas para simular o potencial de economia.
                     </p>
                 </div>
                 <div className="calculators-grid">
@@ -35,8 +50,9 @@ const componentMap = {
             </div>
         </section>
     ),
-    blog: BlogCarousel,
-    contact: ContactAndAbout,
+    blog: () => <BlogCarousel />,
+    contact: () => <ContactAndAbout />,
+    custom_text: (content) => <CustomTextBlock content={content} />, // Mapeia o novo bloco
 };
 
 export function HomePage() {
@@ -58,15 +74,16 @@ export function HomePage() {
     }, []);
 
     if (isLoading) {
-        return <LoadingSpinner />;
+        return <div style={{ height: '100vh' }}><LoadingSpinner /></div>;
     }
 
    return (
       <>
-            {/* 2. Itera sobre o layout vindo da API e renderiza os componentes na ordem correta */}
             {layout.map(section => {
+                // Acha o componente correspondente no mapa
                 const Component = componentMap[section.component_key];
-                return Component ? <Component key={section.component_key} /> : null;
+                // Renderiza o componente, passando os dados de conteúdo para ele
+                return Component ? Component(section.content_data) : null;
             })}
       </>
    );

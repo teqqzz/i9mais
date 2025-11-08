@@ -1,9 +1,14 @@
 import React, { useState, useEffect } from 'react';
+import { API_URL } from '@/config';
 import { useHomeContent } from '../hooks/useHomeContent';
 
 export function Footer() {
-  const { homeContent } = useHomeContent();
+  const { homeContent, isLoading } = useHomeContent();
  const [developerCreditHtml, setDeveloperCreditHtml] = useState('');
+
+  useEffect(() => {
+    // Busca o conteúdo estático (Hero/Footer) - movido para o HomeContentProvider
+  }, []);
 
  useEffect(() => {
     const encodedCredit = 'RGVzZW52b2x2aWRvIHBvciA8YSBocmVmPSJodHRwczovL2dpdGh1Yi5jb20vdGVxcXp6IiB0YXJnZXQ9Il9ibGFuayIgcmVsPSJub29wZW5lciBub3JlZmVycmVyIj5MdWNhczwvYT4=';
@@ -18,23 +23,23 @@ return (
   <div className="footer-top">
   <div className="footer-about">
    <img src="/images/logo-i9+.png" alt="Logo i9+ Baterias" className="footer-logo" />
-   <p>{homeContent ? homeContent.footerAbout : 'Carregando...'}</p>
+   <p>{isLoading || !homeContent ? 'Carregando...' : homeContent.footerAbout}</p>
   </div>
   <div className="footer-links">
    <h4>Navegação</h4>
    <ul>
    <li><a href="#solucoes">Soluções</a></li>
+       <li><a href="/sobre">Sobre</a></li>
    <li><a href="#impacto">Nosso Impacto</a></li>
    <li><a href="#calculadora">Calculadora</a></li>
-   <li><a href="/sobre">Sobre</a></li>
    <li><a href="#blog">Blog</a></li>
    <li><a href="#contato">Contato</a></li>
    </ul>
   </div>
   <div className="footer-contact">
    <h4>Contato</h4>
-   <p>{homeContent ? homeContent.footerContactAddress : '...'}</p>
-   <p>{homeContent ? homeContent.footerContactEmail : '...'}</p>
+   <p>{isLoading || !homeContent ? '...' : homeContent.footerContactAddress}</p>
+   <p>{isLoading || !homeContent ? '...' : homeContent.footerContactEmail}</p>
   </div>
   <div className="footer-social">
       <h4>Vamos nos conectar?</h4>
