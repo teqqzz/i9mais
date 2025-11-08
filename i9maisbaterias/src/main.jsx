@@ -19,7 +19,6 @@ import { ProjectPage } from './pages/ProjectPage.jsx';
 import { AboutPage } from './pages/AboutPage.jsx';
 
 import { LoginPage } from './pages/admin/LoginPage.jsx';
-import { DashboardPage } from './pages/admin/DashboardPage.jsx';
 import { ProjectListPage } from './pages/admin/ProjectListPage.jsx';
 import { ProjectFormPage } from './pages/admin/ProjectFormPage.jsx';
 import { SolutionListPage } from './pages/admin/SolutionListPage.jsx';
@@ -32,6 +31,7 @@ import { UserManagementPage } from './pages/admin/UserManagementPage.jsx';
 import { AboutPageEditor } from './pages/admin/AboutPageEditor.jsx';
 import { HomePageEditor } from './pages/admin/HomePageEditor.jsx';
 import { HomeLayoutEditor } from './pages/admin/HomeLayoutEditor.jsx';
+// O DashboardPage não é mais importado
 
 const router = createBrowserRouter([
   {
@@ -53,8 +53,7 @@ const router = createBrowserRouter([
       {
         element: <AdminLayout />, 
         children: [
-          { path: 'dashboard', element: <DashboardPage /> },
-                    { path: 'home-layout', element: <HomeLayoutEditor /> },
+          { path: 'dashboard', element: <HomeLayoutEditor /> },
                     { path: 'home-editor', element: <HomePageEditor /> },
           { path: 'messages', element: <MessagesPage /> },
                     { path: 'users', element: <UserManagementPage /> },
@@ -68,7 +67,7 @@ const router = createBrowserRouter([
           { path: 'solucoes/editar/:id', element: <SolutionFormPage /> },
           { path: 'artigos', element: <ArticleListPage /> },
           { path: 'artigos/novo', element: <ArticleFormPage /> },
-JSON
+          { path: 'artigos/editar/:id', element: <ArticleFormPage /> },
         ]
       }
     ]

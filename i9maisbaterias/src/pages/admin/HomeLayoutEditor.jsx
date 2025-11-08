@@ -20,7 +20,7 @@ import { CSS } from '@dnd-kit/utilities';
 import { FaEye, FaEyeSlash, FaGripLines, FaLock } from 'react-icons/fa';
 import '../../admin.css';
 
-function SortableItem({ id, item }) {
+function SortableItem({ id, item, onToggle }) {
     const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id });
 
     const style = {
@@ -28,20 +28,11 @@ function SortableItem({ id, item }) {
         transition,
     };
 
-    const handleToggle = async () => {
-        window.location.reload(); 
-    };
-
-    const onToggleClick = async (e) => {
+    const onToggleClick = (e) => {
         e.preventDefault();
         e.stopPropagation();
         if (item.is_fixed) return;
-        
-        await fetch(`${API_URL}/api/admin/home-layout/${item.component_key}/toggle`, {
-            method: 'PUT',
-            credentials: 'include',
-        });
-        handleToggle();
+        onToggle(item.component_key);
     };
 
     return (
@@ -55,7 +46,7 @@ function SortableItem({ id, item }) {
                 onClick={onToggleClick} 
                 className={`admin-btn small ${item.is_visible ? 'secondary' : 'danger'}`}
                 disabled={item.is_fixed}
-                title={item.is_fixed ? "Esta seção não pode ser ocultada" : (item.is_visible ? "Ocultar" : "Mostrar")}
+                title={item.is_fixed ? "Esta seção não pode ser ocultada" : (item.is_visible ? "Remover (Ocultar)" : "Adicionar (Mostrar)")}
             >
                 {item.is_fixed ? <FaLock /> : (item.is_visible ? <FaEye /> : <FaEyeSlash />)}
             </button>
@@ -79,7 +70,7 @@ export function HomeLayoutEditor() {
             const res = await fetch(`${API_URL}/api/admin/home-layout`, { credentials: 'include' });
             const data = await res.json();
             setSections(data);
-        } catch { // 'err' foi removido daqui
+        } catch {
             setStatus('Erro ao carregar o layout.');
         } finally {
             setIsLoading(false);
@@ -120,10 +111,18 @@ export function HomeLayoutEditor() {
         setTimeout(() => setStatus(''), 3000);
     };
 
+    const handleToggle = async (key) => {
+        await fetch(`${API_URL}/api/admin/home-layout/${key}/toggle`, {
+            method: 'PUT',
+            credentials: 'include',
+        });
+        fetchLayout(); // Recarrega os dados para mostrar o novo estado
+    };
+
     if (isLoading) {
         return (
             <>
-                <header className="admin-header"><h1>Ordenar Página Inicial</h1></header>
+                <header className="admin-header"><h1>Layout da Página Inicial</h1></header>
                 <main className="admin-page-content"><LoadingSpinner /></main>
             </>
         );
@@ -131,17 +130,21 @@ export function HomeLayoutEditor() {
 
     return (
         <>
-            <header className="admin-header"><h1>Ordenar Seções da Página Inicial</h1></header>
+            <header className="admin-header"><h1>Layout da Página Inicial (Dashboard)</h1></header>
             <main className="admin-page-content">
                 <div className="admin-card">
                     <div className="admin-card-header">
-                        <h2>Arraste para reordenar</h2>
+                        <h2>Reordenar Seções da Home</h2>
                         <button onClick={handleSaveOrder} className="admin-btn primary" disabled={!!status}>
                             {status ? status : 'Salvar Ordem'}
                         </button>
                     </div>
                     <div className="admin-card-body">
-                        <p>Arraste os blocos para cima ou para baixo. Use os botões (👁️) para mostrar ou ocultar uma seção no site público.</p>
+                        <p>
+                            Esta é a sua nova Dashboard. Arraste os blocos para reordenar a página inicial.
+                            <br />
+                            Use os botões para "Adicionar" (<strong><FaEyeSlash /> Mostrar</strong>) ou "Remover" (<strong><FaEye /> Ocultar</strong>) uma seção do site.
+                        </p>
                         
                         <DndContext 
                             sensors={sensors} 
@@ -154,7 +157,7 @@ export function HomeLayoutEditor() {
                             >
                                 <div className="sortable-list">
                                     {sections.map(item => (
-                                        <SortableItem key={item.component_key} id={item.component_key} item={item} />
+                                        <SortableItem key={item.component_key} id={item.component_key} item={item} onToggle={handleToggle} />
                                     ))}
                                 </div>
                             </SortableContext>

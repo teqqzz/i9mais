@@ -3,7 +3,7 @@ import { Outlet, NavLink, useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import '../admin.css';
 import { 
-    FaTachometerAlt, FaProjectDiagram, FaFileAlt, FaLightbulb, 
+    FaProjectDiagram, FaFileAlt, FaLightbulb, 
     FaSignOutAlt, FaUserCircle, FaEnvelope, FaCogs, FaUsersCog,
     FaInfoCircle, FaHome, FaGripLines
 } from 'react-icons/fa';
@@ -27,9 +27,8 @@ export function AdminLayout() {
            </div>
            <nav className="admin-sidebar-nav">
              <ul>
-                        <li><NavLink to="/admin/dashboard" className={getNavLinkClass}><FaTachometerAlt /> Dashboard</NavLink></li>
-                        <li><NavLink to="/admin/home-layout" className={getNavLinkClass}><FaGripLines /> Layout da Home</NavLink></li>
-                        <li><NavLink to="/admin/home-editor" className={getNavLinkClass}><FaHome /> Página Inicial</NavLink></li>
+                        <li><NavLink to="/admin/dashboard" className={getNavLinkClass}><FaGripLines /> Layout da Home</NavLink></li>
+                        <li><NavLink to="/admin/home-editor" className={getNavLinkClass}><FaHome /> Conteúdo da Home</NavLink></li>
                         <li><NavLink to="/admin/messages" className={getNavLinkClass}><FaEnvelope /> Mensagens</NavLink></li>
                         <li><NavLink to="/admin/projetos" className={getNavLinkClass}><FaProjectDiagram /> Projetos</NavLink></li>
                         <li><NavLink to="/admin/artigos" className={getNavLinkClass}><FaFileAlt /> Artigos</NavLink></li>
