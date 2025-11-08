@@ -2,7 +2,6 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { HelmetProvider } from 'react-helmet-async';
-
 import './index.css';
 import './admin.css';
 
@@ -12,41 +11,23 @@ import App from './App.jsx';
 import { AdminLayout } from './layouts/AdminLayout.jsx';
 import { ProtectedRoute } from './components/ProtectedRoute.jsx';
 
-// Páginas Públicas
 import { HomePage } from './pages/HomePage.jsx';
-import { BlogPostPage } from './pages/BlogPostPage.jsx';
-import { SolutionPage } from './pages/SolutionPage.jsx';
-import { ProjectPage } from './pages/ProjectPage.jsx';
+// ... (imports de páginas públicas)
 import { AboutPage } from './pages/AboutPage.jsx';
 
-// Páginas Admin
-import { LoginPage } from './pages/admin/LoginPage.jsx'; // <-- ESTA LINHA ESTÁ FALTANDO NO SEU ARQUIVO
-import { DashboardPage } from './pages/admin/DashboardPage.jsx';
-import { ProjectListPage } from './pages/admin/ProjectListPage.jsx';
-import { ProjectFormPage } from './pages/admin/ProjectFormPage.jsx';
-import { SolutionListPage } from './pages/admin/SolutionListPage.jsx';
-import { SolutionFormPage } from './pages/admin/SolutionFormPage.jsx';
-import { ArticleListPage } from './pages/admin/ArticleListPage.jsx';
-import { ArticleFormPage } from './pages/admin/ArticleFormPage.jsx';
-import { MessagesPage } from './pages/admin/MessagesPage.jsx';
-import { SettingsPage } from './pages/admin/SettingsPage.jsx';
-import { UserManagementPage } from './pages/admin/UserManagementPage.jsx';
+import { LoginPage } from './pages/admin/LoginPage.jsx';
+// ... (imports de páginas de admin)
 import { AboutPageEditor } from './pages/admin/AboutPageEditor.jsx';
 import { HomePageEditor } from './pages/admin/HomePageEditor.jsx';
+import { HomeLayoutEditor } from './pages/admin/HomeLayoutEditor.jsx'; // NOVO
 
 const router = createBrowserRouter([
   {
     path: '/',
     element: <App />, 
-    children: [
-      { index: true, element: <HomePage /> },
-      { path: 'sobre', element: <AboutPage /> },
-      { path: 'blog/:slug', element: <BlogPostPage /> },
-      { path: 'solucoes/:slug', element: <SolutionPage /> },
-      { path: 'projetos/:slug', element: <ProjectPage /> },
-    ],
+    children: [ /* ... (rotas públicas) ... */ ],
   },
-  { path: '/login', element: <LoginPage /> }, // O erro é causado aqui
+  { path: '/login', element: <LoginPage /> },
   {
     path: '/admin',
     element: <ProtectedRoute />,
@@ -55,6 +36,7 @@ const router = createBrowserRouter([
         element: <AdminLayout />, 
         children: [
           { path: 'dashboard', element: <DashboardPage /> },
+                    { path: 'home-layout', element: <HomeLayoutEditor /> }, // NOVO
                     { path: 'home-editor', element: <HomePageEditor /> },
           { path: 'messages', element: <MessagesPage /> },
                     { path: 'users', element: <UserManagementPage /> },

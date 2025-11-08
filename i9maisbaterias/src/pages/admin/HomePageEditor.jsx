@@ -57,7 +57,6 @@ export function HomePageEditor() {
         if (res.ok) {
             setStatus('Salvo com sucesso!');
             if (newImageFile) {
-                // Apenas fazemos o fetch novamente para atualizar a URL da imagem de preview
                 fetch(`${API_URL}/api/admin/page/home`, { credentials: 'include' })
                     .then(r => r.json()).then(d => setCurrentImageUrl(d.heroImageUrl));
                 setNewImageFile(null);
@@ -106,13 +105,13 @@ export function HomePageEditor() {
                         <div className="admin-card-header"><h2>Seção "Nossa Abordagem"</h2></div>
                         <div className="admin-card-body">
                             <div className="form-grid">
-                                <div className="form-group"><label>Título Bloco 1 (Economia Circular)</label><input type="text" name="approach1Title" value={formData.approach1Title} onChange={handleChange} /></div>
+                                <div className="form-group"><label>Título Bloco 1</label><input type="text" name="approach1Title" value={formData.approach1Title} onChange={handleChange} /></div>
                                 <div className="form-group"><label>Texto Bloco 1</label><textarea name="approach1Text" rows="5" value={formData.approach1Text} onChange={handleChange}></textarea></div>
                                 
-                                <div className="form-group"><label>Título Bloco 2 (Inovação P&D)</label><input type="text" name="approach2Title" value={formData.approach2Title} onChange={handleChange} /></div>
+                                <div className="form-group"><label>Título Bloco 2</label><input type="text" name="approach2Title" value={formData.approach2Title} onChange={handleChange} /></div>
                                 <div className="form-group"><label>Texto Bloco 2</label><textarea name="approach2Text" rows="5" value={formData.approach2Text} onChange={handleChange}></textarea></div>
 
-                                <div className="form-group"><label>Título Bloco 3 (Inteligência de Dados)</label><input type="text" name="approach3Title" value={formData.approach3Title} onChange={handleChange} /></div>
+                                <div className="form-group"><label>Título Bloco 3</label><input type="text" name="approach3Title" value={formData.approach3Title} onChange={handleChange} /></div>
                                 <div className="form-group"><label>Texto Bloco 3</label><textarea name="approach3Text" rows="5" value={formData.approach3Text} onChange={handleChange}></textarea></div>
                             </div>
                         </div>

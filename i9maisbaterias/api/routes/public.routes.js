@@ -57,4 +57,15 @@ router.get('/page/home', async (req, res) => {
     }
 });
 
+router.get('/home-layout', async (req, res) => {
+    try {
+        const { rows } = await db.query(
+            "SELECT component_key FROM home_sections WHERE is_visible = true ORDER BY position ASC"
+        );
+        res.json(rows);
+    } catch (err) {
+        res.status(500).json({ error: "Falha ao buscar layout da home." });
+    }
+});
+
 export default router;

@@ -5,7 +5,7 @@ import '../admin.css';
 import { 
     FaTachometerAlt, FaProjectDiagram, FaFileAlt, FaLightbulb, 
     FaSignOutAlt, FaUserCircle, FaEnvelope, FaCogs, FaUsersCog,
-    FaInfoCircle, FaHome
+    FaInfoCircle, FaHome, FaGripLines
 } from 'react-icons/fa';
 
 export function AdminLayout() {
@@ -28,6 +28,7 @@ export function AdminLayout() {
            <nav className="admin-sidebar-nav">
              <ul>
                         <li><NavLink to="/admin/dashboard" className={getNavLinkClass}><FaTachometerAlt /> Dashboard</NavLink></li>
+                        <li><NavLink to="/admin/home-layout" className={getNavLinkClass}><FaGripLines /> Layout da Home</NavLink></li>
                         <li><NavLink to="/admin/home-editor" className={getNavLinkClass}><FaHome /> Página Inicial</NavLink></li>
                         <li><NavLink to="/admin/messages" className={getNavLinkClass}><FaEnvelope /> Mensagens</NavLink></li>
                         <li><NavLink to="/admin/projetos" className={getNavLinkClass}><FaProjectDiagram /> Projetos</NavLink></li>

@@ -225,4 +225,47 @@ router.put('/page/home', upload.single('heroImage'), async (req, res) => {
     }
 });
 
+// Lista TODAS as seções para o painel de admin
+router.get('/home-layout', async (req, res) => {
+    try {
+        const { rows } = await db.query("SELECT * FROM home_sections ORDER BY position ASC");
+        res.json(rows);
+    } catch (err) {
+        res.status(500).json({ error: "Falha ao buscar layout." });
+    }
+});
+
+// Recebe uma nova ordem de seções e salva no banco
+router.put('/home-layout/order', async (req, res) => {
+    const { order } = req.body; // Espera um array de 'component_key'
+    try {
+        await db.query('BEGIN');
+        // Itera pelo array e atualiza a 'position' de cada item
+        for (let i = 0; i < order.length; i++) {
+            const componentKey = order[i];
+            const newPosition = i;
+            await db.query("UPDATE home_sections SET position = $1 WHERE component_key = $2", [newPosition, componentKey]);
+        }
+        await db.query('COMMIT');
+        res.json({ success: true });
+    } catch (err) {
+        await db.query('ROLLBACK');
+        res.status(500).json({ error: 'Falha ao salvar a nova ordem.' });
+    }
+});
+
+// Alterna a visibilidade (mostrar/ocultar) de uma seção
+router.put('/home-layout/:key/toggle', async (req, res) => {
+    const { key } = req.params;
+    try {
+        const { rows } = await db.query(
+            "UPDATE home_sections SET is_visible = NOT is_visible WHERE component_key = $1 AND is_fixed = false RETURNING is_visible", 
+            [key]
+        );
+        res.json({ success: true, is_visible: rows[0]?.is_visible });
+    } catch (err) {
+        res.status(500).json({ error: 'Falha ao alterar visibilidade.' });
+    }
+});
+
 export default router;
