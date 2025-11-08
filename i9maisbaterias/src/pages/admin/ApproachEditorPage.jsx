@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { API_URL } from '@/config';
 import { LoadingSpinner } from '../../components/LoadingSpinner';
-import { FaTrash, FaPlus } from 'react-icons/fa';
+import { FaTrash, FaPlus } from 'react-icons/fa'; // Importação do FaTrash corrigida
 import SunEditor from 'suneditor-react';
 import 'suneditor/dist/css/suneditor.min.css'; 
 
-// Componente para o formulário de um bloco individual
 function BlockForm({ block, onSave, onDelete }) {
   const [icon, setIcon] = useState(block.icon || '♻️');
   const [title, setTitle] = useState(block.title || '');
@@ -60,21 +59,22 @@ export function ApproachEditorPage() {
   const [blocks, setBlocks] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [status, setStatus] = useState('');
+    const [statusType, setStatusType] = useState('success');
 
   const fetchBlocks = async () => {
     setIsLoading(true);
     try {
       const res = await fetch(`${API_URL}/api/admin/approach-blocks`, { credentials: 'include' });
-            if (!res.ok) throw new Error('Falha ao buscar dados');
+            if (!res.ok) throw new Error('Falha ao buscar dados (500)');
       const data = await res.json();
             if (Array.isArray(data)) {
           setBlocks(data);
             } else {
                 setBlocks([]);
-                setStatus('Erro ao carregar blocos: a resposta não foi um array.');
+                showStatus('Erro: A resposta da API não foi uma lista.', 'error');
             }
     } catch (err) {
-      setStatus(`Erro ao carregar blocos: ${err.message}`);
+      showStatus(`Erro ao carregar blocos: ${err.message}`, 'error');
             setBlocks([]);
     } finally {
       setIsLoading(false);
@@ -85,9 +85,10 @@ export function ApproachEditorPage() {
     fetchBlocks();
   }, []);
 
-  const showStatus = (msg) => {
+  const showStatus = (msg, type = 'success') => {
     setStatus(msg);
-    setTimeout(() => setStatus(''), 3000);
+        setStatusType(type);
+    setTimeout(() => setStatus(''), 4000);
   };
 
   const handleSave = async (blockData) => {
@@ -121,7 +122,7 @@ export function ApproachEditorPage() {
     <>
       <header className="admin-header"><h1>Editar Blocos "Nossa Abordagem"</h1></header>
       <main className="admin-page-content">
-        {status && <div className="form-status-global success" style={{marginBottom: '20px'}}>{status}</div>}
+        {status && <div className={`form-status-global ${statusType}`} style={{marginBottom: '20px'}}>{status}</div>}
         
         {isLoading ? (
           <LoadingSpinner />
@@ -130,6 +131,7 @@ export function ApproachEditorPage() {
             <div className="admin-card">
               <div className="admin-card-header"><h2>Blocos Atuais</h2></div>
               <div className="admin-card-body">
+                                {/* O .map() agora é seguro pois 'blocks' é sempre um array */}
                 {blocks.map(block => (
                   <BlockForm key={block.id} block={block} onSave={handleSave} onDelete={handleDelete} />
                 ))}
@@ -137,11 +139,11 @@ export function ApproachEditorPage() {
             </div>
 
             <div className="admin-card" style={{ marginTop: '30px' }}>
-              <div className="admin-card-header"><h2><FaPlus /> Adicionar Novo Bloco</h2></div>
+Indentation-preserving replacement
               <div className="admin-card-body">
                 <BlockForm 
-                  block={{ icon: '🆕', title: '', text: '' }} 
-                  onSave={handleSave} 
+                  block={{ icon: '🆕', title: '', text: '<p>Novo conteúdo...</p>' }} 
+a                onSave={handleSave} 
                   onDelete={null} 
                 />
               </div>
@@ -149,6 +151,6 @@ export function ApproachEditorPage() {
           </>
         )}
       </main>
-OS    </>
+    </>
   );
 }
