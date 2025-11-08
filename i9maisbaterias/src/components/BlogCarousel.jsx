@@ -6,7 +6,7 @@ import { API_URL } from '@/config';
 import 'swiper/css';
 import 'swiper/css/navigation';
 import { formatImageUrl } from '../utils/formatImageUrl';
-import { LoadingSpinner } from './LoadingSpinner'; 
+import { LoadingSpinner } from './LoadingSpinner';
 
 function CarouselItem({ slug, image, title, text, imageStyleClass }) {
  const finalImageUrl = formatImageUrl(image); 
@@ -27,19 +27,28 @@ function CarouselItem({ slug, image, title, text, imageStyleClass }) {
 
 export function BlogCarousel() {
  const [posts, setPosts] = useState([]);
-  const [isLoading, setIsLoading] = useState(true); 
+  const [isLoading, setIsLoading] = useState(true);
 
  useEffect(() => {
     setIsLoading(true);
   fetch(`${API_URL}/api/artigos?page=1&limit=100`)
-   .then(res => res.json())
+   .then(res => {
+          if (!res.ok) throw new Error('Falha ao buscar artigos');
+          return res.json();
+      })
    .then(data => {
-          setPosts(data.posts);
-          setIsLoading(false); 
+          if (Array.isArray(data.posts)) {
+            setPosts(data.posts);
+          } else {
+            setPosts([]); // Garante que 'posts' seja sempre um array
+          }
         })
    .catch(err => {
           console.error("Erro ao buscar artigos:", err);
-          setIsLoading(false); 
+          setPosts([]); // Define como array vazio em caso de erro
+        })
+        .finally(() => {
+          setIsLoading(false);
         });
  }, []); 
 

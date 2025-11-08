@@ -6,15 +6,25 @@ export function Footer() {
  const [developerCreditHtml, setDeveloperCreditHtml] = useState('');
 
   useEffect(() => {
-    // Busca o conteúdo do rodapé (que está no JSON da Home)
     fetch(`${API_URL}/api/page/home`)
-      .then(res => res.json())
-      .then(data => setFooterContent(data))
-      .catch(err => console.error("Falha ao carregar conteúdo do rodapé", err));
+      .then(res => {
+          if (!res.ok) throw new Error('Falha ao buscar conteúdo do rodapé');
+          return res.json();
+      })
+      .then(data => {
+          if (typeof data === 'object' && data !== null) {
+              setFooterContent(data);
+          } else {
+              setFooterContent({}); // Define como objeto vazio para evitar erros
+          }
+      })
+      .catch(err => {
+          console.error("Falha ao carregar conteúdo do rodapé", err);
+          setFooterContent({}); // Define como objeto vazio em caso de erro
+      });
   }, []);
 
  useEffect(() => {
-    // Lógica para os créditos ofuscados
     const encodedCredit = 'RGVzZW52b2x2aWRvIHBvciA8YSBocmVmPSJodHRwczovL2dpdGh1Yi5jb20vdGVxcXp6IiB0YXJnZXQ9Il9ibGFuayIgcmVsPSJub29wZW5lciBub3JlZmVycmVyIj5MdWNhczwvYT4=';
   try { setDeveloperCreditHtml(atob(encodedCredit)); } catch (e) { console.error("Falha ao decodificar os créditos.", e); }
   const style = 'font-size: 14px; background: #021029; color: #fff; padding: 5px 10px; border-radius: 5px;';
@@ -48,7 +58,7 @@ return (
   <div className="footer-social">
       <h4>Vamos nos conectar?</h4>
    <div className="social-icons">
- nbsp;  <a href="https://www.facebook.com/profile.php?id=100085606369147&mibextid=LQQJ4d" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
+    <a href="https://www.facebook.com/profile.php?id=100085606369147&mibextid=LQQJ4d" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M9 8h-3v4h3v12h5v-12h3.642l.358-4h-4v-1.667c0-.955.192-1.333 1.115-1.333h2.885v-5h-3.808c-3.596 0-5.192 1.583-5.192 4.615v3.385z"/></svg>
     </a>
     <a href="https://www.instagram.com/inovemais.baterias" target="_blank" rel="noopener noreferrer" aria-label="Instagram">

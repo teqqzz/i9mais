@@ -32,13 +32,22 @@ export function SolutionsSection() {
   useEffect(() => {
         setIsLoading(true);
    fetch(`${API_URL}/api/solucoes?page=1&limit=100`)
-    .then(res => res.json())
+    .then(res => {
+            if (!res.ok) throw new Error('Falha ao buscar soluções');
+            return res.json();
+        })
     .then(data => {
-            setSolutions(data.posts);
-            setIsLoading(false);
+            if(Array.isArray(data.posts)) {
+                setSolutions(data.posts);
+            } else {
+                setSolutions([]);
+            }
         })
     .catch(err => {
             console.error("Erro ao buscar solucoes:", err);
+            setSolutions([]);
+        })
+        .finally(() => {
             setIsLoading(false);
         });
   }, []);

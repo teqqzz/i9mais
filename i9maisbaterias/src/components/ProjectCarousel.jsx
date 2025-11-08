@@ -34,14 +34,23 @@ export function ProjectCarousel() {
  useEffect(() => {
     setIsLoading(true);
   fetch(`${API_URL}/api/projetos?page=1&limit=100`)
-   .then(res => res.json())
+   .then(res => {
+          if (!res.ok) throw new Error('Falha ao buscar projetos');
+          return res.json();
+      })
    .then(data => {
-    setProjects(data.posts); 
-        setIsLoading(false);
+        if (Array.isArray(data.posts)) {
+        setProjects(data.posts); 
+        } else {
+            setProjects([]);
+        }
    })
    .catch(err => {
         console.error("Erro ao buscar projetos:", err);
-        setIsLoading(false);
+        setProjects([]);
+      })
+      .finally(() => {
+          setIsLoading(false);
       });
  }, []);
 
