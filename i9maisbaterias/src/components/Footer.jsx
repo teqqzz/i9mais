@@ -19,6 +19,7 @@ export function Footer() {
               <li><HashLink smooth to="/#calculadora">Calculadora</HashLink></li>
               <li><HashLink smooth to="/#blog">Blog</HashLink></li>
               <li><HashLink smooth to="/#contato">Contato</HashLink></li>
+              <li><Link to="/sobre">Sobre</Link> </li>
             </ul>
           </div>
           <div className="footer-contact">
